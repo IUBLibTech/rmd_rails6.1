@@ -1,0 +1,52 @@
+<div>
+  <h3>Add Person to <i><%= @avalon_item.title %></i></h3>
+  <div class="rvt-grid rvt-m-top-xxs">
+    <div class="rvt-grid__item-4-md-up">
+      <label for="recordingTitle">First Name</label>
+      <%= f.text_field :first_name, {type: "text", 'aria-describedby': "first name"} %>
+    </div>
+    <div class="rvt-grid__item-4-md-up">
+      <label for="recordingTitle">Middle Name</label>
+      <%= f.text_field :middle_name, {type: "text", 'aria-describedby': "middle name"} %>
+    </div>
+    <div class="rvt-grid__item-4-md-up">
+      <label for="recordingTitle">Last Name</label>
+      <%= f.text_field :last_name, {type: "text", 'aria-describedby': "last name"} %>
+    </div>
+  </div>
+  <div class="rvt-grid">
+    <div class="rvt-grid__item-4-md-up">
+      <label for="recordingTitle">Date of Birth</label>
+      <%= f.text_field :date_of_birth_edtf, {type: "text", 'aria-describedby': "date of birth", class: "edtf_year_or_date"} %>
+    </div>
+    <div class="rvt-grid__item-4-md-up">
+      <label for="recordingTitle">Date of Death</label>
+      <%= f.text_field :date_of_death_edtf, {type: "text", 'aria-describedby': "date of death", class: "edtf_year_or_date"} %>
+    </div>
+    <div class="rvt-grid__item-4-md-up">
+      <label for="recordingTitle">Place of Birth</label>
+      <%= f.text_field :place_of_birth, {type: "text", 'aria-describedby': "first name"} %>
+    </div>
+  </div>
+  <div class="rvt-grid">
+    <div class="rvt-grid__item-4-md-up">
+      <label for="recordingTitle">Authority Source</label>
+      <%= f.text_field :authority_source, {type: "text", 'aria-describedby': "authority source"} %>
+    </div>
+    <div class="rvt-grid__item-4-md-up">
+      <label for="recordingTitle">Authority Source URL</label>
+      <%= f.text_field :aka, {type: "text", 'aria-describedby': "authority source url", class: "decodeURI urlValidator"} %>
+    </div>
+    <div class="rvt-grid__item-4-md-up">
+      <label for="recordingTitle">AKA</label>
+      <%= f.text_field :aka, {type: "text", 'aria-describedby': "also know as"} %>
+    </div>
+    <div class="rvt-grid__item-12">
+      <label for="personNotes">Notes</label>
+      <%= f.text_area :notes, {class: "noBorder"} %>
+    </div>
+  </div>
+</div>
+<div>
+  <p>Add this Person to the Avalon Item's structured metadata below</p>
+</div>

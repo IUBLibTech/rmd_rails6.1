@@ -1,0 +1,477 @@
+<% if flash[:warning] || flash.now[:warning] %>
+  <p class="warning"><%= flash[:warning].html_safe %></p>
+<% end %>
+
+<div id="adder_overlay" data-animation-offscreen="true">
+  <i id="adder_close" class="fa fa-window-close" style="font-size:30px;float: right;"><span class=sr-only>close menu</span></i>
+  <div id="adder_content"></div>
+</div>
+
+<div id="ajax_metadata">
+  <%= render partial: 'avalon_item_metadata' %>
+</div>
+
+<div class="avalon_item_metadata">
+  <div id="note_div">
+    <%= render partial: 'avalon_items/notes' %>
+  </div>
+
+  <div class="toggle_div">
+    <label id="toggle_text">Show Structured Metadata</label>
+    <label class="switch" id="toggle_label">
+      <input type="checkbox" id="toggle_input">
+      <span class="slider" id="toggle_slider"></span>
+    </label>
+  </div>
+
+  <div id="recordings_div" class="rvt-p-all-sm bgGray" style="display: none">
+    <h2>Recordings In This Avalon Item </h2>
+    <% @avalon_item.recordings.each do |recording| %>
+      <%= render partial: 'recordings/ajax_show', locals: {recording: recording} %>
+    <% end %>
+  </div>
+</div>
+
+<% if @json.nil? || @avalon_item.json.nil? %>
+  <p class="warning"><b>An error occurred while trying to read the most recent MCO metadata for this record. </b></p>
+<% else %>
+<div class="json">
+  <h3 class="accordion accordion-title active accordion-trigger" aria-expanded=true>MCO Metadata
+    <span class="accordion-icon"></span></h3>
+  <div class="rvt-grid m-fadeIn">
+    <table class="json_table">
+      <tbody>
+      <tr>
+        <td colspan="4"><button id="add_person_button"  class="rvt-button rvt-m-left-lg">Add Person/Entity</button><button id="add_work_button" class="rvt-button rvt-m-left-lg">Add Work</button></td>
+      </tr>
+      <tr>
+        <th>Title</th>
+        <td colspan="3" class="adder"><%= @json["title"] %></td>
+      </tr>
+      <tr>
+        <th>Unit</th>
+        <td>
+          <%= @avalon_item.pod_unit %>
+        </td>
+        <th>Creator</th>
+        <td>
+          <ul class="rvt-plain-list">
+            <% @json["fields"]["creator"]&.each do |mc| %>
+              <li class="adder people"><%= mc %></li>
+            <% end %>
+          </ul>
+        </td>
+      </tr>
+      <tr>
+        <th>Uniform Title</th>
+        <td class="adder work"><%= @json["uniform_title"] %></td>
+        <th>Date Created</th>
+        <td><%= @json["fields"]["date_created"] %></td>
+      </tr>
+      <tr>
+        <th>Translated Title</th>
+        <td class="adder work">
+          <%= @json["translated_title"] %>
+        </td>
+        <th>Date Issued</th>
+        <td class="adder date issue"><%= @json["fields"]["date_issued"] %></td>
+      </tr>
+      <tr>
+        <th>Avalon Collection</th>
+        <td><%= @json["collection"] %></td>
+        <th>Copyright Date</th>
+        <td class="adder date copyright"><%= @json["fields"]["copyright_date"] %></td>
+      </tr>
+      <tr>
+        <th>Main Contributors</th>
+        <td>
+          <ul class="rvt-plain-list">
+            <% @json["main_contributors"]&.each do |mc| %>
+              <li class="adder people"><%= mc %></li>
+            <% end %>
+          </ul>
+        </td>
+        <th>Publisher</th>
+        <td>
+          <ul class="rvt-plain-list">
+            <% @json["fields"]["publisher"]&.each do |mc| %>
+              <li><%= mc %></li>
+            <% end %>
+          </ul>
+        </td>
+      </tr>
+      <tr>
+        <th>Publication Date</th>
+        <td class="adder date publication">
+          <%= @json["publication_date"] %>
+        </td>
+        <th>Physical Description</th>
+        <td>
+          <ul class="rvt-plain-list">
+            <% @json["fields"]["physical_description"]&.each do |mc| %>
+              <li><%= mc %></li>
+            <% end %>
+          </ul>
+        </td>
+      </tr>
+      <tr>
+        <th>Bibliographic ID</th>
+        <td><%= @json["fields"]["bibliographic_id"] %></td>
+        <th>Statement of Responsibility</th>
+        <td><%= @json["fields"]["statement_of_responsibility"] %></td>
+      </tr>
+      <tr>
+        <th>Note</th>
+        <td><%= @json["fields"]["note"] %></td>
+        <th>Contributor</th>
+        <td>
+          <ul class="rvt-plain-list">
+            <% @json["fields"]["contributor"]&.each do |mc| %>
+              <li class="adder"><%= mc %></li>
+            <% end %>
+          </ul>
+        </td>
+      </tr>
+      <tr>
+        <th>Language</th>
+        <td>
+          <ul class="rvt-plain-list">
+            <% @json["fields"]["language"]&.each do |mc| %>
+              <li><%= mc %></li>
+            <% end %>
+          </ul>
+        </td>
+        <th>Terms of Use</th>
+        <td><%= @json["fields"]["terms_of_use"] %></td>
+      </tr>
+      <tr>
+        <th>Table of Contents</th>
+        <td>
+          <ul class="rvt-plain-list">
+            <% @json["fields"]["table_of_contents"]&.each do |mc| %>
+              <li class='adder work'><%= mc %></li>
+            <% end %>
+          </ul>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+<% if User.current_username == '' %>
+<div>
+  <h3 class="accordion accordion-title active accordion-trigger" aria-expanded="true">JSON<span class="accordion-icon"></span></h3>
+  <div class="rvt-grid m-fadeIn">
+    <pre>
+      <%= JSON.pretty_generate @json %>
+    </pre>
+  </div>
+</div>
+
+<% end %>
+<% end %>
+<!--<div class="rvt-dropdown__menu aiJsonMenu" id="dropdown-navigation" aria-hidden="true" role="menu">-->
+<!--  <button id="addPersonButton">Add Person/Entity</button>-->
+<!--  <button id="addWorkButton">Add Work</button>-->
+<!--</div>-->
+
+<script type="text/javascript" charset="utf-8">
+    let avalon_item_id = <%= @avalon_item.id %>;
+    let original_access = "<%= @avalon_item.access_determination %>"
+    let checked = <%= @avalon_item.checked_reasons.to_json.to_s.html_safe %>;
+    let legal_agreements = <%= @avalon_item.contracts.size %>;
+    let structure_modified = <%= @avalon_item.structure_modified? ? true : false %>;
+    let legal_agreement_count = <%= @avalon_item.contracts.size %>;
+
+    const reasons_selector_map = {
+      "<%= AccessDeterminationHelper::RESTRICTED_ACCESS %>": "#restricted_reasons",
+      "<%= AccessDeterminationHelper::IU_ACCESS %>": "#iu_reasons",
+      "<%= AccessDeterminationHelper::DEFAULT_ACCESS %>": "#iu_reasons",
+      "<%= AccessDeterminationHelper::WORLD_WIDE_ACCESS %>": "worldwise_reasons"
+    };
+
+    $(document).ready(function() {
+      hookAccordion();
+      hookButtons();
+      hookAiContextMenu();
+      hookNeedsReview();
+      //hookReviewCommentSlide();
+      hookAvalonNoteButton();
+      hookAccessSelects();
+      <% if @avalon_item.structure_modified %>
+        $("#toggle_input").prop("checked", true);
+        $("#recordings_div").show(200);
+        $('#toggle_text').text("Hide Structured Metadata");
+      <% end %>
+
+      $('#toggle_input').change( function() {
+        if (this.checked) {
+          $("#recordings_div").show(200);
+          $('#toggle_text').text("Hide Structured Metadata");
+        } else {
+          $("#recordings_div").hide(200);
+          $('#toggle_text').text("Show Structured Metadata");
+        }
+      });
+      selectReasonsDiv(false, false, false);
+      $("#access_determination_cancel").click(function() {
+        $("#access_save_buttons").hide();
+      })
+      $(".reason_checkbox").change(function() {
+        selectReasonsDiv(true, false, false);
+      })
+
+      $("#access_reason_form").submit(function (e) {
+        if (!reasonsSelected()) {
+          e.preventDefault();
+          e.stopPropagation();
+          swal.fire({
+              icon: "error",
+              title: "Reason Required",
+              text: "You must specify one or more Reasons for Restricted or Worldwide Access Determinations."
+            }
+          )
+        } else if ($("#worldwide_reason_public_domain").is(":checked") && !structure_modified) {
+	        e.preventDefault();
+	        e.stopPropagation();
+	        swal.fire({
+			        icon: "error",
+			        title: "Metadata Required",
+			        text: "You must enter structured metadata that supports this Avalon Item being in the Public Domain."
+		        }
+	        )
+        } else if ($("#worldwide_reason_license").is(":checked") && legal_agreement_count < 1) {
+	        e.preventDefault();
+	        e.stopPropagation();
+	        swal.fire({
+			        icon: "error",
+			        title: "Metadata Required",
+			        text: "You must enter Legal Agreement metadata that supports Worldwide Access."
+		        }
+	        )
+        }
+      }).on("reset", function() {
+        // necessary so that the reason div is displayed AFTER the form resets
+        setTimeout(function() {
+          recheckChecked();
+          selectReasonsDiv(false, false, false);
+        })
+      }).on("ajax:success", function(event, data, status, xhr) {
+        reloadPage();
+      }).on("ajax:error", function(event, xhr, status, error) {
+        swal.fire({
+          title: 'Update Failed',
+          html: xhr.responseText
+        })
+      })
+
+      $("#worldwide_reason_public_domain").change(function() {
+				if (this.checked && !structure_modified) {
+          swal.fire({
+            title: "Metadata Required",
+            html: "You must enter all available information in the <i><b>Structured Metadata</b></i> section that supports this recording being in the public domain"
+          })
+        }
+      });
+	    $("#worldwide_reason_license").change(function() {
+		    if (this.checked && legal_agreement_count < 1) {
+			    swal.fire({
+				    title: "Legal Agreement Required",
+				    html: "You must enter all available information in the Legal Agreements section that support Worldwide Access."
+			    })
+		    }
+	    });
+
+    })
+
+    function reasonsSelected() {
+      let decision = $("#access :selected").text();
+      switch(decision) {
+      case "<%= AccessDeterminationHelper::RESTRICTED_ACCESS %>":
+        return $(".restricted_reason:checked").size() > 0;
+      case "<%= AccessDeterminationHelper::IU_ACCESS %>":
+	      // IU only does not require a reason
+        return true;
+      case "<%= AccessDeterminationHelper::DEFAULT_ACCESS %>":
+	      // IU only does not require a reason
+          return true;
+      case "<%= AccessDeterminationHelper::WORLD_WIDE_ACCESS %>":
+        return $(".worldwide_reason:checked").size() > 0;
+      default:
+          return false
+      }
+    }
+    function recheckChecked() {
+      for (let x = 0; x < checked.length; x++) {
+        let selector = "#"+checked[x];
+        $(selector).prop('checked', true);
+      }
+    }
+    function selectReasonsDiv(showSave, clearChecked, prompt_worldwide) {
+      let access = $( "#access option:selected" ).text();
+      //clear previous reasons on access level change
+      if (clearChecked) {
+        $('.reason_checkbox').removeAttr("checked");
+      }
+      if (showSave) {
+        // show save if the showSave is true AND the change in access determination is different from original_access
+        // if the change is back to the original access determination, we don't show need to re-check any previously checked reason.
+        let current_access = $("access :selected").text();
+        $("#access_save_buttons").show();
+      } else {
+        $("#access_save_buttons").hide();
+      }
+      switch(access) {
+        case "<%= AccessDeterminationHelper::RESTRICTED_ACCESS %>":
+          $('#iu_only_reasons').hide();
+          $("#default_reasons").hide();
+          $("#worldwide_reasons").hide();
+          $("#restricted_reasons").show();
+
+          break;
+        case "<%= AccessDeterminationHelper::IU_ACCESS %>":
+          $("#worldwide_reasons").hide();
+          $("#restricted_reasons").hide();
+          $("#default_reasons").hide();
+          $('#iu_only_reasons').show()
+          break;
+        case "<%= AccessDeterminationHelper::DEFAULT_ACCESS %>":
+          $("#restricted_reasons").hide();
+          $("#worldwide_reasons").hide();
+          $("#default_reasons").show();
+          $('#iu_only_reasons').hide()
+          break;
+        case "<%= AccessDeterminationHelper::WORLD_WIDE_ACCESS %>":
+          $('#iu_only_reasons').hide();
+          $("#default_reasons").hide();
+          $("#restricted_reasons").hide();
+          $("#worldwide_reasons").show();
+          break;
+        default:
+          swal.fire({
+            title: "Access Determination Error",
+            text: "Access was set to unknown value: "+access
+          });
+        }
+      // finally, prompt user for necessary metadata if setting to Worlwide access and structure has not been modified OR
+      // there are 0 legal agreements for the object
+      if (prompt_worldwide && access === '<%= AccessDeterminationHelper::WORLD_WIDE_ACCESS %>' && !structure_modified && legal_agreements === 0) {
+        swal.fire({
+          title: "Provide Metadata",
+          html: "<p>Enter the available information that supports a worldwide access determination in the <i><b>Structured Metadata</b></i> or <i><b>Legal Agreements</b></i> sections. Worldwide access determinations must document the basis for that access decision.</p>",
+          icon: 'warning'
+        })
+      }
+    }
+
+    // this should be called when #access_determination_save is called
+    function ajaxAccess() {
+      let decision = $("#access :selected").text();
+      $.ajax({
+        url: '<%= ajax_avalon_item_access_decision_path %>',
+        method: "POST",
+        data: {
+          id: <%= @avalon_item.id %>,
+          access: decision
+        },
+        success: function(response) {
+          swal.fire({
+            title: 'Updated Record',
+            text: "This Avalon Item's Access Determination was successfully updated."
+          }).then(function (){
+            $("#ajax_metadata").html(response);
+            selectReasonsDiv(false, false, false);
+            // need to add listeners again for re-render portion of the page
+            hookNeedsReview();
+            hookNewContractButton();
+            hookAccessSelects();
+          })
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+          reloadPageWithError("An error occurred while trying to update the access determination:<br/><pre>"+ jqXHR.responseText +"</pre>")
+        }
+      })
+    }
+    function ajaxPerformanceAccess(performance_id, decision) {
+        $.ajax({
+            url: '<%= ajax_performance_access_determination_path %>',
+            method: "POST",
+            data: {
+                id: performance_id,
+                access: decision
+            },
+            success: function(response) {
+              loadCalcedAccess();
+              swal.fire({
+                title: 'Updated',
+                html: "This Performance's access determination was successfully updated"
+              })
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+              reloadPageWithError("An error occurred while trying to update the Performance's access determination. Please contact Andrew Albrecht")
+            }
+        })
+    }
+    function ajaxTrackAccess(performance_id, decision) {
+        $.ajax({
+            url: '<%= ajax_track_access_determination_path %>',
+            method: "POST",
+            data: {
+                id: performance_id,
+                access: decision
+            },
+            success: function(response) {
+              loadCalcedAccess();
+              swal.fire({
+                title: 'Updated',
+                html: "This Track's access determination was successfully updated"
+              })
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+              reloadPageWithError("An error occurred while trying to set this Track's access determination. Please contact Andrew Albrecht")
+            }
+        })
+    }
+    function hookNeedsReview() {
+        $('#mark_needs_reviewed').click(function() {
+            swal.fire({
+                title: 'Comments for <%= @cl ? 'Collection Manager' : 'Copyright Librarian' %>',
+                input: "textarea",
+                showCancelButton: true,
+                confirmButtonText: '<%= if @avalon_item.needs_review
+                                      @avalon_item.review_state == AvalonItem::REVIEW_STATE_WAITING_ON_CM ? 'Respond' : 'Add Comment'
+                                    else
+                                      'Request Review'
+                                    end
+                                %>',
+                showLoaderOnConfirm: true,
+                preConfirm: (comment) => {
+                    let form = new FormData();
+                    form.append("id", "<%= @avalon_item.id %>");
+                    form.append("comment", comment);
+                    fetch("<%= ajax_post_needs_review_path %>", {
+                        method: 'post',
+                        body: form,
+                        headers: {
+                            'X-CSRF-Token': "<%= form_authenticity_token %>"
+                        }
+                    }).then(response => {
+                        response.text().then(function(text) {
+                            if (response.ok) {
+                                reloadPage();
+                            } else {
+                                swal.fire({
+                                    type: 'error',
+                                    title: 'Failed to Update Avalon Item',
+                                    html: text
+                                })
+                            }
+                        })
+
+                    })
+                }
+            })
+        });
+    }
+
+</script>

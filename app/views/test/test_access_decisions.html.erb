@@ -1,0 +1,42 @@
+<h4>This page provides a simple UI to test the Access Determination service of RMD</h4>
+<div>
+  <p>Specify a single Avalon Identifier to retrieve the access determination for the recording</p>
+  <form action="" id="barcode_form">
+    <table>
+      <tbody>
+      <tr>
+        <td>
+          <label for="barcode">Avalon ID</label><input type="text" id="test_mdpi_barcode" name="mdpi_barcode">
+        </td>
+        <td>
+          <%= button_to "Test", "#", id: 'test_barcode' %>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </form>
+</div>
+<div id="barcode_response"></div>
+<script type="text/javascript" charset="utf-8">
+  $(document).ready(function() {
+     $('#barcode_form').submit(function(event) {
+         event.preventDefault();
+         $("#barcode_response").html("");
+         var bc = $('#test_mdpi_barcode').val();
+         $.ajax({
+             url: './access_determination/'+bc,
+             dataType: 'json',
+             method: "GET",
+             beforeSend: function(xhr) {
+                 xhr.setRequestHeader("Authorization", "Basic " + btoa("<%= @username %>"+":"+"<%= @password %>"))
+             },
+             success: function(response) {
+                     $("#barcode_response").html("<code>"+JSON.stringify(response, null, 2)+"</code>");
+             },
+             error: function(jqXHR, textStatus, errorThrown) {
+                 alert("Something went wrong with RMD...");
+             }
+         });
+      });
+  });
+</script>

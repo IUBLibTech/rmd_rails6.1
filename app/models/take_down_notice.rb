@@ -1,0 +1,2 @@
+class TakeDownNotice < ApplicationRecord
+end

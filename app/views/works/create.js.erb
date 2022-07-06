@@ -1,0 +1,15 @@
+swal({
+    title: "New Work",
+    html: "<p>A new Work was created with title: <i><%= @work.title %></i>"
+});
+$.ajax({
+    url: '#',
+    success: function(result) {
+//        $('.rmd_metadata').html(result);
+//        hookListeners();
+	    swal.fire({title: 'How was this called?', 'If you are seeing this message, pleas contact Andrew Albrecht.'})
+    },
+    error: function() {
+	    swal.fire({title: 'How was this called?', 'If you are seeing this message, pleas contact Andrew Albrecht.'})
+    }
+})

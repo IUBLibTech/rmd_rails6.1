@@ -1,0 +1,12 @@
+<p>Copyright Librarian Workflow</p>
+<div class="rvt-m-all-xxs rvt-border-radius">
+  <span id="cl_all_badge" class="filter-badge rvt-badge pointer" onclick="clLoadAll()">All</span>
+  <span id="cl_initial_badge" class="filter-badge rvt-badge rvt-badge--info-secondary pointer" onclick="clLoadInitial()">Initial Review</span>
+  <span id="cl_waiting_on_cm_badge" class="filter-badge rvt-badge rvt-badge--warning-secondary pointer" onclick="clLoadWaitingOnCM()">Needs Information</span>
+  <span id="cl_waiting_on_self_badge" class="filter-badge rvt-badge rvt-badge--danger-secondary pointer" onclick="clLoadWaitingOnSelf()">Responses</span>
+  <span id="cl_determined_badge" class="filter-badge rvt-badge rvt-badge--success-secondary pointer" onclick="clLoadAccessDetermined()">Access Determined</span>
+</div>
+<div id="results_table_div">
+  <%== pagy_nav(@pagy) %>
+  <% render partial: 'cl_avalon_items_table' %>
+</div>

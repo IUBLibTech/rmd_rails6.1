@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Rmd</title>
+  <script src="https://kit.fontawesome.com/9e583d4e6a.js" crossorigin="anonymous"></script>
+  <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-tracks' => true %>
+  <%= javascript_include_tag 'application', 'data-turbolinks-tracks' => true %>
+  <%= csrf_meta_tags %>
+  <%= favicon_link_tag asset_path('favicon-32x32.png') %>
+</head>
+<body>
+  <%= render partial: 'layouts/header_content' %>
+  <div class="load_animation rvt-m-top-lg">
+    <h4>Please wait while the page reloads.</h4>
+    <div>
+      <div class="loader"></div>
+    </div>
+  </div>
+  <div id="main_content" role="main" class="rvt-container rvt-p-top-none rvt-p-bottom-md rvt-m-top-sm">
+    <%= yield %>
+  </div>
+  <%= render partial: 'layouts/footer' %>
+</body>
+<script type="text/javascript" charset="utf-8">
+  let base_url = "<%= request.base_url %>";
+  let copyright_librarian = <%= User.current_user_copyright_librarian? %>;
+  $(document).ready(function() {
+      setJqUiTooltips();
+      $(document).tooltip();
+  });
+  function setJqUiTooltips() {
+      $(".ui-icon-help").hover(function() {
+          if ($(this).prev().hasClass('edtf')) {
+              $(this).attr('title', "EDTF Year. Valid input includes 1978, 1978?, and 197u. 1978? means that the date is not certain. 197u means sometime in the 1970s");
+          } else if ($(this).prev().hasClass('year')) {
+              $(this).attr('title', "This must be a full, four digit year: 1978");
+          } else if ($(this).prev().hasClass('full_date')) {
+              $(this).attr('title', "This must be a complete Date formatted mm/dd/yyyy")
+          } else if ($(this).prev().hasClass('hms_validator')) {
+              $(this).attr('title', "This must be formatted hh:mm:ss")
+          }
+      });
+  }
+</script>
+</html>

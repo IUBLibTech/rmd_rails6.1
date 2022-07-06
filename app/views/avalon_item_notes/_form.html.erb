@@ -1,0 +1,23 @@
+<div>
+  <%= form_for(@avalon_item_note, remote: true) do |f| %>
+    <h4><%= @avalon_item.title %></h4>
+    <%= f.hidden_field :avalon_item_id, value: @avalon_item.id %>
+    <%= f.hidden_field :creator, value: User.current_username %>
+    <table>
+      <tbody>
+      <tr>
+        <th>Note Creator</th>
+        <td><%= User.current_username %></td>
+      </tr>
+      <tr>
+        <th>Note Text</th>
+        <td>
+          <div class="textarea_wrap">
+            <%= f.text_area :text, class: 'tArea' %>
+          </div>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  <% end %>
+</div>

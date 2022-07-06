@@ -1,0 +1,24 @@
+<p>Collection Manager Workflow</p>
+<div class="rvt-m-all-xxs rvt-border-radius">
+  <span>Filters: </span>
+  <%= link_to avalon_all_cm_items_path do %>
+    <span id="cm_all_badge" class="filter-badge rvt-badge pointer" >All</span>
+  <% end %>
+  <%= link_to avalon_items_cm_iu_default_only_path do %>
+    <span id="cm_default_badge" class="filter-badge rvt-badge <%= action_name == 'cm_iu_default_only' ? 'rvt-badge--info' : 'rvt-badge--info-secondary' %> pointer" >Default Access</span>
+  <% end %>
+  <%= link_to avalon_items_cm_waiting_on_cl_path do %>
+    <span id="cm_review_badge" class="filter-badge rvt-badge <%= action_name == 'cm_waiting_on_cl' ? 'rvt-badge--warning' : 'rvt-badge--warning-secondary' %> pointer" >Review Requested</span>
+  <% end %>
+  <%= link_to avalon_items_cm_waiting_on_self_path do %>
+    <span id="cm_responses_badge" class="filter-badge rvt-badge <%= action_name == 'cm_waiting_on_self' ? 'rvt-badge--danger' : 'rvt-badge--danger-secondary' %> pointer" >Responses</span>
+  <% end %>
+  <%= link_to avalon_items_cm_access_determined_path do %>
+    <span id="cm_determined_badge" class="filter-badge rvt-badge <%= action_name == 'cm_access_determined' ? 'rvt-badge--success' : 'rvt-badge--success-secondary' %> pointer" >Access Determined</span>
+  <% end %>
+</div>
+<div id="results_table_div">
+  <%= render partial: 'nav/cm_avalon_items_table' %>
+</div>
+
+

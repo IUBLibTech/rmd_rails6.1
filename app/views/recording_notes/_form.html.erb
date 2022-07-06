@@ -1,0 +1,23 @@
+<div>
+  <%= form_for(@recording_note, remote: true) do |f| %>
+    <h4><%= @recording.title %></h4>
+    <%= f.hidden_field :recording_id, value: @recording.id %>
+    <%= f.hidden_field :creator, value: User.current_username %>
+    <table>
+      <tbody>
+      <tr>
+        <th>Note Creator</th>
+        <td><%= User.current_username %></td>
+      </tr>
+      <tr>
+        <th>Note Text</th>
+        <td>
+          <div class="textarea_wrap">
+            <%= f.text_area :text, class: 'tArea' %>
+          </div>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  <% end %>
+</div>

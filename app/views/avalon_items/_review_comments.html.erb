@@ -1,0 +1,11 @@
+<div class="toggle">
+  <ul class="rvt-plain-list">
+    <% @avalon_item.review_comments.order("id DESC").each do |c| %>
+      <li class="rvt-border-bottom rvt-m-all-none <%= c.copyright_librarian? ? "cl_comment" : "cm_comment"%>">
+        <p  class=rvt-m-top-xxs">
+          <b><%= c.creator %> (<%= c.created_at.strftime('%m/%d/%Y') %>)</b>: <%= c.comment %>
+        </p>
+      </li>
+    <% end %>
+  </ul>
+</div>

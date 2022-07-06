@@ -1,0 +1,115 @@
+<% if @avalon_items.size == 0 %>
+  <p class=""> No results found for: <i class=""><b><%= params[:search] %></b></i></p>
+<% else %>
+  <p class=""> Search results for: <i class=""><b><%= params[:search] %></b></i></p>
+<% end %>
+<div class="flex_row">
+  <div class="column_05">
+    <div class="rvt-p-all-xs">
+      <span id="ais" class="rvt-badge rvt-badge--info pointer">Avalon Items (<%= @avalon_items.size %>)</span>
+    </div>
+    <div class="rvt-p-all-xs">
+      <span id="ps" class="rvt-badge rvt-badge--info-secondary pointer">People (<%= @people.size %>)</span>
+    </div>
+    <div class="rvt-p-all-xs">
+      <span id="ws" class="rvt-badge rvt-badge--info-secondary pointer">Works (<%= @works.size %>)</span>
+    </div>
+  </div>
+  <div class="column_80">
+    <div class="avalon_items <%= "hidden" if @avalon_items.size == 0 && (@people.size > 0 || @works.size > 0) %>">
+      <% if @avalon_items.size == 0 %>
+      <p>There are no Avalon Items matching your search: <i><%= params[:search] %></i></p>
+      <% else %>
+        <table id="avalon_items_table" class="rvt-table-compact rvt-table-cells show_me">
+          <thead>
+          <tr>
+            <th class="no_sort">Title</th>
+            <th class="no_sort">Access Determination</th>
+          </tr>
+          </thead>
+          <tbody>
+          <% @avalon_items.each do |ai| %>
+            <tr>
+              <th><%= link_to ai.title, avalon_item_path(ai), {target: '_blank'} %></th>
+              <th><%= ai.access_determination %></th>
+            </tr>
+          <% end %>
+          </tbody>
+        </table>
+      <% end %>
+    </div>
+    <div class="people <%= "hidden" unless @avalon_items.size == 0 && @people.size > 0 %>">
+      <% if @people.size == 0 %>
+        <p>There are no People/Entities matching your search: <i><%= params[:search] %></i></p>
+      <% else %>
+        <table id="people_table" class="rvt-table-compact rvt-table-cells show_me">
+          <thead>
+          <tr>
+            <th class="no_sort">Name/Company Name</th>
+            <th class="no_sort">Date of Birth</th>
+            <th>Date of Death</th>
+          </tr>
+          </thead>
+          <tbody>
+          <% @people.each do |p| %>
+          <tr>
+            <th><%= link_to "#{p.entity? ? p.company_name : p.full_name}", person_path(p) %></th>
+            <th><%= p.date_of_birth_edtf unless (p.entity? || p.date_of_birth_edtf.blank?) %></th>
+            <th><%= p.date_of_death_edtf unless (p.entity? || p.date_of_death_edtf.blank?) %></th>
+          </tr>
+          <% end %>
+          </tbody>
+        </table>
+      <% end %>
+    </div>
+    <div class="works <%= "hidden" unless @works.size > 0 && (@avalon_items.size == 0 && @people.size == 0) %>">
+      <% if @works.size == 0 %>
+        <p>There are no Works matching your search: <i><%= params[:search] %></i></p>
+      <% else %>
+        <table id="people_table" class="rvt-table-compact rvt-table-cells show_me">
+          <thead>
+          <tr><th>Title</th></tr>
+          </thead>
+          <% @works.each do |w| %>
+          <tr>
+            <th><%= link_to "#{w.title}", work_path(w) %></th>
+          </tr>
+          <% end %>
+        </table>
+      <% end %>
+    </div>
+  </div>
+</div>
+<script type="text/javascript" charset="utf-8">
+  $(document).ready(function() {
+    $('.rvt-badge').click(function() {
+      let t = $(this)[0];
+    	let ais = $('#ais');
+      let ps = $('#ps');
+      let ws = $('#ws');
+      if (t === ais[0]) {
+      	$('.people').hide();
+        $('.works').hide()
+        ais.removeClass('rvt-badge--info-secondary').addClass('rvt-badge--info');
+        ps.removeClass('rvt-badge--info').addClass('rvt-badge--info-secondary');
+        ws.removeClass('rvt-badge--info').addClass('rvt-badge--info-secondary');
+      	$('.avalon_items').show(200)
+      } else if (t === ps[0]) {
+	      $('.avalon_items').hide();
+	      $('.works').hide();
+	      ps.removeClass('rvt-badge--info-secondary').addClass('rvt-badge--info');
+	      ais.removeClass('rvt-badge--info').addClass('rvt-badge--info-secondary');
+	      ws.removeClass('rvt-badge--info').addClass('rvt-badge--info-secondary');
+	      $('.people').show(200)
+      } else {
+	      $('.avalon_items').hide();
+	      $('.people').hide();
+	      ws.removeClass('rvt-badge--info-secondary').addClass('rvt-badge--info');
+	      ps.removeClass('rvt-badge--info').addClass('rvt-badge--info-secondary');
+	      ais.removeClass('rvt-badge--info').addClass('rvt-badge--info-secondary');
+	      $('.works').show(200);
+      }
+    })
+  })
+</script>
+

@@ -1,0 +1,103 @@
+<%= form_for(@person,  remote: (@ajax ? true : false)) do |f| %>
+  <%= hidden_field_tag :entity, @person.entity %>
+  <% if @ajax %>
+    <%= hidden_field_tag 'avalon_item_id', params[:avalon_item_id].to_i %>
+  <% end %>
+  <% if @person.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@person.errors.count, "error") %> prohibited this person from being saved:</h2>
+      <ul>
+      <% @person.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+  <% if @person.entity? %>
+    <table class="rvt-table-compact w_50">
+      <tbody>
+      <tr>
+        <th class="vert_th">Company Name</th>
+        <td>
+          <%= f.text_field :company_name, {type: "text", 'aria-describedby': "company name", class: "autocomplete_company"} %>
+        </td>
+      </tr>
+      <tr>
+        <th class="vert_th">Nationality</th>
+        <th><%= f.text_field :entity_nationality, {type: "text", 'aria-describedby': "nationality", class: ""} %></th>
+      </tr>
+      <tr >
+        <th class="vert_th">Authority Source</th>
+        <td><%= f.text_field :authority_source, {type: "text", 'aria-describedby': "authority source"} %></td>
+      </tr>
+      <tr>
+        <th class="vert_th">Authority Source URL</th>
+        <td><%= f.text_field :authority_source_url, {type: "text", 'aria-describedby': "authority source url", class: "decodeURI urlValidator"} %></td>
+      </tr>
+      <tr>
+          <th class="vert_th">AKA</th>
+          <td><%= f.text_field :aka, {type: "text", 'aria-describedby': "also know as"} %></td>
+      </tr>
+      <tr>
+        <th class="vert_th" colspan="2">Notes</th>
+      </tr>
+      <tr>
+        <td colspan="2"><%= f.text_area :notes, {class: "noBorder"} %></td>
+      </tr>
+    </tbody>
+    </table>
+  <% else %>
+    <table class="rvt-table-compact w_50">
+      <tbody>
+      <tr>
+        <th class="vert_th">First Name</th>
+        <td>
+          <%= f.text_field :first_name %>
+        </td>
+      </tr>
+      <tr>
+        <th class="vert_th">Middle Name</th>
+        <td><%= f.text_field :middle_name %></td>
+      </tr>
+      <tr>
+        <th class="vert_th">Last Name</th>
+        <td><%= f.text_field :last_name %></td>
+      </tr>
+      <tr>
+        <th class="vert_th">Date of Birth</th>
+        <td><%= f.text_field :date_of_birth_edtf, {class: 'edtf', placeholder: 'YYYY/MM/DD (EDTF)'} %></td>
+      </tr>
+      <tr>
+        <th class="vert_th">Date of Death</th>
+        <td><%= f.text_field :date_of_death_edtf, {class: 'edtf', placeholder: 'YYYY/MM/DD (EDTF)'} %></td>
+      </tr>
+      <tr>
+        <th class="vert_th">Place of Birth</th>
+        <td><%= f.text_field :place_of_birth %></td>
+      </tr>
+      <tr>
+        <th class="vert_th">Authority Source</th>
+        <td><%= f.text_field :authority_source %></td>
+      </tr>
+      <tr>
+        <th class="vert_th">Authority Source URL</th>
+        <td><%= f.text_field :authority_source_url, class: 'decodeURI urlValidator' %></td>
+      </tr>
+      <tr>
+        <th class="vert_th">AKA</th>
+        <td><%= f.text_field :aka %></td>
+      </tr>
+      <tr><th class="vert_th" colspan="2">Notes</th></tr>
+      <tr>
+        <td colspan="2"><div class="textarea_wrap"><%= f.text_area :notes, class: 'tArea' %></div></td>
+      </tr>
+      </tbody>
+    </table>
+  <% end %>
+  <% unless @ajax %>
+    <div class="actions">
+      <% verb = action_name == "new" ? "Create" : "Update" %>
+      <%= f.submit "#{@person.entity? ? verb+" Entity" : verb+" Person" }" %><%= button_to "Cancel", @person, method: :get %>
+    </div>
+  <% end %>
+<% end %>

@@ -1,0 +1,47 @@
+<p id="notice"><%= flash[:notice]&.html_safe %></p>
+<h1>Listing Works <%= button_to "New Work", new_work_path, method: :get %></h1>
+<table class="rvt-table-compact">
+  <thead>
+    <tr>
+      <th>Title</th>
+      <th>Access Determination</th>
+      <th>Traditional</th>
+      <th>Contemporary Work in Copyright</th>
+      <th>Restored Copyright</th>
+      <th>Alternative Titles</th>
+      <th>Publication Date</th>
+      <th>Enters Public Domain</th>
+      <th>Authority Source</th>
+      <th>Authority Source URL</th>
+    </tr>
+  </thead>
+  <tbody>
+  <% @works.each do |work| %>
+      <tr>
+        <td><%= work.title %></td>
+        <td><%= work.access_determination %></td>
+        <td><%= work.traditional? ? 'Yes':'No' %></td>
+        <td><%= work.contemporary_work_in_copyright? ? 'Yes':'No' %></td>
+        <td><%= work.restored_copyright? ? 'Yes':'No' %></td>
+        <td><%= work.alternative_titles %></td>
+        <td><%= work.publication_date_edtf %></td>
+        <td><%= work.copyright_end_date_edtf %></td>
+        <td><%= work.authority_source %></td>
+        <td><%= link_to "#{truncate(work.authority_source_url, length: 20)}", work.authority_source_url, target: '_blank' unless work.authority_source_url.blank? %></td>
+        <td>
+          <%= link_to 'Show', work %> |
+          <% if work.avalon_items.size > 0 %>
+            <span style="color: #111">Destroy</span> |
+            <%= link_to "Try Anyway", work, method: :delete  %>
+          <% else %>
+            <%= link_to 'Destroy', work, method: :delete %>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+

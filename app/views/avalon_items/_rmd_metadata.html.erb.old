@@ -1,0 +1,65 @@
+<div>
+  <div class='reviewed_div'>
+    <% if @avalon_item.cl_determined?%>
+      <p class="reviewed">This Item has been Reviewed by a Copyright Librarian</p>
+    <% elsif @avalon_item.in_review? %>
+      <p class="needs_review" data-comment="<% @avalon_item.review_comments.last.comment %>">
+        <% if User.current_user_copyright_librarian? %>
+          <span>Review Requested</span>
+          <span class="button" id="mark_reviewed_button">Add Review Comment</span>
+        <% else %>
+          <% if @avalon_item.review_state == AvalonItem::REVIEW_STATE_WAITING_ON_CM  %>
+            <span>Response Requested</span>
+            <span class="button" id="additional_comment">Respond to Copyright Librarian</span>
+          <% else %>
+            <span>Review Requested</span>
+            <span class="button" id="additional_comment">Add Additional Comments</span>
+          <% end %>
+        <% end %>
+      </p>
+    <% elsif !User.copyright_librarian?(User.current_username) %>
+      <p class="review_not_needed button">Click to Mark 'Needs Copyright Review'</p>
+    <% end %>
+  </div>
+</div>
+<div class="left">
+  <h4>Current Access Determination</h4>
+  <div class="access_div <%= @avalon_item.past_access_decisions.last.copyright_librarian? ? "librarian_decision" : ''%>">
+    <%= "#{@avalon_item.past_access_decisions.last.decision} - #{@avalon_item.past_access_decisions.last.created_at.strftime('%m/%d/%Y %I:%M%p')} (<i>#{@avalon_item.past_access_decisions.last.changed_by}</i>)".html_safe %>
+  </div>
+  <h4>Change Access Determination</h4>
+  <div class="access_change_div">
+    <%= select_tag :access, options_for_select(@avalon_item.allowed_access_determinations.collect{|a| [a,a]}, @avalon_item.access_determination) %>
+  </div>
+</div>
+<% if @avalon_item.past_access_decisions.size > 1 %>
+  <div class="left">
+    <h4>Previous Access Determinations</h4>
+    <% decisions = @avalon_item.past_access_decisions.to_a; decisions.pop %>
+    <ul class="access_history">
+      <% decisions.sort{|a,b| b.created_at <=> a.created_at}.each do |d| %>
+        <li class="<%= d.copyright_librarian? ? "librarian_decision" : "" %>">
+          <%= "#{d.decision} - #{d.created_at.strftime('%m/%d/%Y %I:%M%p')} (<i>#{d.changed_by}</i>)".html_safe %>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>
+<%=  %>
+<div class="notes">
+  <h4>Avalon Item Notes</h4>
+  <div class="clear">
+    <button type="button" class="add_avalon_item_note_button" data-avalon-item-id="<%= @avalon_item.id %>">Add Note</button>
+  </div>
+  <ul>
+    <% @avalon_item.avalon_item_notes.order("created_at DESC").each do |n| %>
+    <li>
+      <div class="note">
+        <b>Creator: </b><i><%= n.creator %></i> (<%= n.created_at.strftime('%I:%M%p %m/%d/%Y') %>) <br>
+        <%= n.text %>
+      </div>
+    </li>
+    <% end %>
+  </ul>
+</div>
+

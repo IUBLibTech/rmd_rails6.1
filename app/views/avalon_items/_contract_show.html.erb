@@ -1,0 +1,8 @@
+<div class="contract" data-contract-id="<%= c.id %>">
+  <label for="agreement">Agreement Type</label> <span><%= c.contract_type %></span><br>
+  <label for="date">End Date</label> <span><%= c.date_edtf_text %></span><br>
+  <label for="perpetual">Perpetual?</label> <span><%= boolean_to_yes_no(c.perpetual) %></span><br>
+  <label for="notes">Notes</label> <div class="contract_notes"><%= c.notes %></div>
+  <button class="rvt-button editContractButton rvt-m-right-sm" data-contract-id="<%= c.id %>">Edit</button>
+  <button class="rvt-button deleteContractButton" data-contract-id="<%= c.id %>">Delete</button>
+</div>

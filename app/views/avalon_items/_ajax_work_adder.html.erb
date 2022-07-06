@@ -1,0 +1,121 @@
+<%= form_for @work, url: (@existing ? ajax_work_setter_post_path : ajax_work_adder_post_url), method: :post, remote: true do |f| %>
+  <%= hidden_field_tag "avalon_item_id", @avalon_item.id %>
+  <% if @existing %>
+    <%= f.hidden_field :id, value: @work.id %>
+  <% end %>
+  <div>
+    <h3><%= @existing ? "Update" : "Add" %> Work <%= @existing ? "for" : "to" %> <i class="blue_700"><%= @avalon_item.title %></i></h3>
+    <div>
+      <div class="rvt-grid rvt-m-top-xxs">
+        <div class="rvt-grid__item-4-md-up">
+          <label for="recordingTitle">Search by Title</label>
+          <%= f.text_field :title, {type: "search", class: "autocomplete",  style: "border: 3px solid #006298;", autocomplete: "off"} %>
+          <%= render partial: 'works/autocomplete_work_tooltip' %>
+        </div>
+        <div class="rvt-grid__item-4-md-up">
+          <label for="recordingTitle">Alternative Titles</label>
+          <%= f.text_field :alternative_titles, {type: "text", 'aria-describedby': "alternative titles",class: "readonlyable"} %>
+        </div>
+        <div class="rvt-grid__item-4-md-up">
+          <label for="recordingTitle">Publication Date</label>
+          <%= f.text_field :publication_date_edtf, {type: "text", 'aria-describedby': "publication year", class: 'edtf', placeholder: 'YYYY/MM/DD (EDTF)',class: "readonlyable"} %>
+        </div>
+      </div>
+      <div class="rvt-grid">
+        <div class="rvt-grid__item-4-md-up">
+          <label for="recordingTitle">Authority Source</label>
+          <%= f.text_field :authority_source, {type: "text", 'aria-describedby': "authority source",class: "readonlyable" } %>
+        </div>
+        <div class="rvt-grid__item-4-md-up">
+          <label for="recordingTitle">Authority Source URL</label>
+          <%= f.text_field :authority_source_url, {type: "text", 'aria-describedby': "authority source url", class: "decodeURI urlValidator",class: "readonlyable"} %>
+        </div>
+        <div class="rvt-grid__item-4-md-up">
+          <label for="recordingTitle">Traditional</label>
+          <%= f.text_field :traditional, {include_blank: '', 'aria-describe': 'traditional',class: "readonlyable"} %>
+        </div>
+      </div>
+      <div class="rvt-grid">
+        <div class="rvt-grid__item-4-md-up">
+          <label for="recordingTitle">Work in Copyright</label>
+          <%= f.text_field :contemporary_work_in_copyright, {include_blank: '', 'aria-describedby': "work in copyright",class: "readonlyable"} %>
+        </div>
+        <div class="rvt-grid__item-4-md-up">
+          <label for="recordingTitle">Restored Copyright</label>
+          <%= f.text_field :restored_copyright, {include_blank: '', 'aria-describedby': "restored copyright",class: "readonlyable" } %>
+        </div>
+        <div class="rvt-grid__item-4-md-up">
+          <label for="recordingTitle">Copyright Renewed</label>
+          <%= f.text_field :copyright_renewed, {include_blank: '', 'aria-describedby': "copyright renewed",class: "readonlyable"} %>
+        </div>
+        <div class="rvt-grid__item-4-md-up">
+          <label for="personNotes">Copyright End Date</label>
+          <%= f.text_field :copyright_end_date_edtf, {type: "text", 'aria-describedby': "enter public domain", class: 'edtf', placeholder: 'YYYY/MM/DD (EDTF)',class: "readonlyable" } %>
+        </div>
+        <div class="rvt-grid__item-12">
+          <label for="personNotes">Access Determination</label>
+          <%= text_field_tag :access, "#{@work.access_determination}", {readonly: true} %>
+        </div>
+        <div class="rvt-grid__item-12">
+          <label for="personNotes">Notes</label>
+          <%= f.text_area :notes, {class: "noBorder",class: "readonlyable"} %>
+        </div>
+      </div>
+    </div>
+
+
+      <div class="work_people">
+        <h4>People Contributing to This Work</h4>
+        <div class="work_people_autocomplete_div">
+          <div>
+            <label for="">Last Name</label>
+            <%= text_field_tag "last_name", "", {type: "search", class: "autocomplete", autocomplete: "off", id: 'work_people_autocomplete'} %>
+                  </div>
+            <%= render partial: 'people/autocomplete_work_person_tooltip' %>
+                </div>
+                <div id="work_people_div">
+            <% @work.people.each do |p| %>
+            <% @person = p %>
+            <%= render partial: 'people/ajax_work_person_form' %>
+            <% end %>
+        </div>
+      </div>
+
+    <div>
+      <p>Add this Work to the Avalon Item's structured metadata below</p>
+    </div>
+    <%= hidden_field_tag :avalon_item_id, @avalon_item.id %>
+    <h4>Recordings in <span class="recording"><i><%= "#{@avalon_item.title}" %></i></span></h4>
+    <ul class="rvt-plain-list">
+      <% @avalon_item.recordings.each do |r| %>
+        <li class="rvt-m-all-xxs rvt-checkbox-wrapper">
+          <label for="recording_<%= r.id %>" class="rvt-m-all-none rvt-"><%= "#{r.title} - #{r.mdpi_barcode}" %></label>
+          <div class="rvt-m-left-sm">
+            <h4>Recordings in <span class="recording"><i><%= "#{@avalon_item.title}" %></i></span></h4>
+            <ul class="rvt-plain-list">
+              <% r.performances.each do |p| %>
+                <li class="rvt-m-left-xs performance rvt-checkbox-wrapper">
+                  <label for="performance_<%= p.id %>" class="rvt-m-all-none"><%= "#{p.title}" %></label>
+                  <div class="rvt-m-left-sm">
+                    <h4>Tracks in <span class="recording"><i><%= "#{p.title}" %></i></span></h4>
+                    <ul class="rvt-plain-list">
+                      <% p.tracks.each do |t| %>
+                        <% contributes = @work.performed_on_track?(t.id) %>
+                        <li>
+                          <%= check_box_tag "tracks[#{t.id}]", t.id, checked=contributes,  {type: "checkbox"} %>
+                          <label for="tracks_<%= t.id %>" class="rvt-m-all-none rvt-"><%= "#{t.track_name}"%></label>
+                        </li>
+                      <% end %>
+                    </ul>
+                  </div>
+                </li>
+              <% end %>
+            </ul>
+          </div>
+        </li>
+      <% end %>
+    </ul>
+    <button type="submit" class="workButtonAdderCreate rvt-button"><%= @existing ? "Update Work" : "Add Work" %></button>
+    <button type="button" class="workButtonAdderCancel rvt-button rvt-m-left-sm">Cancel</button>
+<% end %>
+</div>

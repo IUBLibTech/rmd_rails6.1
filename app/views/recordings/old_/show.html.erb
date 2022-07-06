@@ -1,0 +1,118 @@
+<p id="notice"><%= notice %></p>
+<div style="margin-bottom: 15px">
+  <%= link_to 'Edit', edit_recording_path(@recording) %> |
+  <%= link_to "Avalon Item: #{@recording.avalon_item.title}", url_for(@recording.avalon_item) %>
+</div>
+<div class="left w_400">
+<h4>Recording</h4>
+  <table id="recording_table">
+    <tbody>
+    <tr>
+      <th>Title</th>
+      <td>
+        <%= @recording.title %>
+      </td>
+    </tr>
+    <tr>
+      <th>Description</th>
+      <td><%= @recording.description %></td>
+    </tr>
+    <tr>
+      <th>Format</th>
+      <td><%= @recording.format %></td>
+    </tr>
+    <tr>
+      <th>MDPI Barcode</th>
+      <td>
+        <%= @recording.mdpi_barcode %>
+      </td>
+    </tr>
+    <tr>
+      <th>Published?</th>
+      <td><%= @recording.published? ? 'Yes' : 'No' %></td>
+    </tr>
+    <tr>
+      <th>Date Of First Publication</th>
+      <td><%= @recording.date_of_first_publication %></td>
+    </tr>
+    <tr>
+      <th>Creation Date</th>
+      <td><%= @recording.creation_date %></td>
+    </tr>
+    <tr>
+      <th>Creation End Date</th>
+      <td><%= @recording.creation_end_date %></td>
+    </tr>
+    <tr>
+      <th>Country Of First Publication</th>
+      <td><%= @recording.country_of_first_publication %></td>
+    </tr>
+    <tr>
+      <th>Producers (once we have contributors set up)'</th>
+      <td></td>
+    </tr>
+    <tr>
+      <th>In Copyright?</th>
+      <td><%= @recording.in_copyright %></td>
+    </tr>
+    <tr>
+      <th>Copyright End Date</th>
+      <td><%= @recording.copyright_end_date %></td>
+    </tr>
+    <% if @recording.avalon_item.pod_unit == 'B-ATM' %>
+      <tr>
+        <th>Receipt Of Will Before 90 Days Of Death?</th>
+        <td><%= @recording.receipt_of_will_before_90_days_of_death? ? 'Yes' : 'No' %></td>
+      </tr>
+    <% end %>
+    <tr>
+      <th>Authority Source</th>
+      <td><%= link_to @recording.authority_source, @recording.authority_source, {target: '_blank'} unless @recording.authority_source.blank? %></td>
+    </tr>
+    <tr>
+      <th>Access Determination</th>
+      <td><%= @recording.access_determination %></td>
+    </tr>
+    <tr>
+      <th>Notes when we have them</th>
+      <td></td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+<div class="left">
+  <%# if @recording.needs_review? %>
+  <%#= button_to "Reviewed", mark_reviewed_recording_path(@recording), method: 'post' %>
+  <%# else %>
+  <%#= button_to "Needs Review", mark_needs_review_recording_path(@recording), method: 'post' %>
+  <%# end %>
+  <% if !@recording.catalog_key.nil? %>
+    <div class="iucat_link_div">
+      <a href="https://iucat.iu.edu/catalog/<%= @recording.catalog_key %>" target="_blank">IUCAT Record</a>
+    </div>
+  <% end %>
+  <% if @recording.fedora_item_id.blank? %>
+    <div class="iucat_link_div">
+      <a href="#">No Fedora ID in the database...</a>
+    </div>
+  <% else %>
+    <%= link_to "MCO Item", "#" %>
+  <% end %>
+</div>
+
+<div class="clear m_top_10">
+
+</div>
+<h4>Performances On This Recording...</h4>
+<table>
+  <tbody>
+  <% @recording.performances.each do |p| %>
+  <dir>
+    <b>Location:</b>&nbsp;<%= p.location %> <br>
+    <b>Performance Date: </b><%= p.performance_date %>
+  </dir>
+  <% end %>
+  </tbody>
+</table>
+<br><br><br><br>
+

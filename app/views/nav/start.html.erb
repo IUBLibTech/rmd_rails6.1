@@ -1,0 +1,29 @@
+<div class="rvt_container">
+  <% if User.copyright_librarian?(User.current_username) %>
+    <%= render partial: 'nav/cl_start' %>
+  <% else %>
+    <%= render partial: 'nav/cm_start' %>
+  <% end %>
+</div>
+<script type="text/javascript" charset="utf-8">
+    $(document).ready(function() {
+        hookTableSort('avalon_items_table');
+    });
+
+    function hookTableSort(tableId) {
+        $('#'+tableId).tablesorter(
+            {
+                theme: 'bootstrap',
+                sortList: [[0,0], [1,0]],
+                headers: {
+                    '.no_sort' : {
+                        sorter: false
+                    }
+            }
+        });
+    }
+</script>
+
+
+
+

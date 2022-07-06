@@ -1,0 +1,14 @@
+<div class="" data-contract-id="<%= @contract.id %>">
+  <%= form_for(@contract, remote: true) do |f| %>
+    <%= f.hidden_field :avalon_item_id %>
+    <div class="req red_700">
+      <p>You must fill in all required fields!</p>
+    </div>
+    <div class="legal_agreement">
+        <label for="agreement">Agreement Type</label> <%= f.select :contract_type, options_for_select([['License'],['Contract'],['Policy'],['Deed of Gift'],['Other']], @contract.contract_type) %><span class="red_700">&nbsp;*</span>
+        <label for="date">End Date</label> <%= f.text_field :date_edtf_text, {class: 'edtf', placeholder: 'YYYY/MM/DD (EDTF)'} %><span class="red_700">&nbsp;*</span>
+        <label for="contract_perpetual">Perpetual?</label><%= f.select :perpetual, options_for_select([['Yes', true],['No', false]], @contract.perpetual), { include_blank: '' } %><span class="red_700">&nbsp;*</span>
+        <label for="notes">Notes</label> <%= f.text_area :notes %>
+    </div>
+  <% end %>
+</div>

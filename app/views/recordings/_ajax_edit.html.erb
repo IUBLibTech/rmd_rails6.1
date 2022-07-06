@@ -1,0 +1,73 @@
+<div data-recording-id="<%= recording.id %>" class="recording_div">
+  <h3 class="accordion accordion-title active"><%= recording.title %> <%= recording.mdpi_barcode %></h3>
+  <%= nested_form_for recording, remote: true do |f|%>
+    <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+  <div class="rvt-grid">
+      <div class="rvt-grid__item-12">
+        <label for="recordingTitle">Title</label>
+        <%= f.text_field :title, {type: "text", 'aria-describedby': "title"} %>
+      </div>
+      <div class="rvt-grid__item-12">
+        <label for="recordingDescription">Recording Description</label>
+        <%= f.text_area :description, {class: "noBorder"} %>
+      </div>
+      <div class="rvt-grid__item-4-md-up rvt-checkbox-wrapper">
+        <label for="recording[in_copyright]" class="rvt-m-right-sm">In Copyright</label>
+        <%= f.select :in_copyright, options_for_select([['Yes', true],['No', false]], recording.in_copyright), {include_blank: ''} %>
+      </div>
+      <div class="rvt-grid__item-4-md-up">
+        <label for="copyrightEnd">Copyright End Date</label>
+        <%= f.text_field :copyright_end_date_text, {type:"text", 'aria-describedby':"copyrightEnd", class: 'edtf', placeholder: 'YYYY/MM/DD (EDTF)'} %>
+      </div>
+      <div class="rvt-grid__item-4-md-up">
+        <label for="recording[commercial]">Commercial</label> <br>
+        <%= f.select :commercial, options_for_select([['Yes', true],['No', false]], recording.commercial), {include_blank: ''} %>
+      </div>
+      <div class="rvt-grid__item-4-md-up">
+        <label for="published">Published</label>
+        <%= f.select :published, options_for_select([['Yes', true],['No', false]], recording.published), {include_blank: ''} %>
+      </div>
+      <div class="rvt-grid__item-4-md-up">
+        <label for="dateOfFirstPublication">Date Of First Publication</label>
+        <%= f.text_field :date_of_first_publication_text, {type: "text", 'aria-describedby': "dateOfFirstPublication",  placeholder: 'YYYY/MM/DD (EDTF)', class: 'edtf'} %>
+      </div>
+      <div class="rvt-grid__item-4-md-up">
+        <label for="creationDate">Creation Date</label>
+        <%= f.text_field :creation_date_text, {type: "text", 'aria-describedby': "creationDate",  placeholder: 'YYYY/MM/DD (EDTF)', class: 'edtf'} %>
+      </div>
+      <div class="rvt-grid__item-4-md-up">
+        <label for="countryOfFirstPublication">Country Of First Publication</label>
+        <%= f.text_field :country_of_first_publication, {type: "text", 'aria-describedby': "creationDate", class: 'edtf'} %>
+      </div>
+      <div class="rvt-grid__item-4-md-up">
+        <label for="authoritySource">Authority Source</label>
+        <%= f.text_field :authority_source, {type: "text", 'aria-describedby': "creationDate"} %>
+      </div>
+      <div class="rvt-grid__item-12">
+        <label for="authoritySourceURL">Authority Source URL</label>
+        <%= f.text_field :authority_source_url, {type: "url", 'aria-describedby': "creationDate"} %>
+      </div>
+      <div class="rvt-grid__item-4-md-up">
+        <% if recording.avalon_item.pod_unit == 'B-ATM' %>
+          <label for="receiptOfWill">Receipt Of Will Before 90 Days Of Death</label>
+          <%= f.text_field :receipt_of_will_before_90_days_of_death, {type: "text", 'aria-describedby': "receiptOfWill"} %>
+        <% end %>
+      </div>
+      <div class="rvt-grid__item-12">
+        <label for="notes">Recording Notes</label>
+        <div class="rvt-grid__item-12">
+          <%= f.fields_for :recording_notes do |ff| %>
+            <%= ff.hidden_field :creator, value: User.current_username %>
+            <label for="">Recording Note</label>
+            <%= ff.text_area :text, {class: "swal2-textarea", 'aria-labelledby': "notes"}%>
+            <%= ff.link_to_remove "Delete", class: 'rvt-button'%>
+          <% end %>
+          <%= f.link_to_add "Add Note", :recording_notes, class: 'rvt-button rvt-m-top-sm' %>
+        </div>
+        <button type="button" class="recordingEditCancelButton rvt-button floatRight rvt-m-left-sm" data-recording-id="<%= recording.id %>">Cancel</button>
+        <button type="submit" class="recordingEditUpdateButton rvt-button floatRight" data-recording-id="<%= recording.id %>">Save</button>
+      </div>
+  </div>
+  <% end %>
+</div>
+

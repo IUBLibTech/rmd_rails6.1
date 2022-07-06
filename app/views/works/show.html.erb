@@ -1,0 +1,73 @@
+<p id="notice"><%= notice %>
+<h3>
+  Work: <span class="avalon_item_title rvt-text-bold" style="color: #006298"><%= @work.title %></span>
+</h3>
+<table class="rvt-table-compact w_40 left">
+  <tbody>
+  <tr>
+    <th class="vert_th">Alternative Titles</th>
+    <td><%= @work.alternative_titles %></td>
+  </tr>
+  <tr>
+    <th class="vert_th">Publication Date</th>
+    <td><%= @work.publication_date_edtf %></td>
+  </tr>
+  <tr>
+    <th class="vert_th">Authority Source</th>
+    <td><%= link_to @work.authority_source, @work.authority_source, target: '_blank'%></td>
+  </tr>
+  <tr>
+    <th class="vert_th">Traditional</th>
+    <td><%= @work.traditional.blank? ? '' : @work.traditional? ? "Yes" : "No" %></td>
+  </tr>
+  <tr>
+    <th class="vert_th">Work in Copyright</th>
+    <td><%= @work.contemporary_work_in_copyright.blank? ? '' : @work.contemporary_work_in_copyright? ? 'Yes' : 'No' %></td>
+  </tr>
+  <tr>
+    <th class="vert_th">Restored Copyright</th>
+    <td><%= @work.restored_copyright.blank? ? '' : @work.restored_copyright? ? 'Yes' : 'No' %></td>
+  </tr>
+  <tr>
+    <th class="vert_th">Copyright Renewed?</th>
+    <td><%= @work.copyright_renewed.blank? ? '' : @work.copyright_renewed? ? 'Yes' : 'No' %></td>
+  </tr>
+  <tr>
+    <th class="vert_th">Enters Public Domain</th>
+    <td><%= @work.copyright_end_date_edtf %></td>
+  </tr>
+  <tr>
+    <th class="vert_th">Access Determination</th>
+    <td><%= @work.access_determination %></td>
+  </tr>
+  <tr>
+    <th colspan="2" ><b>Notes</b></th>
+  </tr>
+  <tr>
+    <td colspan="2">
+      <%= @work.notes %>
+    </td>
+  </tr>
+  </tbody>
+</table>
+<div class="left w_40 rvt-m-left-lg-lg-up">
+  <h4>Contributors</h4>
+  <ul>
+    <% @work.people.each do |p| %>
+    <li>
+      <%= link_to p.full_name_last_first, p, class: "red_700" %> (<%= @work.roles(p).join(", ") %>)
+    </li>
+    <% end %>
+  </ul>
+</div>
+<div class="clear">
+  <%= button_to "Edit", edit_work_path(@work), method: :get %>
+</div>
+<h4 class="clear">Appears on these Avalon Items</h4>
+<table class="rvt_table_compact">
+  <tbody>
+  <% @work.avalon_items.each do |ai| %>
+    <tr><td><%= link_to "#{ai.title}", avalon_item_path(ai.id) %></td></tr>
+  <% end %>
+  </tbody>
+</table>

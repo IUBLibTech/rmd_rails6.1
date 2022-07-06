@@ -1,0 +1,66 @@
+<div class="track_div" data-track-id="<%= track.id %>">
+  <h5 class="accordion accordion-title active accordion-trigger" aria-expanded="true" data-track-id="<%= track.id %>"><%= track.track_name %> <span class="accordion-icon"></span></h5>
+  <div>
+    <div class="rvt-grid__item-lg access_div">
+      <label for=access>Access Determination:</label>
+      <%= select_tag :access_determination, options_for_select(AvalonItem::ACCESS_DECISIONS.collect{|a| [a,a]}, track.access_determination),
+                     {id: "t_#{track.id}", class: "track_access_select","data-track-id": track.id } %>
+    </div>
+    <div class="rvt-grid m-fadeIn">
+      <div class=rvt-grid__item-4-md-up>
+        <label for=recordingStartTime>Start Time</label>
+        <%= track.recording_start_time%>
+      </div>
+      <div class="rvt-grid__item-4-md-up">
+        <label for="recordingEndTime">End Time</label>
+        <%= track.recording_end_time %>
+      </div>
+      <div class="rvt-grid__item-4-md-up rvt-checkbox-wrapper">
+        <label for="track[in_copyright]" class="rvt-m-right-sm">In Copyright</label>
+        <%= track.in_copyright %>
+      </div>
+      <div class="rvt-grid__item-4-md-up">
+        <label for="entersPublicDomain">Copyright End Date</label>
+        <%= track.copyright_end_date_text %>
+      </div>
+      <% if track.works.size > 0 %>
+        <div class="rvt-grid__item-12">
+          <h4 class="">Works on this Track</h4>
+          <% track.works.each_with_index do |w, i| %>
+            <% @work = w %>
+            <div class="rvt-grid__item-4-md-up rvt-m-right-xxs rvt-p-all-xs tooltip work">
+              <%= link_to w.title, ajax_edit_work_path(w), class: 'red_700', remote: true %>
+              <span class="tooltiptext <%= i % 3 == 0 ? 'left_one' : i % 3 == 1 ? 'middle_one' : 'right_one' %>">
+                <%= render partial: 'works/ajax_show' %>
+              </span>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+      <% if track.people.size > 0 %>
+        <div class="rvt-grid__item-12 rvt-m-top-xs">
+          <h4>Contributors</h4>
+          <div class="rvt-grid">
+            <% track.people.each_with_index do |p, i| %>
+              <% @person = p %>
+              <div class="rvt-grid__item-4-md-up rvt-m-right-xxs rvt-p-all-xs tooltip person">
+                <%= link_to p.full_name, ajax_edit_person_path(p.id), class: 'red_700', remote: true %>
+                <span class="tooltiptext <%= i % 3 == 0 ? 'left_one' : i % 3 == 1 ? 'middle_one' : 'right_one' %>">
+                    <%= render partial: 'people/ajax_show' %>
+                  </span>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+      <div class="rvt-grid__item-12">
+        <% if track.works.size > 0 || track.people.size > 0 %>
+          <button class="floatRight deleteTrackButton rvt-disabled-button" data-track-id="<%= track.id %>">Delete Track</button>
+        <% else %>
+          <button class="rvt-button floatRight deleteTrackButton" data-track-id="<%= track.id %>">Delete Track</button>
+        <% end %>
+        <button class="rvt-button floatRight editTrackButton rvt-m-right-sm" data-track-id="<%= track.id %>">Edit Track</button>
+      </div>
+    </div>
+  </div>
+</div>

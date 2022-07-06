@@ -1,0 +1,1 @@
+@hits.to_json

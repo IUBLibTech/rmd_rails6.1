@@ -1,0 +1,16 @@
+<div class="left" style="width:600px">
+  <p><b><%= User.current_username %></b> belongs to the following ADS groups</p>
+  <ul>
+  <% @user.ldap_groups.each do |g| %>
+    <li><%= g %></li>
+  <% end %>
+  </ul>
+</div>
+<div class="left" style="width:300px">
+  <p><b><%= User.current_username %></b> has access to the following Units</p>
+  <ul>
+    <% UnitsHelper.human_readable_units.each do |g| %>
+      <li><%= g %></li>
+    <% end %>
+  </ul>
+</div>

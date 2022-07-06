@@ -1,0 +1,9 @@
+<div class="legal">
+  <label>Legal Agreements</label>
+  <button class="rvt-button rvt-m-left-lg newContractButton" data-avalon-id="<%= @avalon_item.id %>">Add Legal Agreement</button>
+  <div class="contracts">
+    <% @avalon_item.contracts.order("id DESC").each do |c| %>
+      <%= render partial: "avalon_items/contract_show", locals: {c: c} %>
+    <% end %>
+  </div>
+</div>

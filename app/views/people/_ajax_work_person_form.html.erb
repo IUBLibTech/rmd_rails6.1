@@ -1,0 +1,16 @@
+<div id="work_person_<%= @person.id %>" class="work_person">
+  <div class="name">
+    <b class="red_700"><%= @person.full_name %></b>
+  </div>
+  <div class="roles">
+    <input class="creator_checkbox" type="checkbox" name="<%= "work_people[#{@person.id}]principle_creator" %>"
+           id="<%= "principle_creator_#{@person.id}" %>" <%= 'checked' if @work&.principle_creator?(@person.id) %>>
+    <label for="<%= "principle_creator_#{@person.id}" %>">Principle Creator</label>
+    <input class="contributor_checkbox" type="checkbox" name="<%= "work_people[#{@person.id}]contributor" %>"
+           id="<%= "contributor_#{@person.id}" %>" <%= 'checked' if @work&.contributor?(@person.id) %>>
+    <label for="<%= "contributor_#{@person.id}" %>">Contributor</label>
+  </div>
+  <div class="actions">
+    <button class="rvt-button workPersonRemover" type="button" data-remove-target="work_person_<%= @person.id %>" >Remove</button>
+  </div>
+</div>

@@ -1,0 +1,18 @@
+development:
+  adapter: mysql2
+  encoding: utf8
+  database: <%= Rails.application.credentials[:pod_db_name] %>
+  pool: 5
+  username: <%= Rails.application.credentials[:pod_db_username] %>
+  password: <%= Rails.application.credentials[:pod_db_password] %>
+  host: <%= Rails.application.credentials[:pod_db_host] %>
+  port: 3306
+test:
+  adapter: mysql2
+  encoding: utf8
+  database: <%= Rails.application.credentials[:pod_db_name] %>
+  pool: 5
+  username: <%= Rails.application.credentials[:pod_db_username] %>
+  password: <%= Rails.application.credentials[:pod_db_password] %>
+  host: <%= Rails.application.credentials[:pod_db_host] %>
+  port: 3306

@@ -1,0 +1,39 @@
+<%== pagy_nav(@pagy) %>
+<table id="avalon_items_table" class="rvt-table-compact rvt-table-cells">
+  <thead>
+    <tr>
+      <th class="no_sort"></th>
+      <th class="no_sort">Title</th>
+      <th>Unit</th>
+      <th class="no_sort">Last Review Comment</th>
+      <th>Comment Date</th>
+    </tr>
+  </thead>
+  <tbody>
+  <% @avalon_items.each_with_index do |avalon_item, i| %>
+    <tr>
+      <td>
+        <% if avalon_item.default_access? %>
+          <span class="rvt-badge rvt-badge--info">Default Access</span>
+        <% elsif avalon_item.review_requested? %>
+          <span class="rvt-badge rvt-badge--warning">Review Requested</span>
+        <% elsif avalon_item.waiting_on_cl? %>
+          <span class="rvt-badge rvt-badge--warning">Review Requested</span>
+        <% elsif avalon_item.waiting_on_cm? %>
+          <span class="rvt-badge rvt-badge--danger">Responses</span>
+        <% elsif avalon_item.access_determined? %>
+          <span class="rvt-badge rvt-badge--success">Access Determined</span>
+        <% else %>
+          <i>missing badge?</i>
+        <% end %>
+      </td>
+      <td><%= link_to "#{avalon_item.title.blank? ? "No Title!" : avalon_item.title.truncate(35)}", avalon_item_path(avalon_item), class: (avalon_item.title.blank? ? 'blank_title' : '') %></td>
+      <td>
+        <%= avalon_item.pod_unit %>
+      </td>
+      <td><%= avalon_item.review_comments.size > 0 ? "<i>#{avalon_item.review_comments.last.creator}</i>: #{avalon_item.review_comments.last.comment}".html_safe : '' %></td>
+      <td><%= avalon_item.review_comments.size > 0 ? avalon_item.review_comments.last.created_at.strftime("%m/%d/%Y") : '' %></td>
+    </tr>
+  <% end %>
+  </tbody>
+</table>

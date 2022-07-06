@@ -1,0 +1,47 @@
+<%= link_to 'Show', @recording %> |
+<%= link_to 'Back', recordings_path %>
+<h1>Editing Recording</h1>
+<%= render 'form' %>
+<script type="text/javascript" charset="utf-8">
+  $(document).ready(function() {
+      $('form.edit_recording').submit(function(event) {
+          if (valid()) {
+              return true
+          } else {
+              event.preventDefault();
+              swal.fire({
+                  title: "Cannot Update Recording",
+                  type: 'error',
+                  html: invalidMessage(),
+                  showCloseButton: true,
+                  showCancelButton: false,
+                  confirmButtonText: "Ok"
+              })
+          }
+      });
+      hookEdtfValidation();
+      hookYearValidation();
+      hookUrlValidator();
+  });
+
+  function valid() {
+      return $('.badEdtf').size() === 0 && $('.badYear').size() === 0 && $('.badUrl').size() === 0
+  }
+
+  function invalidMessage() {
+      let msg = "<ul style=\"list-style-type: none\">";
+      if ($('.badEdtf').size() > 0) {
+          msg += "<li>One or more of your dates is not EDTF compliant</li>";
+      }
+      if ($('.badYear').size() > 0) {
+          msg += "<li><i>Enters Public Domain</i> is not a valid Year (<b>YYYY</b>)</li>";
+      }
+      if ($('.badUrl').size() > 0) {
+          msg += "<li>Your <i>Authority Source</i> is not a valid URL</li>";
+      }
+      return msg;
+  }
+
+</script>
+
+

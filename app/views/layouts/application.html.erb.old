@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Rmd</title>
+  <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-tracks' => true %>
+  <%= javascript_include_tag 'application', 'data-turbolinks-tracks' => true %>
+  <%= csrf_meta_tags %>
+  <%= favicon_link_tag asset_path('favicon-32x32.png') %>
+</head>
+<body>
+<div class="branding">
+  Rights Management Database
+  <div class="auth" style="font-size: .3em; float: right">
+    <table>
+      <tr>
+        <th>Logged in as</th>
+        <td><b style="color: #D07A00"><%= link_to User.current_username, ldap_lookup_path %></b></td>
+      </tr>
+      <tr>
+        <th colspan="2">
+          <%= link_to "Log Out", signout_path, method: :delete %>
+        </th>
+      </tr>
+    </table>
+  </div>
+</div>
+<% if Rails.env != 'production'  %>
+  <div class="env_div"><p class="env_p"><%= Rails.env.upcase %> Database</p></div>
+<% end %>
+<div class="nav">
+  <ul class="nav_ul">
+    <li class="nav_li">
+      <%= link_to "Home", root_path %>
+    </li>
+    <li class="nav_li">
+      <%= link_to "Avalon Items", avalon_items_path %>
+    </li>
+    <li class="nav_li">
+      <%= link_to "Users", users_path %>
+    </li>
+    <li class="nav_li">
+      <%= link_to "Atom Feed", atom_feed_tester_path %>
+    </li>
+    <li class="nav_li search">
+      <%= form_tag mdpi_barcode_search_path do %>
+        <b class="orange">MDPI Barcode Search</b> <%= text_field_tag :mdpi_barcode %>
+      <% end %>
+    </li>
+  </ul>
+</div>
+<% if flash[:notice] %>
+<p class="notice">
+  <%= flash[:notice] %>
+</p>
+<% elsif flash[:warning] %>
+<p class="warning">
+  <%= flash[:warning] %>
+</p>
+<% end %>
+<div class="content">
+  <%= yield %>
+</div>
+</body>
+<script type="text/javascript" charset="utf-8">
+  $(document).ready(function() {
+      setJqUiTooltips();
+      $(document).tooltip();
+  });
+  function setJqUiTooltips() {
+      $(".ui-icon-help").hover(function() {
+          if ($(this).prev().hasClass('edtf')) {
+              $(this).attr('title', "EDTF Year. Valid input includes 1978, 1978?, and 197u. 1978? means that the date is not certain. 197u means sometime in the 1970s");
+          } else if ($(this).prev().hasClass('year')) {
+              $(this).attr('title', "This must be a full, four digit year: 1978");
+          } else if ($(this).prev().hasClass('full_date')) {
+              $(this).attr('title', "This must be a complete Date formatted mm/dd/yyyy")
+          } else if ($(this).prev().hasClass('hms_validator')) {
+              $(this).attr('title', "This must be formatted hh:mm:ss")
+          }
+      });
+  }
+</script>
+</html>

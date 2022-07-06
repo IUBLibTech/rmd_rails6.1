@@ -1,0 +1,53 @@
+<h4>Users</h4>
+<table id="user_table">
+  <tbody>
+  <% UnitsHelper.units.each_slice(18) do |units| %>
+    <tr class="unit_row">
+      <th>Ignore ADS?</th>
+      <% units.each do |u| %>
+        <th><%= u.gsub('_', '-') %></th>
+      <% end %>
+    </tr>
+    <% @users.each do |user| %>
+    <tr class="user_row">
+      <td class="<%= User.copyright_librarian?(user.username) ? 'cl user' : 'user' %>" data-username="<%= user.username %>">
+        <%= link_to "#{user.username}", ajax_set_user_cl_url(user.username), remote: true, method: :post %>
+      </td>
+      <% units.each do |u| %>
+        <% access = user.public_send(u.underscore.parameterize) ? true : false %>
+      <td class="<%= access ? 'green' : 'red' %> access_td">
+        <%= link_to "#{access ? 'Yes' : 'No'}", ajax_set_user_unit_url(user.username, u.underscore.parameterize, (!access).to_s), remote: true, method: :post %>
+      </td>
+      <% end %>
+    </tr>
+    <% end %>
+  <tr style="height: 15px;"></tr>
+  <% end %>
+  </tbody>
+</table>
+
+<script type="text/javascript" charset="utf-8">
+  $(document).ready(function() {
+     $("td.access_td > a").on("ajax:success", function(event, data) {
+         $(event.currentTarget).html(data.access ? "Yes" : 'No');
+         $(event.currentTarget).parent().removeClass("red green");
+         $(event.currentTarget).parent().addClass(data.access ? 'green' : 'red');
+         var href = $(event.currentTarget).attr('href');
+         href = href.substring(0, href.lastIndexOf('/')+1);
+         $(event.currentTarget).attr('href', href + (!data.access));
+     }).on("ajax:error", function(xhr, status, error) {
+         alert("Bad things! Very bad things!\n\n\n"+status.responseJSON.errors);
+     });
+
+     $('td.user > a').on("ajax:success", function(event, data) {
+         $('td.user:contains('+data.username+')').toggleClass("cl")
+         swal({
+             title: "Updated Copyright Librarian Membership",
+             text: data.msg
+         })
+     }).on("ajax:error", function(xhr, status, error) {
+         alert("Bad things! Very bad things!\n\n\n"+status.responseJSON.errors);
+     });
+
+  });
+</script>

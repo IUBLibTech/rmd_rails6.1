@@ -1,0 +1,34 @@
+<div class="perf_div" data-performance-id="<%= performance.id %>">
+  <h5 class="accordion accordion-title active accordion-trigger" aria-expanded="true" data-performance-id="<%= performance.id %>"><%= performance.title %><span class="accordion-icon"></span></h5>
+  <div>
+    <div class="rvt-grid__item-lg access_div">
+      <label for=access>Access Determination:</label>
+      <%= select_tag :access_determination, options_for_select(AvalonItem::ACCESS_DECISIONS.collect{|a| [a,a]}, performance.access_determination),
+                     {id: "p_#{performance.id}", class: "performance_access_select","data-performance-id": performance.id } %>
+    </div>
+    <div class="rvt-grid m-fadeIn">
+      <div class="rvt-grid__item-4-md-up">
+        <label for="location">Location</label> <br>
+        <%= performance.location %>
+      </div>
+      <div class="rvt-grid__item-4-md-up">
+        <label for="performanceDate">Date</label> <br>
+        <%= performance.performance_date_string %>
+      </div>
+      <div class="rvt-grid__item-12">
+        <% if performance.tracks.size == 0 %>
+          <button class="rvt-button floatRight deletePerformanceButton" data-performance-id="<%= performance.id %>">Delete Performance</button>
+        <% else %>
+          <button class="floatRight deletePerformanceButton rvt-disabled-button" data-performance-id="<%= performance.id %>">Delete Performance</button>
+        <% end %>
+        <button class="rvt-button floatRight editPerformanceButton rvt-m-right-sm" data-performance-id="<%= performance.id %>">Edit Performance</button>
+      </div>
+    </div>
+    <div class="tracks rvt-p-left-lg" data-performance-id="<%= performance.id %>">
+      <h2>Tracks <span> <button class="rvt-button rvt-m-left-lg createTrackButton" data-performance-id="<%= performance.id %>" >Create New Track</button></span></h2>
+      <% performance.tracks.each do |t| %>
+        <%= render partial: 'tracks/ajax_show', locals: {track: t} %>
+      <% end %>
+    </div>
+  </div>
+</div>

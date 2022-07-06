@@ -1,0 +1,70 @@
+<p id="notice"><%= flash[:notice]&.html_safe %></p>
+<h2>Listing People <%= button_to "Create New Person", new_person_path, method: :get %></h2>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Date of Birth</th>
+      <th>Date of Death</th>
+      <th>Place of Birth</th>
+      <th>Authority Source</th>
+      <th>Authority Source URL</th>
+      <th>AKA</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @people.each_with_index do |person, i| %>
+      <tr class=<%= "#{i.odd? ? 'odd' : 'even'}" %>>
+        <td><%= link_to  person.full_name_last_first, person, target: "_blank" %></td>
+        <td><%= person.date_of_birth %></td>
+        <td><%= person.date_of_death %></td>
+        <td><%= person.place_of_birth %></td>
+        <td><%= person.authority_source %></td>
+        <td><%= link_to "#{person.authority_source_url}", person.authority_source_url unless person.authority_source_url.blank? %></td>
+        <td></td>
+        <td>
+          <%= link_to 'Show', person %> <br>
+          <%= link_to "Edit", edit_person_path(person) %>
+          <% if person.avalon_items.size > 0 %>
+            <br>
+            <%= link_to "Delete", person, method: :delete %>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+<h2 class="rvt-m-top-xl">Listing Entities <%= button_to "Create New Entity", new_entity_path, method: :get %></h2>
+<table>
+  <thead>
+  <tr>
+    <th>Company Name</th>
+    <th>Nationality</th>
+    <th>Authority Source</th>
+    <th>Authority Source URL</th>
+    <th>AKA</th>
+    <th></th>
+  </tr>
+  </thead>
+  <tbody>
+  <% @entities.each_with_index do |person, i| %>
+    <tr class=<%= "#{i.odd? ? 'odd' : 'even'}" %>>
+      <td><%= person.company_name %></td>
+      <td><%= person.entity_nationality %></td>
+      <td><%= person.authority_source %></td>
+      <td><%= link_to "#{person.authority_source_url}", person.authority_source_url, target: '_blank' unless person.authority_source_url.blank? %></td>
+      <td></td>
+      <td>
+        <%= link_to 'Show', person %>
+        <%= link_to "Edit", edit_person_path(person) %>
+        <% if person.avalon_items.size > 0 %>
+          <%= link_to 'Destroy', person, method: :delete %>
+        <% end %>
+      </td>
+    </tr>
+  <% end %>
+  </tbody>
+</table>
+
+

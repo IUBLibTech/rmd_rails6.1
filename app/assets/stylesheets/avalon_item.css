@@ -1,0 +1,227 @@
+#avalon_item_buttons_div {
+}
+.title_div {
+    display: flex;
+    width: 100%;
+    margin-bottom: 1rem;
+}
+.title_div > h3 {
+    display: flex;
+    margin-bottom: 0.5rem;
+}
+.title_div > h3 > * {
+    margin: auto;
+}
+ul.conversation {
+    color: black;
+    text-align: left;
+    font-size: 1rem;
+    font-weight: normal;
+}
+.cm_comment {
+    background: white;
+}
+.cl_comment {
+    background: #5dc2f1;
+}
+
+
+.lower_tooltip {
+    position: relative;
+    display: inline-block;
+}
+#mark_needs_reviewed {
+    text-decoration-line: underline;
+    text-decoration-style: dotted;
+    text-underline-position: under;
+    min-width: 200px;
+}
+.lower_tooltip .lower_tooltiptext {
+    width: 500px;
+    max-width: 500px;
+    border-radius: 6px;
+    border: 1px solid black;
+    position: absolute;
+    z-index: 1;
+    transition: opacity 0.3s;
+    background: white;
+    top: 40px;
+    right: 0;
+    padding: 8px;
+    opacity: 0;
+    visibility: hidden;
+}
+.lower_tooltip:hover .lower_tooltiptext {
+    visibility: visible;
+    opacity: 1;
+}
+
+#note_div {
+    overflow: auto;
+    clear: both;
+    padding-top: 0.75rem;
+}
+.note > p {
+    margin: 0;
+}
+span.avalon_item_title {
+    min-width: 250px;
+}
+.contributor {
+    display: flex;
+}
+.contributor > a {
+    margin-right: 0.5rem;
+}
+.notes {
+    width: 440px;
+}
+
+div.access_div {
+    float: left;
+    width: 20%;
+    overflow: auto;
+    margin-bottom: 10px;
+    margin-right: 10px;
+    padding-left: 5px;
+}
+div.access_reason_div {
+    float: left;
+    width: 20%;
+    min-height: 185px;
+}
+#access_save_buttons {
+    display: none;
+}
+#access_determination_save {
+}
+
+div.reasons_div {
+    display: none;
+}
+
+
+div.access_div > select {
+    max-width: 85%;
+}
+b.access_warning {
+    color: #900;
+    font-weight: bold;
+    font-size: 0.9em;
+}
+div.calced_access_div {
+    float: left;
+}
+div#history_div {
+    float: left;
+    padding-top: 9px;
+    min-height: 185px;
+    margin-right: 20px;
+    width: 15%;
+}
+div.legal {
+    float: left;
+    width: 35%;
+    overflow: auto;
+    margin-left: 40px;
+}
+div.legal > h2 {
+    padding: .5rem;
+}
+button.newContractButton {
+    margin-top: 3px;
+}
+div.contracts {
+    margin-top: 5px;
+    border-top: 2px solid gray;
+    overflow-y: auto;
+    max-height: 267px;
+}
+div.contract {
+    width: 47%;
+    padding-right: 1rem;
+    float: left;
+    height: 230px;
+    background: whitesmoke;
+    border-radius: 15px;
+    border: 1px solid transparent;
+    margin: 5px;
+}
+div.contract > button:first-of-type {
+    margin-left: 15px;
+}
+#contract_notes, .contract_notes {
+    overflow: auto;
+    height: 4rem;
+    margin-bottom: .5rem;
+}
+
+/* toggle slider css */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+
+input:checked + .slider {
+    background-color: #2196F3;
+}
+
+input:focus + .slider {
+    box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+}
+
+#toggle_text {
+    position: relative;
+    display: inline-block;
+    width: 2-0px;
+    height: 34px;
+    font-size: 1.2em;
+    float: left;
+    top: 10px;
+    margin-right: 5px;
+}
+/* end toggle css */
+
+.foo2 {
+    clear: both;
+    margin-bottom: 20px;
+    overflow: auto;
+}

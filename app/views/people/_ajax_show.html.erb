@@ -1,0 +1,43 @@
+<div class="rvt-grid">
+  <% if @person.entity? %>
+    <div class="rvt-grid__item-12">
+      <h4 class="red_700"><%= @person.company_name %></h4>
+    </div>
+    <div class="rvt-grid__item-4-md-up">
+      <label for="alternative_titles">Nationality</label>
+      <%= @person.entity_nationality %>
+    </div>
+  <% else %>
+    <div class="rvt-grid__item-12">
+      <h4 class="red_700"><%= @person.full_name %></h4>
+    </div>
+    <div class="rvt-grid__item-4-md-up">
+      <label for="alternative_titles">Date of Birth</label>
+      <%= @person.date_of_birth_edtf %>
+    </div>
+    <div class="rvt-grid__item-4-md-up">
+      <label for="publication_year">Date of Death</label>
+      <%= @person.date_of_death_edtf %>
+    </div>
+    <div class="rvt-grid__item-4-md-up">
+      <label for="authority_source">Place of Birth</label>
+      <%= @person.place_of_birth %>
+    </div>
+  <% end %>
+  <div class="rvt-grid__item-4-md-up">
+    <label for="authority_source">AKA</label>
+    <%= @person.aka %>
+  </div>
+  <div class="rvt-grid__item-4-md-up">
+    <label for="authority_source">Authority Source</label>
+    <%= @person.authority_source %>
+  </div>
+  <div class="rvt-grid__item-4-md-up">
+    <label for="authority_source_url">Authority Source URL</label>
+    <%= link_to "#{@person.authority_source_url.truncate(25)}", @person.authority_source_url, target: "_blank" unless @person.authority_source_url.blank?%>
+  </div>
+  <div class="rvt-grid__item-12">
+    <label for="notes">Notes</label>
+    <%= @person.notes %>
+  </div>
+</div>

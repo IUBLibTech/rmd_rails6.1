@@ -1,0 +1,12 @@
+<div id="avalon_item_notes" class="rvt-m-bottom-sm">
+  <h2>Avalon Item Notes <button id="avalon_item_note_button" type=button class="rvt-button" >Add Note</button></h2>
+  <div class="rvt-flex rvt-wrap">
+    <% @avalon_item.avalon_item_notes.order(created_at: :desc).each do |note| %>
+      <div class="avalon_item_note rvt-grid__item-4-md-up bgGray rvt-m-right-xxs rvt-p-all-xs note">
+        <label>Creator:</label> <%= note.creator %>
+        <label>Date:</label> <%= note.created_at.strftime("%d/%m/%Y") %>
+        <%= simple_format(note.text).html_safe%>
+      </div>
+    <% end %>
+  </div>
+</div>

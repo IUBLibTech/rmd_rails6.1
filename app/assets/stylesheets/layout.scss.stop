@@ -1,0 +1,116 @@
+html, body{height: 100%; min-height: 100% ;  position: relative;
+}
+body{ padding-bottom:60px; margin: 0 0 100px;}
+main{padding: 0 0 20em;}
+  table a:link,  table a:active,  table a:visited{text-decoration: none;}
+  iframe{width:100%;height: 100%;min-height: 1500px}
+  .rvt-footer{position: static;bottom: 0; padding: 1rem;}
+h1 a{text-decoration: none;font-weight: bold; font-size:1.5em;}
+h2{font-size: 1.3em;font-weight: bold;}
+h2 .rvt-button{font-size:.8em;}
+i.xxsmall{font-size: .8em}
+.form-grid .rvt-grid__item-lg{min-width: 45%;}
+.rvt-grid__item-lg,.rvt-grid__item-12{padding-bottom: 1em;}
+.rightButton {float: right;margin:1.65rem 0 0 0;padding-right:1.7em;}
+.rightButton button{float:right; margin-left: 1em;}
+input:not([type]), input[type="color"], input[type="date"], input[type="datetime-local"], input[type="datetime"], input[type="email"], input[type="month"], input[type="number"], input[type="password"], input[type="search"], input[type="tel"], input[type="text"], input[type="time"], input[type="url"], input[type="week"], select, textarea
+{border-color: #c7c7c7;}
+input.avalon,textarea.avalon{background: #f2f2f2; border: none;}
+.rvt-breadcrumbs li{font-size: .8rem;}
+a{text-decoration: none;}
+a:hover{color: #990000}
+.rvt-grid__item-lg{  position: relative;}
+/* copy*/
+.btn{position: absolute;top:2em;right:1em; border: none;}
+.btn .fa-check{display: none;}
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  border: 0;
+}
+
+
+
+
+h4,.titleText{font-size: 1em; font-weight: bold;}
+.bgGray{background: #EDEBEB; border-radius: 7px; padding: 1em 0 }
+.bgGray input,.bgGray textarea {background: #fff;}
+.swal1-textarea{height: 3em;}
+.floatRight{float: right;}
+.rvt-tabs__panel{
+
+
+  transition: visibility 0s .25s, opacity .25s linear;
+}
+
+/* components */
+
+input.noBorder, input.noBorder:disabled{border: none; background: none;}
+th:nth-child(n),
+td:nth-child(n) {
+min-width: 9em;
+}
+
+.no-bottom-b-br{border-bottom: 0;border-bottom-right-radius:0;border-bottom-left-radius: 0;}
+
+
+form{width: 500px; margin: 3em;}
+
+div[data-roles="true"]{padding: 1em; background: #ebebeb; margin: .55em 0 ; border-radius: 7px; display: none; position:relative;}
+.btnClose{position: absolute;top:5px ; right: 5px;border: 0; background: none;}
+  .btnClose svg, .checkMark{width:35px;height:35px;transition:  all 0.2s ease-in-out }
+  .st0{fill:#fff;transition:  all 0.2s ease-in-out}
+  .st1{fill:#B44010; transition:  all 0.2s ease-in-out}
+  svg:hover .st0{fill:#ebebeb;}
+  svg:hover .st1{fill:#990000;}
+  h3{font-weight: bold;}
+  .checkMark{fill:green; display: none;}
+div.show{display: block;}
+.rvt-dropdown{display: block;}
+#btn-roles{width: 100%;; border:1px solid #666; border-radius: 3px;text-align: left; padding: .4em;}
+   #btn-roles svg{position: absolute;right:8px;top:12px;}
+
+   button:focus{outline:.125rem solid #006298}
+
+
+
+label{margin: 1em 0 .25em;}
+input, select, textarea{margin-bottom:.5em;}
+
+   /*
+==============================================
+fadeIn
+==============================================
+*/
+
+.fadeIn{
+	animation-name: fadeIn;
+
+
+	animation-duration: .4s;
+
+
+	animation-timing-function: ease-in-out;
+
+
+	visibility: visible !important;
+}
+
+@keyframes fadeIn {
+	0% {
+      transform: translateY(-10%);
+
+		opacity: 0.0;
+	}
+
+	100% {
+      transform: translateY(0%);
+
+		opacity: 1;
+	}
+}

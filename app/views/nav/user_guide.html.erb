@@ -1,0 +1,345 @@
+<div class="table_of_contents p-all-sm">
+  <h4 class="m-left-lg-sm-up">Table of Contents</h4>
+  <ul class="rvt-plain-list">
+    <li><a href="#">Introduction</a></li>
+    <li><a href="#content">How RMD Generates Content</a></li>
+    <li><a href="#workflow">Workflow and UI</a></li>
+    <li><a href="#ui">Avalon Item User Interface</a></li>
+    <li><a href="#controls">Structured Metadata and User Interface Controls</a></li>
+    <li><a href="#structure">How RMD Structures Metadata</a></li>
+    <li><a href="#source">MCO Source Metadata</a></li>
+    <li><a href="#people">People/Entities</a></li>
+    <li><a href="#works">Works</a></li>
+    <li><a href="#creating_people_works">Creating New People/Works</a></li>
+    <li><a href="#collections">Collections Page</a></li>
+  </ul>
+</div>
+<div style="margin-left: 250px">
+  <h3 class="accordion-title m-top-md" id="intro">User Guide</h3>
+  <p>RMD is an online application that records rights metadata to facilitate publishing content in Media Collections
+    Online (MCO). RMD acts as the authority for level of access at which a given MCO item can be published. MCO enforces
+    the access level RMD reports by preventing a collection manager from publishing at a <i><b>broader
+    level of access</b></i> than RMD stipulates. Collection managers are free to publish any MCO item at a more
+    restrictive level of access than RMD reports.</p>
+  <p>As an example, an item assigned <i>IU Only Access</i> in RMD can be published with IU Only Access or Restricted
+    Access in MCO. Since Worldwide access is <i>less restrictive</i> than IU Only, MCO will not permit publishing the item at
+    worldwide access. </p>
+  <p><b><i>&#42; Because IU Legal has clear access at the IU Only level for all MDPI content, items begin life in RMD with
+    a “default” level of access denoted by “Default IU Access – Not Reviewed”. This corresponds to IU Only Access but
+    indicates that the item has not yet been reviewed for access. </i></b></p>
+
+
+
+  <h3 class="accordion-title m-top-md" id="content">How RMD Generates Content</h3>
+  <p>RMD periodically scans MCO for its latest additions. When new items are found, the metadata for those items is read by
+    RMD and corresponding <i>Avalon Items</i> are created in RMD. Because MCO collects descriptive metadata, only basic
+    metadata fields are populated in RMD: title, MDPI barcodes, and digital files. As a convenience feature, the full MCO
+    metadata scan is viewable while in RMD at the bottom of an avalon item's page.</p>
+  <p><b><i>* It is important to note that because RMD periodically <i>polls</i> MCO for new additions, there is a minor
+    delay between the time a record is pushed from Dark Avalon into MCO, and the time it is created in RMD.</i></b></p>
+
+  <h3 class="accordion-title m-top-lg" id="workflow">Workflow and UI in RMD</h3>
+  <p>When a collection manager logs in, using the same ADS Group permissions as MCO, their home page lists only those MCO
+    items which they are permitted to manage. The home page provides a listing of their MCO content organizable by
+    4 RMD-defined workflow statuses. Each status describes the stage an Avalon Item is at, in the process of
+    determining access. Color coded buttons across the top of this list provide easy filtering of content based on the
+    workflow statuses. </p>
+  <%= image_tag 'workflow.png', { :class => "scale" } %>
+  <ul>
+    <li><b>Default Access</b> – this is the starting status for every avalon item and denotes items for which an access
+      determination has not yet been made.</li>
+    <li><b>Review Requested</b> – this status denotes items for which copyright librarian review has been requested. </li>
+    <li><b>Responses</b> – this status denotes items for which copyright librarian review has been requested and the
+      copyright librarian <i><u>has responded without making an access determination</u></i>. This typically indicates
+      there is not enough metadata to determine access for the avalon item.</li>
+    <li><b>Access Determined</b> – this status denotes items which have had an access determination made, either by the
+      collection manager or the copyright librarian. These items are ready to be published in MCO. </li>
+  </ul>
+  <p>The work of determining access for a given avalon item generally falls into one of two categories. </p>
+  <ul>
+    <li><b>A collection manager knows what access can be assigned to an item</b> - In this instance, a collection manager
+      would record any necessary rights information and then set the Access Determination on the item. The item is now
+      ready to publish in MCO. </li>
+    <li><b>A collection manager needs Copyright Librarian research to determine access</b> - The collection manager records
+      all available rights-related metadata and then requests review of the item. To request review, click the Request
+      Review button at the top of the avalon item page. A popup will appear where the collection manager can provide
+      comments to the copyright librarian. <i>The more metadata provided prior to this request, the easier it will be for
+      the copyright librarian to determine access, and the less likely the item will move into the "response" status
+      mentioned above.</i> </li>
+  </ul>
+
+
+
+  <h3 class="accordion-title m-top-md" id="ui">Avalon Item User Interface</h3>
+  <p>The page displaying an Avalon Item can be broken into two main areas: metadata fields for the Avalon Item and the
+    imported metadata from MCO. </p>
+  <%= image_tag 'avalon_item_a.png', { :class => "scale" } %>
+  <p>The first row of controls for the avalon item metadata includes the following:</p>
+  <%= image_tag 'row1a.png', { :class => "scale" } %>
+  <ul>
+    <li><b>Title</b> – The title of the item as it appears in MCO. Clicking this will open a new browser tab to the MCO
+      instance of this item. Because MCO and RMD use different implementation of authenticating IU credentials, you may
+      need to login to MCO prior to this working correctly.</li>
+    <li><b>Workflow Status</b> – the label immediately right of the title displays one of the same workflow statuses
+      that appear on the home page, describing where this avalon item is in its workflow. This label changes as the
+      avalon item moves through workflow, to reflect the current state of the avalon item.
+    </li>
+    <li><b>Review Button</b> – This button is the way the avalon items move through workflow statuses, and also manages
+      communication between collection manager and copyright librarian. If an avalon item is in any other workflow status
+      than “Default Access”, hovering over this button will display all communication between collection manager and
+      copyright librarian. The text that appears in this button reflects the workflow status as follows:
+      <ul>
+        <li><b>Request Review</b> – this corresponds to the “Default Access” workflow status that all avalon items begin in.
+          Clicking this will notify the copyright librarian that review of the item has been requested. <b><i>* Collection
+          managers should fill in all available rights-related metadata prior to requesting copyright librarian review.</i></b> </li>
+        <li><b>Add Addition Comments</b> – This corresponds to the “Review Requested” workflow status. While in this state,
+          collection managers can provide additional “review” comments for the copyright librarian by clicking this.</li>
+        <li><b>Respond to Copyright Librarian</b> – This corresponds to the “Responses” workflow status. This indicates
+          that the copyright librarian has sent a comment to the collection manager detailing why an access determination
+          cannot be made at this point in time.</li>
+        <li><b>Request Re-review</b> – This corresponds to the “Access Determined” workflow status. As circumstances
+          change related to rights (death, copyright, legal agreement expiration, etc.), avalon items may require
+          re-review to ascertain whether access can or should be modified. Clicking this button initiates that process.
+          <b><i>Collection managers should detail what information has changed in the comment to the copyright librarian.</i></b> </li>
+      </ul>
+    </li>
+  </ul>
+  <p>The second row of controls and metadata fields for the avalon item contains the following: </p>
+  <%= image_tag 'row2.png', { :class => "scale" } %>
+  <ol>
+    <li id="access_reasons"><b>Access Determination/System Calculated Access Determination</b> – The access determination drop down menu is
+      where users select <i>the broadest level of access</i> the avalon item could be published in MCO, after all rights
+      considerations have been taken into account. Collection managers are still free to publish at a more restrictive
+      level of access in MCO, but should record the broadest allowable level here. <b>System calculated access</b> is a utility
+      that compares all access determinations <i>within the avalon item's structured metadata (See
+      <a href="#structure">How RMD Structures Metadata below)</a></i> and determines the
+      broadest level allowed by those determinations. This value is meant as a guideline for collection managers. It
+      does not restrict collection managers in any way</li>
+    <li><b>Access Determination Reason</b> – This field is a quick summary of the reason an access determination was made.
+      The values here vary depending on the type of access assigned to the avalon item as detailed below. <br>
+      <i><b>* This value does not replace metadata. Collection managers should still fill out all rights related metadata
+        in their respective place.</b></i>
+      <ul>
+        <li><b>Restricted Access</b> - When collection managers restrict access, they are <b><i>required</i></b> to
+          select one or more reasons the avalon item is being restricted. These reasons include:
+          <ul>
+            <li>Ethical/Privacy Considerations</li>
+            <li>Feature Film</li>
+            <li>Licensing Restriction</li>
+          </ul>
+        </li>
+        <li><b>IU Access – Reviewed</b> - When collection managers set this access level, nothing else is required. However,
+          collection managers may <i>optionally</i> select 'In Copyright' as the reason. </li>
+        <li><b>Worldwide Access</b> - When collection managers set this level of access, they are required to select a reason
+          this level as well as providing additional metadata depending on the reason(s) chosen:
+          <ul>
+            <li><b>IU Owned/Produced</b> - structured metadata must detail that IU owns or produced the item. </li>
+            <li><b>Legal Agreement</b> – the Legal Agreement detailing this must be present in avalon item metadata (see <b> #4. Legal Agreements</b> below). </li>
+            <li><b>Public Domain</b> – structured metadata must detail why the item is in the public domain. </li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li><b>History</b> - this dropdown menu displays a list of all access determinations made for the avalon item, as well as the date and
+      user that set these levels. </li>
+    <li><b>Legal Agreements</b> – this section provides a means to describe one or more legal agreements that apply to the avalon item. </li>
+  </ol>
+  <p>The remaining avalon item metadata fields/controls include :</p>
+  <%= image_tag 'row 3.png', { :class => "scale" } %>
+  <ol>
+    <li><b>Avalon Item Notes</b> – A control that allows a collection manager to include a “note”. This could be useful
+      metadata that cannot be captured in any other field, or something meaningful to the collection manager. </li>
+    <li><b>Show Structured Metadata</b> – This toggle displays/hides the structured metadata for the Avalon Item. Avalon
+      items default behavior is to have this metadata toggled off. Once metadata has been added to the structured
+      hierarchy, subsequent viewing of the avalon item will always have this toggled on. </li>
+  </ol>
+
+  <h3 class="accordion-title m-top-md" id="controls">Structured Metadata and User Interface Controls</h3>
+  <p>Once toggled on, the structured metadata of the avalon item is visible. There are also controls for the
+    creation/editing/and deletion of items within each part of the structure.</p>
+  <%= image_tag 'structure.png', { :class => "scale" } %>
+
+
+
+  <h3 class="accordion-title m-top-md" id="structure">How RMD Structures Metadata</h3>
+  <p>As mentioned perviously, individual items within MCO are represented in RMD as <i>Avalon Items</i>. In RMD, an Avalon
+    Item is a structure hierarchy of physical and conceptual elements. The first level of this hierarchy is the avalon
+    item itself. The next level of this hierarchy consists of one or more <i>Recordings</i> which represent the individual
+    digital files that make up the MCO item. Each Recording can further be broken down into one or more <i>Performances</i>.
+    A performance represents a conceptual structure, loosely representing a moment in time. One example being a concert performed
+    on Oct 7, 1983, in Auer Hall. Each performance can further be broken down into one or more <i>Tracks</i>, the final
+    level of the structured metadata. A Track typically represents an individual work performed by one or more performers.</p>
+  <p>In addition to this hierarchical structure, RMD also allows the associating of individual <i>Works</i> and
+    <i>People/Entities</i> to different parts of the structured metadata. Works which have rights considerations can be
+    associated at the Track level. A Work represents intellectual property, examples being a speech, musical composition,
+    script, etc. People/Entities represent individuals (people) and institutions (entities) that contribute to the creation of works,
+    production of recordings, depositing of content with IU, or the performance of works on tracks. When people/entities
+    are associated with something in the structured metadata, their involvement at that level in the structure is defined
+    by their <i><b>Role</b></i>. See <a href="#people">People/Entities</a> and <a href="#works">Works</a> below for more on roles.</p>
+  <p>Recordings represent each digital file the MCO item is comprised of and consist of the following metadata fields
+    and UI controls. </p>
+  <%= image_tag 'recording a.png', { :class => "scale" } %>
+  <ol>
+    <li><b>Title</b> – the title of the recording. By default, this is a combination of the MCO item’s title concatenated with
+      the MDPI barcode of the source recording. </li>
+    <li><b>Recording Description</b> – The default value here is imported from the MCO item summary field. </li>
+    <li>
+      <b>Copyright fields</b> (from left to right, top to bottom)
+      <ul>
+        <li><b>In Copyright</b> - whether the recording is currently in copyright</li>
+        <li><b>Copyright End Date</b> - the date the copyright ends</li>
+        <li><b>Commercial</b> - whether the recording is commercial</li>
+        <li><b>Published</b> – whether the recording has been published </li>
+        <li><b>Date of First Publication</b> – when the recording was published </li>
+        <li><b>Creation Date</b> – when the recording was created </li>
+        <li><b>Country of First Publication</b> – the country in which the item was first published </li>
+        <li><b>Authority Source</b> – the name of the authority that this information was obtained from. </li>
+        <li><b>Authority Source URL</b> – the URL of the authority source’s record from which this information was obtained </li>
+        <li><b>Notes</b> - any additional information that does not fit into one of the above fields</li>
+      </ul>
+    </li>
+    <li><b>Edit Button</b> – click to edit these metadata fields. </li>
+  </ol>
+  <p>Performances are comprised of the following metadata fields and UI controls.</p>
+  <%= image_tag 'performance a.png', { :class => "scale" } %>
+  <ol>
+    <li><b>Create New Performance Button</b> – to add additional performances to a recording, click this </li>
+    <li><b>Title</b> – The title of the performance. The default-created performance every recording begins with is titled “Default Performance” </li>
+    <li>
+      <b>Performance Metadata Fields </b>
+      <ul>
+        <li><b>Location</b> – where the performance was recorded. </li>
+        <li><b>Date</b> – the date of the performance. </li>
+        <li><b>Access Determination</b> – the level of access the <i>performance</i> has </li>
+      </ul>
+    </li>
+    <li><b>Modify Performance Buttons</b> – click to edit metadata fields or delete the performance </li>
+  </ol>
+  <p>Tracks are comprised of the following metadata fields and UI controls. </p>
+  <%= image_tag 'track a.png', { :class => "scale" } %>
+  <ol>
+    <li><b>Create New Track Button</b> – to create additional tracks for this performance, click here </li>
+    <li><b>Title</b> – the title of the track. </li>
+    <li>
+      <b>Track Metadata Fields </b>
+      <ul>
+        <li><b>Access Determination</b> – the access determination for the <i>track</i>. </li>
+        <li><b>Start Time</b> – the timestamp in the recording when the track begins. In in hh:mm:ss format. </li>
+        <li><b>End Time</b> – the timestamp in the recording when the track ends. In hh:mm:ss format </li>
+        <li><b>In Copyright</b> – whether the track is in copyright. </li>
+        <li><b>Copyright End Date</b> – the date the copyright expires. </li>
+      </ul>
+    </li>
+    <li><b>Modify Track Buttons</b> – click to edit or delete the track. </li>
+  </ol>
+  <p><b><i>* Collection managers should note that except for the Avalon Item's access determination, metadata created in RMD <b><u>is not available to MCO</u></b>.
+    RMD should contain rights-related metadata whereas MCO should contain descriptive metadata. Any descriptive metadata discovered during rights research, that
+    a collection manager wishes to appear in MCO, should be added there. </i></b></p>
+
+
+
+  <h3 class="accordion-title m-top-lg" id="source">MCO Source Metadata</h3>
+  <p>Below the structured metadata, the imported source metadata from MCO is displayed. RMD pulls and displays this
+    metadata each time the avalon item is viewed. This affords collections managers with an up-to-date view of MCO metadata.
+    This portion of the page also contains the UI controls for association existing people/entities and works to the
+    avalon item. See below for more details. </p>
+  <%= image_tag 'mco.png', { :class => "scale" } %>
+
+
+
+  <h3 class="accordion-title" id="people">People/Entities </h3>
+  <p>People/Entities are <i><b>shared across all campus units</b></i>. For instance, there should only be a single instance of
+    <i>Ludwig van Beethoven</i> in RMD. Collection managers needing to associate him with a given work, should share the
+    same reference not create additional ones. If a collection manager needs to create a new person/entity, navigate to
+    the “People/Entities” page via the link at the top right of the RMD webpage. On that page are controls to create new
+    people and entities. </p>
+  <p>When the "Add Person/Entity” button is clicked, a UI component slides from the right side of the screen halving the
+    areas between avalon item and person form. This form allows users to search for existing instances of People/Entities.
+    The person form is laid out as follows. </p>
+  <%= image_tag 'person a.png', { :class => "scale" } %>
+  <ol>
+    <li><b>Entity Checkbox</b> – Checking this changes the form to reflect an Entity rather than a Person </li>
+    <li><b>Person Metadata Fields</b> – With the exception of “Search by Last Name”, these fields display read-only metadata
+      for a selected, <i><b>existing</b></i> person
+      <ul>
+        <li><b>Search by Last Name</b> – This is an autocomplete field for searching for an existing person. Start typing the
+          last name of the person to get autocomplete suggestions. Hovering over a suggestion with the mouse will display
+          a summary of the suggested person to aid in selection. If “Entity?” is checked, this and other metadata fields
+          will reflect an entity rather than a person. Start typing the entity name to search for it.  </li>
+      </ul>
+    </li>
+    <li><b>Role Assignment</b> – This section displays the various Roles a person/entity can have related to the avalon item.
+      The structured metadata of the avalon item is displayed here and in broken into Recordings -> Performances ->
+      Tracks. Roles are the following and can be assigned to
+      <ul>
+        <li>Each recording in the avalon item is listed here and can have up to two roles: depositor and recording producer </li>
+        <li>Each performance in a given recording is displayed here. Performances do not have Roles with people. For
+          performances with multiple tracks that a person contributes to, there are convenience buttons to assign a
+          given role to all tracks in the performance </li>
+        <li>Each track in a performance is listed here and the person can be assigned one or more of the following
+          roles: Interviewer, Interviewee, Conductor, and Performer </li>
+      </ul>
+    </li>
+  </ol>
+
+
+
+  <h3 class="accordion-title m-top-md" id="works">Works</h3>
+  <p>Like people/entities, works are shared across all campus units. For example, there should only be one instance of
+    Beethoven’s <i>Fifth Symphony</i> in RMD. Collection managers needing to associate that work with a given track share
+    the same reference. When the “Add Work” button is clicked, A UI component slides from the right halving the page
+    between avalon item and the work form. This form allows collection managers to search for existing instances of a
+    work. The work form is laid out as follows.  </p>
+  <%= image_tag 'work a.png', {class: "scale"} %>
+  <ol>
+    <li><b>Work Metadata Fields</b> – The metadata fields for the work.
+      <ul><li>Search by Title – An autocomplete field for search for the existing work. Start by typing any part of the
+        title to see any existing works that match your text. </li></ul>
+    </li>
+    <li><b>Work Contributors</b> – The People who contributed to the creation of the work. When People have been associated
+      with a Work they will appear here with their respective Role. Collection managers can use the search field to
+      associate additional People (contributors) to the work.
+      <br>
+      <%= image_tag 'beethoven contributor.png', {class: "scale"} %>
+    </li>
+    <li><b>Avalon Item Tracks</b> – The track within the avalon item. Clicking the checkbox for a given track associates
+      the select work with that track. </li>
+  </ol>
+
+
+
+  <h3 class="accordion-title m-top-lg" id="creating_people_works">Creating New People/Entities and Works</h3>
+  <p>By navigating to the People/Entities or Works page (located at the top right of the RMD webpage), collection managers
+    can create new people/works that can then be associated with avalon items. Each respective lists all existing
+    people/works with RMD as well as providing buttons to create new instances. For People/Entities, there are separate
+    create buttons for People and Entities.</p>
+  <p>The metadata fields for People should be self explanatory with the exception of Authority information. This refers
+    to the source from which metadata was gather. This is typically an authority like Library of Congress, VIAF, etc.
+    Whenever possible, use an authority source with a permanent URL linking to the record. </p>
+  <%= image_tag 'new person.png', {class: "scale"} %>
+  <p>The metadata fields for Works should be self-explanatory except for authority information, access determination,
+    and Contributors. As with People, whenever possible, works should be identified through an authority source with a
+    permanent URL. Works additionally have their own access determination (in copyright, public domain, ect.). Finally,
+    collection managers can search for people who contributed to the creation of a work through the autocomplete search
+    field to the right of the work. Once an existing person is selected, their role in the creation of the work can be
+    set.</p>
+  <%= image_tag 'new work.png', {class: "scale"} %>
+
+
+
+  <h3 class="accordion-title m-top-md" id="collections">Collections Page</h3>
+  <p>In addition to the UI controls for individual avalon items, RMD provides collection managers with some simplified
+    tools for mass assigning of certain metadata at the <i>collection</i> level. To access this page, click the "Collections"
+    link at the top right of the RMD webpage:</p>
+  <%= image_tag 'collections.png', {class: "scale"} %>
+  <p>At the top of this page there are three UI controls which provide the means to assign an access determination,
+    create a legal agreement, and/or add an avalon item note to every Avalon Item in the selected collections listed
+    beneath these controls. Collection managers need only fill out the metadata, check the box for each collection they
+    wish to assign this metadata to, and then click the submit button. Every avalon item in each of the selected collections
+    will then have the provided metadata assigned to itself.
+  </p>
+  <p><b><i>* All requirements mentioned in the <a href="#access_reasons">Access Determination and Reasons</a> section of this
+    document apply here. The exception being mass assignment of worldwide access with a reason of "Public Domain". This
+    reason cannot be massed assigned to Collections as the metadata that describes public domain must be created within
+    each avalon item that has that access level.</i></b></p>
+</div>

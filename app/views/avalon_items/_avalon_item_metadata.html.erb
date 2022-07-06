@@ -1,0 +1,150 @@
+<div class="upper_ai">
+  <% if flash.now[:notice] || flash[:notice] %>
+    <div class="rvt-alert rvt-alert--success rvt-m-bottom-md" role="alertdialog" aria-labelledby="success-alert-title">
+      <p class="rvt-alert__message"><%= flash.now[:notice] ? flash.now[:notice] : flash[:notice] %></p>
+      <button type="button" class="rvt-alert__dismiss" data-alert-close>
+        <span class="v-hide">Dismiss this alert</span>
+        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+          <path fill="currentColor" d="M9.41,8l5.29-5.29a1,1,0,0,0-1.41-1.41L8,6.59,2.71,1.29A1,1,0,0,0,1.29,2.71L6.59,8,1.29,13.29a1,1,0,1,0,1.41,1.41L8,9.41l5.29,5.29a1,1,0,0,0,1.41-1.41Z"/>
+        </svg>
+      </button>
+    </div>
+  <% end %>
+  <div class="title_div">
+    <%
+      @cl = User.current_user_copyright_librarian?
+      @msg = nil
+      case @avalon_item.review_state
+      when AvalonItem::REVIEW_STATE_DEFAULT
+        if @avalon_item.any_determinations?
+          @msg = "Request Re-Review"
+        else
+          @msg = "Request Review"
+        end
+      when AvalonItem::REVIEW_STATE_REVIEW_REQUESTED
+        @msg = @cl ? "Respond to Collection Manager" : "Add Additional Comments"
+      when AvalonItem::REVIEW_STATE_WAITING_ON_CM
+        @msg = @cl ? "Add Additional Comments" : "Respond to Copyright Librarian"
+      when AvalonItem::REVIEW_STATE_WAITING_ON_CL
+        @msg = @cl ? "Respond to Collection Manager" : "Add Additional Comments"
+      when AvalonItem::REVIEW_STATE_ACCESS_DETERMINED
+        @msg = "Request Re-review"
+      else
+        raise "How did we get to this ReviewState: #{@avalon_item.review_state}"
+      end
+    %>
+    <h3 class="">
+      <%= link_to(@avalon_item.atom_feed_read.avalon_item_url, {target: "_blank", id: "foo"}) do %>
+        <span class="avalon_item_title rvt-text-bold">
+          <%= @avalon_item.title %>
+          <i class="fa fa-external-link xxsmall"><span class=sr-only>opens a new window</span></i>
+        </span>
+      <% end %>
+      <span class="avalon_item_title rvt-text-bold">
+        <%= @avalon_item.rivet_button_badge %>
+      </span>
+      <div>
+        <button id="mark_needs_reviewed" class='lower_tooltip rvt-button' data-avalon-item-id=<%= @avalon_item.id %>>
+          <%= @msg %>
+          <% unless @avalon_item.review_comments.size == 0 %>
+            <div class="lower_tooltiptext">
+              <ul class="rvt-plain-list conversation">
+                <% @avalon_item.review_comments.order("id DESC").each do |c| %>
+                  <li class="<%= c.copyright_librarian? ? "cl_comment" : "cm_comment"%>">
+                    <b><%= c.creator %> (<%= c.created_at.strftime('%m/%d/%Y') %>)</b>: <%= c.comment %>
+                  </li>
+                <% end %>
+              </ul>
+            </div>
+          <% end %>
+        </button>
+      </div>
+    </h3>
+  </div>
+  <div class="foo">
+    <%= form_tag '/avalon_items/access_decision', method: :post, remote: true, id: "access_reason_form" do %>
+      <%= hidden_field_tag "avalon_item_id", @avalon_item.id %>
+      <div class="access_div">
+        <label for=access>Access Determination:</label>
+        <%= select_tag :access, options_for_select(@avalon_item.allowed_access_determinations.collect{|a| [a,a]}, @avalon_item.access_determination), {"autocomplete":"off"} %>
+        <div class="calced_access_div">
+          <label for=access><i>System Calculated Access Determination:</i></label><br>
+          <span id="sys_acc">
+            <i><%= @avalon_item.calc_access %></i>
+          </span>
+        </div>
+        <div id="access_save_buttons">
+          <button type="submit" form="access_reason_form" class="rvt-button rvt-button--small rvt-button--full-width" id="access_determination_save" >Save Access Determination/Reason(s)</button>
+          <button type="reset" form="access_reason_form" class="rvt-m-top-xs rvt-button rvt-button--small rvt-button--secondary rvt-button--full-width" id="access_determination_cancel" >Cancel</button>
+        </div>
+      </div>
+      <div class="access_reason_div">
+        <label for=access>Access Determination Reason</label><br>
+        <div class="reasons_panels">
+          <div id="restricted_reasons" class="reasons_div">
+            <b class="access_warning">You must select one or more reasons below to save your Access Determination.</b>
+            <ul class="rvt-plain-list" id="reasons_restricted">
+              <li>
+                <%= check_box_tag "restricted[reason_ethical_privacy_considerations]", "", @avalon_item.reason_ethical_privacy_considerations, { class: "reason_checkbox restricted_reason" } %>
+                <label for="restricted_reason_ethical_privacy_considerations">Ethical/Privacy Considerations</label>
+              </li>
+              <li>
+                <%= check_box_tag "restricted[reason_feature_film]", "", @avalon_item.reason_feature_film, { class: "reason_checkbox restricted_reason" } %>
+                <label for="restricted_reason_feature_film">Feature Film</label>
+              </li>
+              <li>
+                <%= check_box_tag "restricted[reason_licensing_restriction]", "", @avalon_item.reason_licensing_restriction, { class: "reason_checkbox restricted_reason" } %>
+                <label for="restricted_reason_licensing_restriction">Licensing Restriction</label>
+              </li>
+            </ul>
+          </div>
+          <div id="iu_only_reasons" class="reasons_div">
+            <ul class="rvt-plain-list" id="reasons_iu_only">
+              <li>
+                <%= check_box_tag "iu[reason_in_copyright]", "", @avalon_item.reason_in_copyright, { class: "reason_checkbox iu_reason" } %>
+                <label for="iu_reason_in_copyright">In Copyright</label>
+              </li>
+            </ul>
+          </div>
+          <div id="default_reasons" class="reasons_div">
+          </div>
+          <div id="worldwide_reasons" class="reasons_div">
+            <b class="access_warning">You must select one or more reasons below to save your Access Determination.</b>
+            <ul class="rvt-plain-list" id="reasons_worldwide">
+              <li>
+                <%= check_box_tag "worldwide[reason_iu_owned_produced]", "", @avalon_item.reason_iu_owned_produced, { class: "reason_checkbox worldwide_reason" } %>
+                <label for="worldwide_reason_iu_owned_produced">IU Owned/Produced</label>
+              </li>
+              <li>
+                <%= check_box_tag "worldwide[reason_license]", "", @avalon_item.reason_license, { class: "reason_checkbox worldwide_reason" } %>
+                <label for="worldwide_reason_license">Legal Agreement</label>
+              </li>
+              <li>
+                <%= check_box_tag "worldwide[reason_public_domain]", "", @avalon_item.reason_public_domain, { class: "reason_checkbox worldwide_reason" } %>
+                <label for="worldwide_reason_public_domain">Public Domain</label>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    <% end %>
+    <div id="history_div">
+      <div class="rvt-dropdown">
+        <button type="button" class="rvt-button" data-dropdown-toggle="dropdown-navigation" aria-haspopup="true" aria-expanded="false" >
+          <span>History</span>
+          <svg aria-hidden="true" class="rvt-m-left-xs" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+            <path fill="currentColor" d="M8,12.46a2,2,0,0,1-1.52-.7L1.24,5.65a1,1,0,1,1,1.52-1.3L8,10.46l5.24-6.11a1,1,0,0,1,1.52,1.3L9.52,11.76A2,2,0,0,1,8,12.46Z"/>
+          </svg>
+        </button>
+        <div class="rvt-dropdown__menu" id="dropdown-navigation" aria-hidden="true" role="menu" >
+          <% @avalon_item.past_access_decisions.order("id DESC").each do |d| %>
+            <div class="past_access_dec_div noselect <%= d.copyright_librarian? ? 'cl_dec' : '' %>">
+              <%= d.decision %> (<%= d.changed_by %>: <%= d.created_at.strftime("%l:%M%p %Y/%m/%d") %> )
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+    <%= render partial: 'avalon_items/contracts' %>
+  </div>
+</div>

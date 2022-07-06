@@ -1,0 +1,230 @@
+<% if flash.now[:warning] %>
+  <div class="rvt-alert rvt-alert--danger" role="alert" aria-labelledby="error-alert-title">
+    <h1 class="rvt-alert__title" id="danger-alert-title">Invalid Select</h1>
+    <%= flash.now[:warning].html_safe %>
+  </div>
+<% end %>
+<% if flash.now[:notice] %>
+  <div class="rvt-alert rvt-alert--success rvt-m-bottom-md" role="alertdialog" aria-labelledby="success-alert-title">
+    <h1 class="rvt-alert__title" id="success-alert-title">The following updates were successful:</h1>
+    <%= flash.now[:notice].html_safe %>
+    <button type="button" class="rvt-alert__dismiss" data-alert-close>
+      <span class="v-hide">Dismiss this alert</span>
+      <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+        <path fill="currentColor" d="M9.41,8l5.29-5.29a1,1,0,0,0-1.41-1.41L8,6.59,2.71,1.29A1,1,0,0,0,1.29,2.71L6.59,8,1.29,13.29a1,1,0,1,0,1.41,1.41L8,9.41l5.29,5.29a1,1,0,0,0,1.41-1.41Z"/>
+      </svg>
+    </button>
+  </div>
+<% end %>
+
+<%= form_tag "/collections", method: :post, id: "mass_form" do %>
+  <p>Bulk assign Access Determination, Legal Agreement, and/or Note to selected Collection Avalon Items</p>
+  <div class="access_div">
+    <label for=access>Access Determination:</label>
+    <%= select_tag :access, options_for_select(AccessDeterminationHelper::ACCESS_DECISIONS.collect{|a| [a,a]}), include_blank: true  %>
+    <div class="">
+      <label for=access>Access Determination Reason</label><br>
+      <div class="reasons_panels">
+        <div id="restricted_reasons" class="reasons_div">
+          <b class="access_warning">You must select one or more reasons below to save your Access Determination.</b>
+          <ul class="rvt-plain-list" id="reasons_restricted">
+            <li>
+              <%= check_box_tag "restricted[reason_ethical_privacy_considerations]", "", checked = false, { class: "reason_checkbox restricted_reason" } %>
+              <label for="restricted_reason_ethical_privacy_considerations">Ethical/Privacy Considerations</label>
+            </li>
+            <li>
+              <%= check_box_tag "restricted[reason_feature_film]", "", checked = false, { class: "reason_checkbox restricted_reason" } %>
+              <label for="restricted_reason_feature_film">Feature Film</label>
+            </li>
+            <li>
+              <%= check_box_tag "restricted[reason_licensing_restriction]", "", checked = false, { class: "reason_checkbox restricted_reason" } %>
+              <label for="restricted_reason_licensing_restriction">Licensing Restriction</label>
+            </li>
+          </ul>
+        </div>
+        <div id="iu_only_reasons" class="reasons_div">
+          <ul class="rvt-plain-list" id="reasons_iu_only">
+            <li>
+              <%= check_box_tag "iu[reason_in_copyright]", "", checked = false, { class: "reason_checkbox iu_reason" } %>
+              <label for="iu_reason_in_copyright">In Copyright</label>
+            </li>
+          </ul>
+        </div>
+        <div id="default_reasons" class="reasons_div">
+        </div>
+        <div id="worldwide_reasons" class="reasons_div">
+          <b class="access_warning">You must select one or more reasons below to save your Access Determination.</b>
+          <ul class="rvt-plain-list" id="reasons_worldwide">
+            <li>
+              <%= check_box_tag "worldwide[reason_iu_owned_produced]", "", checked = false, { class: "reason_checkbox worldwide_reason" } %>
+              <label for="worldwide_reason_iu_owned_produced">IU Owned/Produced</label>
+            </li>
+            <li>
+              <%= check_box_tag "worldwide[reason_license]", "", checked = false, { class: "reason_checkbox worldwide_reason" } %>
+              <label for="worldwide_reason_license">Legal Agreement</label>
+            </li>
+            <li>
+              <p class="red_700"><i>Public Domain cannot be chosen as a reason when setting an access level for a Collection.
+                The required metadata must be entered in the Structured Metadata section of each Avalon Item in the Collection.</i></p>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="access_div " >
+		<div class="legal_agreement">
+			<h5>Legal Agreement</h5>
+			<label for="agreement">Agreement Type</label> <%= select_tag :contract_type, options_for_select([['License'],['Contract'],['Policy'],['Deed of Gift'],['Other']]), include_blank: true %>
+			<label for="date">End Date</label> <%= text_field_tag :end_date, nil, { class: 'edtf', "placeholder" => "YYYY/MM/DD (EDTF)" } %><span class="red_700 req">&nbsp;*</span>
+			<label for="contract_perpetual">Perpetual?</label><%= select_tag :perpetual, options_for_select([['Yes', true],['No', false]]), { include_blank: '' } %><span class="red_700 req">&nbsp;*</span>
+			<label for="notes">Notes</label> <%= text_area_tag :agreement_notes %>
+		</div>
+  </div>
+  <div class="access_div">
+    <label for="note">Avalon Item Note</label><%= text_area_tag :note %>
+  </div>
+  <div class="clear">
+    <%= submit_tag "Submit", id: "submit_button" %>
+  </div>
+  <h4 class="clear">Collections</h4>
+  <div>
+    <ul class="rvt-plain-list">
+      <% @collection_names.keys.each do |cn| %>
+        <li class="rvt-checkbox-wrapper rvt-m-right-md">
+          <%= check_box_tag "collections[#{cn}]", "#{cn}", false, class: "collection_checkbox" %>
+          <%= label_tag "#{"collections_"+cn}", "#{cn}"  do %>
+            <%= link_to "#{cn} (#{@collection_names[cn]})", controller: "collections", action: "collection_list", collection_name: cn %>
+          <% end %>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>
+<script type="text/javascript" charset="utf-8">
+  $(document).ready(function() {
+		hookEdtfValidation();
+		$("#access").change(function() {
+      selectReasonsDiv()
+    });
+		$("#contract_type").change(function() {
+			let val = $("#contract_type > option:selected").val();
+			if (val === "") {
+				$(".req").hide();
+			} else {
+				$(".req").show();
+			}
+		})
+
+		$("#mass_form").submit(function(e) {
+			if (!collectionSelected()) {
+				e.preventDefault();
+				e.stopPropagation();
+				swal.fire({
+          title: "Collection Required",
+          text: "You must select one or more collections below to make a bulk assignment."
+        })
+      }
+			if (!reasonChecked()) {
+				e.stopPropagation();
+				e.preventDefault();
+				swal.fire({
+          title: "Reason Required",
+          text: "You must specify a reason for " + getAccessDetermination()
+        })
+      } else {
+        let ad = getAccessDetermination();
+        if (ad === "<%= AccessDeterminationHelper::WORLD_WIDE_ACCESS %>") {
+	        // if legal agreement is checked there must be one that will be created (the bare minimum if an agreement type)
+	        if ($("#worldwide_reason_license").prop("checked") && !legalAgreementValid()) {
+		        e.stopPropagation();
+						e.preventDefault();
+		        swal.fire({
+			        title: "Legal Agreement Required",
+			        text: "You must enter all required fields in the Legal Agreement section that support Worldwide Access."
+		        })
+	        }
+        }
+      }
+			if (anyLegalPresent() && !legalAgreementValid()) {
+				e.stopPropagation();
+				e.preventDefault();
+				swal.fire({
+					title: "Invalid Legal Agreement",
+					text: "You must enter all required fields in the Legal Agreement section that support Worldwide Access"
+				})
+			}
+    })
+  });
+
+  function collectionSelected() {
+		return $(".collection_checkbox:checked").size() > 0;
+  }
+
+	// validates entered data in the legal agreement portion of the form
+	function legalAgreementValid() {
+		let ct = $("#contract_type option:selected").val();
+		return ct !== null && ct !== "" && validEdtfDate($("#end_date").val()) !== "" && $("#perpetual option:selected").size() > 0 && $("#perpetual option:selected").val() !== "";
+  }
+
+	// checks whether any of the legal agreement form items have entered data
+	function anyLegalPresent() {
+		let ct = $("#contract_type option:selected").val()
+		return (ct !== null && ct !== "") || $("#end_date").val() !== "" || ($("#perpetual option:selected").size() > 0 && $("#perpetual option:selected").val() !== "");
+	}
+
+	function reasonChecked() {
+		let ad = getAccessDetermination();
+		if (ad === "<%= AccessDeterminationHelper::WORLD_WIDE_ACCESS %>") {
+			return $(".worldwide_reason:checked").size() > 0
+    } else if (ad === "<%= AccessDeterminationHelper::RESTRICTED_ACCESS %>") {
+			return $(".restricted_reason:checked").size() > 0
+    } else {
+      return true;
+    }
+  }
+
+	function getAccessDetermination() {
+		return $( "#access option:selected" ).text();
+  }
+
+  function selectReasonsDiv() {
+	  let access = getAccessDetermination();
+	  //clear previous reasons on access level change
+    $('.reason_checkbox').removeAttr("checked");
+
+	  switch(access) {
+		  case "<%= AccessDeterminationHelper::RESTRICTED_ACCESS %>":
+			  $('#iu_only_reasons').hide();
+			  $("#default_reasons").hide();
+			  $("#worldwide_reasons").hide();
+			  $("#restricted_reasons").show();
+
+			  break;
+		  case "<%= AccessDeterminationHelper::IU_ACCESS %>":
+			  $("#worldwide_reasons").hide();
+			  $("#restricted_reasons").hide();
+			  $("#default_reasons").hide();
+			  $('#iu_only_reasons').show()
+			  break;
+		  case "<%= AccessDeterminationHelper::DEFAULT_ACCESS %>":
+			  $("#restricted_reasons").hide();
+			  $("#worldwide_reasons").hide();
+			  $("#default_reasons").show();
+			  $('#iu_only_reasons').hide()
+			  break;
+		  case "<%= AccessDeterminationHelper::WORLD_WIDE_ACCESS %>":
+			  $('#iu_only_reasons').hide();
+			  $("#default_reasons").hide();
+			  $("#restricted_reasons").hide();
+			  $("#worldwide_reasons").show();
+			  break;
+		  default:
+			  swal.fire({
+				  title: "Access Determination Error",
+				  text: "Access was set to unknown value: "+access
+			  });
+	  }
+  }
+
+</script>

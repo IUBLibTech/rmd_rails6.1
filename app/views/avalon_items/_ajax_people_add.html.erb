@@ -1,0 +1,137 @@
+<%= form_for @avalon_item, url: (@existing ? ajax_people_setter_post_path : ajax_people_adder_post_url), method: :post, remote: true, html: {autocomplete: "off"} do |f| %>
+  <%= hidden_field_tag :id, @avalon_item.id %>
+  <%= fields_for @person do |pf| %>
+    <% if @existing %>
+      <%= pf.hidden_field :id, value: @person.id %>
+    <% end %>
+    <div>
+      <h3><%= @existing ? "Update" : "Add" %> Person/Entity <%= @existing ? "for" : "to" %> <i class="blue_700"><%= @avalon_item.title %></i></h3>
+      <div>
+        <%= pf.check_box :entity, {type: 'checkbox'} %>
+        <label for="person_entity" class="rvt-m-all-none rvt-"><%= "Entity?" %></label>
+      </div>
+      <div class="rvt-grid rvt-m-top-xxs person_attributes">
+        <div class="rvt-grid__item-4-md-up">
+          <label for="recordingTitle">Search by Last Name</label>
+          <%= pf.text_field :last_name, {type: "search", class: "autocomplete",  style: "border: 3px solid #006298;", autocomplete: "off"} %>
+          <%= render partial: 'people/autocomplete_person_tooltip' %>
+        </div>
+        <div class="rvt-grid__item-4-md-up">
+          <label for="recordingTitle">First Name</label>
+          <%= pf.text_field :first_name, {type: "text", 'aria-describedby': "first name",class: "readonlyable"} %>
+        </div>
+        <div class="rvt-grid__item-4-md-up">
+          <label for="recordingTitle">Middle Name</label>
+          <%= pf.text_field :middle_name, {type: "text", 'aria-describedby': "middle name",class: "readonlyable"} %>
+        </div>
+      </div>
+      <div class="rvt-grid person_attributes">
+        <div class="rvt-grid__item-4-md-up">
+          <label for="recordingTitle">Date of Birth</label>
+          <%= pf.text_field :date_of_birth_edtf,  {class: 'edtf', placeholder: 'YYYY/MM/DD (EDTF)',class: "readonlyable"}  %>
+        </div>
+        <div class="rvt-grid__item-4-md-up">
+          <label for="recordingTitle">Date of Death</label>
+          <%= pf.text_field :date_of_death_edtf,  {class: 'edtf', placeholder: 'YYYY/MM/DD (EDTF)',class: "readonlyable"}  %>
+        </div>
+        <div class="rvt-grid__item-4-md-up">
+          <label for="recordingTitle">Place of Birth</label>
+          <%= pf.text_field :place_of_birth, {type: "text", 'aria-describedby': "first name",class: "readonlyable"} %>
+        </div>
+      </div>
+      <div class="rvt-grid entity_attributes">
+        <div class="rvt-grid__item-4-md-up">
+          <label for="recordingTitle">Search by Company Name</label>
+          <%= pf.text_field :company_name, {type: "text", 'aria-describedby': "company name", class: "autocomplete_company", style: "border: 3px solid #006298;", autocomplete: "off"} %>
+          <%= render partial: 'people/autocomplete_entity_tooltip' %>
+        </div>
+        <div class="rvt-grid__item-4-md-up">
+          <label for="recordingTitle">Nationality</label>
+          <%= pf.text_field :entity_nationality, {type: "text", 'aria-describedby': "nationality", class: "",class: "readonlyable"} %>
+        </div>
+      </div>
+      <div class="rvt-grid">
+        <div class="rvt-grid__item-4-md-up">
+          <label for="recordingTitle">Authority Source</label>
+          <%= pf.text_field :authority_source, {type: "text", 'aria-describedby': "authority source",class: "readonlyable"} %>
+        </div>
+        <div class="rvt-grid__item-4-md-up">
+          <label for="recordingTitle">Authority Source URL</label>
+          <%= pf.text_field :authority_source_url, {type: "text", 'aria-describedby': "authority source url", class: "decodeURI urlValidator",class: "readonlyable"} %>
+        </div>
+        <div class="rvt-grid__item-4-md-up">
+          <label for="recordingTitle">AKA</label>
+          <%= pf.text_field :aka, {type: "text", 'aria-describedby': "also know as",class: "readonlyable"} %>
+        </div>
+        <div class="rvt-grid__item-12">
+          <label for="personNotes">Notes</label>
+          <%= pf.text_area :notes, {class: "noBorder",class: "readonlyable"} %>
+        </div>
+      </div>
+      <div>
+        <p>Add this Person/Entity to the Avalon Item's structured metadata below</p>
+      </div>
+    </div>
+  <% end %>
+  <h4>Recordings in <span class="recording"><i><%= "#{@avalon_item.title}" %></i></span></h4>
+  <ul class="rvt-plain-list">
+    <% @avalon_item.recordings.each do |r| %>
+      <li>
+        <div class="recording_title"><%= "#{r.title} - #{r.mdpi_barcode}" %></div>
+        <ul class="roles">
+          <li class="rvt-checkbox-wrapper rvt-m-right-md">
+            <input type="checkbox" name="<%= "recording_contributors[depositors][#{r.id}]" %>" id="<%= "recording_#{r.id}_depositor" %>" <%= 'checked' if @person.recording_depositor?(r.id) %>>
+            <label for="<%= "recording_#{r.id}_depositor" %>">Depositor</label>
+          </li>
+          <li class="rvt-checkbox-wrapper">
+            <input type="checkbox" name="<%= "recording_contributors[producers][#{r.id}]" %>" id="<%= "recording_#{r.id}_producer" %>" <%= 'checked' if @person.recording_producer?(r.id) %>>
+            <label for="<%= "recording_#{r.id}_producer" %>">Recording Producer</label>
+          </li>
+        </ul>
+      <h4 class="rvt-m-left-sm">Performances in <i><%= "#{r.title} - #{r.mdpi_barcode}" %></i></h4>
+      <ul class="rvt-plain-list">
+        <% r.performances.each do |p| %>
+          <li class="rvt-m-left-sm">
+            <div class="performance_title"><%= "#{p.title}" %></div>
+            <div class="mass_assign">
+              <p>Assign Roles to all tracks in this Performance</p>
+              <button class="rvt-button mass_interviewer" type="button" data-performance-id="<%= p.id %>">Interviewer</button>
+              <button class="rvt-button rvt-button mass_interviewee" type="button" data-performance-id="<%= p.id %>">Interviewee</button>
+              <button class="rvt-button rvt-button mass_conductor" type="button" data-performance-id="<%= p.id %>">Conductor</button>
+              <button class="rvt-button rvt-button mass_performer" type="button" data-performance-id="<%= p.id %>">Performer</button>
+            </div>
+            <h4 class="rvt-m-left-lg clear">Tracks in <i><%= p.title %></i></h4>
+            <ul class="rvt-plain-list roles rvt-m-left-lg">
+              <% p.tracks.each do |t| %>
+                <div class="track_title"><%= "#{t.track_name}" %></div>
+                <ul class="roles" data-performance-id="<%= p.id %>">
+                  <li class="rvt-checkbox-wrapper rvt-m-right-md">
+                    <input class="interviewer_checkbox" type="checkbox" name="<%= "track_contributors[interviewers][#{t.id}]" %>" id="<%= "track_#{t.id}_interviewer" %>" <%= 'checked' if @person.track_interviewer?(t.id) %>>
+                    <label for="<%= "track_#{t.id}_interviewer" %>">Interviewer</label>
+                  </li>
+                  <li class="rvt-checkbox-wrapper">
+                    <input class="interviewee_checkbox" type="checkbox" name="<%= "track_contributors[interviewees][#{t.id}]" %>" id="<%= "track_#{t.id}_interviewee" %>" <%= 'checked' if @person.track_interviewee?(t.id) %>>
+                    <label for="<%= "track_#{t.id}_interviewee" %>">Interviewee</label>
+                  </li>
+                  <li class="rvt-checkbox-wrapper rvt-m-right-md">
+                    <input class="conductor_checkbox" type="checkbox" name="<%= "track_contributors[conductors][#{t.id}]" %>" id="<%= "track_#{t.id}_conductor" %>" <%= 'checked' if @person.track_conductor?(t.id) %>>
+                    <label for="<%= "track_#{t.id}_conductor" %>">Conductor</label>
+                  </li>
+                  <li class="rvt-checkbox-wrapper rvt-m-right-md">
+                    <input class="performer_checkbox" type="checkbox" name="<%= "track_contributors[performers][#{t.id}]" %>" id="<%= "track_#{t.id}_performer" %>" <%= 'checked' if @person.track_performer?(t.id) %>>
+                    <label for="<%= "track_#{t.id}_performer" %>">Performer</label>
+                  </li>
+                </ul>
+              <% end %>
+            </ul>
+          </li>
+        <% end %>
+      </ul>
+    </li>
+    <% end %>
+  </ul>
+  <div class="rvt-m-top-md">
+    <button type="submit" class="peopleButtonAdderCreate rvt-button"><%= @existing ? "Update Person/Entity" : "Add Person/Entity" %></button>
+    <button type="button" class="peopleButtonAdderCancel rvt-button rvt-m-left-sm">Cancel</button>
+  </div>
+<% end %>

@@ -1,0 +1,22 @@
+<p id="notice"><%= notice %></p>
+<h1>Avalon Items</h1>
+<table>
+  <tbody>
+  <tr>
+    <th>Unit</th>
+    <th>Title</th>
+    <th>Actions</th>
+  </tr>
+  <% @avalon_items.each do |avalon_item| %>
+    <tr>
+      <td><%= avalon_item.pod_unit %></td>
+      <td>
+        <%= link_to avalon_item.title, avalon_item_path(avalon_item.id), class: (avalon_item.title.blank? ? 'no_title' : '')%>
+      </td>
+      <td>
+
+      </td>
+    </tr>
+  <% end %>
+  </tbody>
+</table>

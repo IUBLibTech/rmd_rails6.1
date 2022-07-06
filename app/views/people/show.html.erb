@@ -1,0 +1,84 @@
+<p id="notice"><%= notice %></p>
+<% if @person.entity? %>
+  <h3>
+    Company: <span class="avalon_item_title rvt-text-bold" style="color: #006298"><%= @person.company_name %></span>
+  </h3>
+  <table class="rvt-table-compact">
+    <tbody>
+      <tr>
+        <th>Nationality</th>
+        <td><%= @person.entity_nationality %></td>
+      </tr>
+      <tr>
+        <th>Authority Source</th>
+        <td><%= @person.authority_source %></td>
+      </tr>
+      <tr>
+        <th>Authority Source URL</th>
+        <td>
+          <% unless @person.authority_source_url.blank? %>
+            <%= link_to "#{@person.authority_source_url}", @person.authority_source_url, target: '_blank' unless @person.authority_source_url.blank? %>
+          <% end %>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+<% else %>
+  <h3>
+    Person: <span class="avalon_item_title rvt-text-bold" style="color: #006298"><%= @person.full_name_last_first %></span>
+  </h3>
+  <table class="rvt-table-compact w_50">
+    <tbody>
+    <tr>
+      <th class="vert_th">AKA</th>
+      <td><%= @person.aka %></td>
+    </tr>
+    <tr>
+      <th class="vert_th">Date of Birth</th>
+      <td><%= @person.date_of_birth_edtf %></td>
+    </tr>
+    <tr>
+      <th class="vert_th">Date of Death</th>
+      <td><%= @person.date_of_death_edtf %></td>
+    </tr>
+    <tr>
+      <th class="vert_th">Place of Birth</th>
+      <td><%= @person.place_of_birth %></td>
+    </tr>
+    <tr>
+      <th class="vert_th">Authority Source</th>
+      <td><%= @person.authority_source %></td>
+    </tr>
+    <tr>
+      <th class="vert_th">Authority Source URL</th>
+      <td><%= link_to "#{@person.authority_source_url}", @person.authority_source_url, target: '_blank' unless @person.authority_source_url.blank?%></td>
+    </tr>
+    </tbody>
+  </table>
+<% end %>
+<div class="notes">
+  <b>Notes:</b> <%= @person.notes%>
+</div>
+<%= button_to "Edit", edit_person_path(@person), method: :get %>
+<br><br>
+<h3>Works this Person contributes to</h3>
+<table>
+  <tbody>
+    <% @person.works.each do |w| %>
+    <tr><td>
+      <%= link_to "#{w.title}", work_path(w) %>
+    </td></tr>
+    <% end %>
+  </tbody>
+</table>
+<br>
+<h3>Avalon Items this Person contributes to</h3>
+<table>
+  <tbody>
+  <% @person.avalon_items.each do |ai| %>
+    <tr><td>
+      <%= link_to "#{ai.title}", avalon_item_path(ai) %>
+    </td></tr>
+  <% end %>
+  </tbody>
+</table>

@@ -1,0 +1,20 @@
+<div class="rvt-grid__item-lg">
+  <div id="avalon_item_buttons_div">
+    <div class="rvt-dropdown">
+      <button type="button" class="rvt-button" data-dropdown-toggle="dropdown-navigation" aria-haspopup="true" aria-expanded="false" >
+        <span>History</span>
+        <svg aria-hidden="true" class="rvt-m-left-xs" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+          <path fill="currentColor" d="M8,12.46a2,2,0,0,1-1.52-.7L1.24,5.65a1,1,0,1,1,1.52-1.3L8,10.46l5.24-6.11a1,1,0,0,1,1.52,1.3L9.52,11.76A2,2,0,0,1,8,12.46Z"/>
+        </svg>
+      </button>
+      <div class="rvt-dropdown__menu rvt-dropdown__menu--right rvt-m-top-xl" id="dropdown-navigation" aria-hidden="true" role="menu" >
+        <% @avalon_item.past_access_decisions.order("id DESC").each do |d| %>
+          <div class="past_access_dec_div noselect <%= d.copyright_librarian? ? 'cl_dec' : '' %>">
+            <%= d.decision %> (<%= d.changed_by %>: <%= d.created_at.strftime("%l:%M%p %Y/%m/%d") %> )
+          </div>
+        <% end %>
+      </div>
+    </div>
+    <%#= render partial: 'avalon_items/review_comments' %>
+  </div>
+</div>

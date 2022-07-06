@@ -1,0 +1,41 @@
+<%= @recording.title %>
+<br>
+<span class="orange">
+  <%= @recording.mdpi_barcode %>
+</span>
+<br><br>
+<%= form_for(@performance) do |f| %>
+  <%= hidden_field_tag :recording_id, @recording.id %>
+  <%= hidden_field_tag :avalon_item_id, params[:avalon_item_id] %>
+  <% if @performance.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@performance.errors.count, "error") %> prohibited this performance from being saved:</h2>
+      <ul>
+      <% @performance.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+  <table>
+    <tbody>
+    <tr>
+      <th>Title</th>
+      <td><%= f.text_field :title %></td>
+    </tr>
+    <tr>
+      <th>Location</th>
+      <td><%= f.text_field :location %></td>
+    </tr>
+    <tr>
+      <th>Performance Date (mm/dd/yyyy)</th>
+      <td><%= f.text_field :performance_date_string, class: 'full_date' %></td>
+    </tr>
+    </tbody>
+  </table>
+  <% unless action_name == 'ajax_new_performance' %>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+  <% end %>
+<% end %>

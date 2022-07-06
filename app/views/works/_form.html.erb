@@ -1,0 +1,164 @@
+<%= form_for(@work, remote: (@ajax ? true : false)) do |f| %>
+  <% if @ajax %>
+    <%= hidden_field_tag 'avalon_item_id', params[:avalon_item_id].to_i %>
+  <% end %>
+  <% if @work.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@work.errors.count, "error") %> prohibited this work from being saved:</h2>
+
+      <ul>
+      <% @work.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+  <table class="rvt-table-compact w_40 left">
+    <tbody>
+    <tr>
+      <th class="vert_th">Title</th>
+      <td><%= f.text_field :title %></td>
+    </tr>
+    <tr>
+      <th class="vert_th">Alternative Titles</th>
+      <td><%= f.text_field :alternative_titles %></td>
+    </tr>
+    <tr>
+      <th class="vert_th">Publication Date</th>
+      <td><%= f.text_field :publication_date_edtf, {class: 'edtf', placeholder: 'YYYY/MM/DD (EDTF)'} %></td>
+    </tr>
+    <tr>
+      <th class="vert_th">Authority Source</th>
+      <td><%= f.text_field :authority_source %></td>
+    </tr>
+    <tr>
+      <th class="vert_th">Authority Source URL</th>
+      <td><%= f.text_field :authority_source, class: 'urlValidator' %></td>
+    </tr>
+    <tr>
+      <th class="vert_th">Traditional</th>
+      <td><%= f.select :traditional, [['', nil], ['Yes', true], ['No', false]] %></td>
+    </tr>
+    <tr>
+      <th class="vert_th">Work in Copyright</th>
+      <td><%= f.select :contemporary_work_in_copyright, [['', nil], ['Yes', true], ['No', false]] %></td>
+    </tr>
+    <tr>
+      <th class="vert_th">Restored Copyright</th>
+      <td><%= f.select :restored_copyright, [['', nil], ['Yes', true], ['No', false]] %></td>
+    </tr>
+    <tr>
+      <th class="vert_th">Copyright Renewed?</th>
+      <td><%= f.select :copyright_renewed, [['', nil], ['Yes', true], ['No', false]] %></td>
+    </tr>
+    <tr>
+      <th class="vert_th">Copyright End Date</th>
+      <td><%= f.text_field :copyright_end_date_edtf, {class: 'edtf', placeholder: 'YYYY/MM/DD (EDTF)'} %></td>
+    </tr>
+    <tr>
+      <th class="vert_th">Access Determination</th>
+      <td><%= f.select :access_determination, options_for_select(Recording::ACCESS_DECISIONS, @work.access_determination) %></td>
+    </tr>
+    <tr>
+      <th colspan="2"><b>Notes</b></th>
+    </tr>
+    <tr>
+      <td colspan="2">
+        <div class="text_area_wrap"><%= f.text_area :notes, class: 'tArea' %></div>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+  <div class="work_people left w_40 rvt-m-left-lg">
+    <h4>People Contributing to This Work</h4>
+    <div class="work_people_autocomplete_div">
+      <div>
+        <label for="">Last Name</label>
+        <%= text_field_tag "last_name", "", {type: "search", class: "autocomplete", autocomplete: "off", id: 'work_people_autocomplete'} %>
+				<%= render partial: 'people/autocomplete_person_tooltip' %>
+      </div>
+      <%= render partial: 'people/autocomplete_work_person_tooltip' %>
+    </div>
+    <div id="work_people_div">
+      <% @work.people.each do |p| %>
+        <% @person = p %>
+        <%= render partial: 'people/ajax_work_person_form' %>
+      <% end %>
+    </div>
+  </div>
+  <%# if the form is being created for an ajax call, omit the submit button %>
+  <div class="clear">
+    <% unless @ajax%>
+      <div class="actions">
+        <%= f.submit {"class" ""} %><%= button_to "Cancel", @work, method: :get %>
+      </div>
+    <% end %>
+  </div>
+<% end %>
+
+
+<script type="text/javascript" charset="utf-8">
+  $(document).ready(function() {
+		autocompletePeople();
+		hookWorkPeopleRemoval();
+  })
+	function hookWorkPeopleRemoval() {
+		$('.workPersonRemover').off('click').click(function(event) {
+			$("#"+$(this).attr('data-remove-target')).remove();
+		})
+	}
+	function autocompletePeople() {
+		$('#work_people_autocomplete').autocomplete({
+			minLength: 2,
+			source: function (request, response) {
+				let el = $('#work_people_autocomplete_summary');
+				if (el.is(":visible")) {
+					el.toggle();
+				}
+				let url = "<%= request.base_url + "/people/ajax/autocomplete" %>";
+				$.ajax({
+					url: url,
+					dataType: "json",
+					data: {
+						term: request.term,
+					},
+					success: function (data) {
+						response(data)
+					},
+					error: function (jqXHR, textStatus, errorThrown) {
+						swal({
+							title: 'Ajax Error',
+							text: 'An error occurred while auto-completing the Last Name field. If this problem persists, please contact Sherri Michaels or Andrew Albrecht.'
+						});
+					}
+				});
+			},
+			focus: function (event, person) {
+				$('#ac_full_name').text(person.item.label);
+				$('#ac_dob').text(person.item.date_of_birth_edtf);
+				$('#ac_dod').text(person.item.date_of_death_edtf);
+				$('#ac_pob').text(person.item.place_of_birth);
+				$('#ac_aka').text(person.item.aka);
+				$('#ac_auth').text(person.item.authority_source);
+				$('#ac_auth_url').text(person.item.authority_source_url);
+				$('#ac_notes').text(person.item.notes);
+
+				let el = $('#autocomplete_work_person_summary');
+				if (el.is(":hidden")) {
+					el.toggle();
+				}
+				return false;
+			},
+			select: function (event, person) {
+				let el = $('#autocomplete_work_person_summary');
+				if (el.is(":visible")) {
+					el.toggle();
+				}
+				addWorkPerson(person.item);
+				$(this).val('');
+				return false;
+			}
+		});
+	}
+
+</script>

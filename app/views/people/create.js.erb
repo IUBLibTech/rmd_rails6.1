@@ -1,0 +1,14 @@
+swal({
+    title: "Person",
+    html: "<p>A new Person was created with name: <i><%= @person.name %></i>"
+});
+$.ajax({
+    url: '<%= ajax_avalon_item_rmd_metadata_path(@avalon_item.id) %>',
+    success: function(result) {
+        $('.rmd_metadata').html(result);
+        hookListeners();
+    },
+    error: function() {
+        swal("Something bad happened server side...")
+    }
+})

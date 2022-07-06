@@ -1,0 +1,100 @@
+<%= form_for @recording do |f| %>
+  <%= f.hidden_field :last_updated_by, value: User.current_username %>
+  <% if @recording.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@recording.errors.count, "error") %> prohibited this recording from being saved:</h2>
+
+      <ul>
+      <% @recording.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+<div id="">
+  <table>
+    <tbody>
+    <tr>
+      <th>Title</th>
+      <td>
+        <%= f.text_field :title %>
+      </td>
+    </tr>
+    <tr>
+      <th>Description</th>
+      <td><%= f.text_area :description %></td>
+    </tr>
+    <tr>
+      <th>Format</th>
+      <td><%= f.text_field :format %></td>
+    </tr>
+    <tr>
+      <th>MDPI Barcode</th>
+      <td>
+        <%= @recording.mdpi_barcode %>
+      </td>
+    </tr>
+    <tr>
+      <th>Published?</th>
+      <td><%= f.select :published, [['', nil], ['Yes', true], ['No', false]]%></td>
+    </tr>
+    <tr>
+      <th>Date of First Publication</th>
+      <td><%= f.text_field :date_of_first_publication, {class: 'edtf', placeholder: 'YYYY/MM/DD (EDTF)'} %><span class="ui-icon ui-icon-help"></span></td>
+    </tr>
+    <tr>
+      <th>Creation Date</th>
+      <td><%= f.text_field :creation_date, {class: 'edtf', placeholder: 'YYYY/MM/DD (EDTF)'} %><span class="ui-icon ui-icon-help"></span></td>
+    </tr>
+    <tr>
+      <th>Creation End Date</th>
+      <td><%= f.text_field :creation_end_date, {class: 'edtf', placeholder: 'YYYY/MM/DD (EDTF)'}%><span class="ui-icon ui-icon-help"></span></td>
+    </tr>
+    <tr>
+      <th>Country of First Publication</th>
+      <td><%= f.text_field :country_of_first_publication %></td>
+    </tr>
+    <tr>
+      <th>Producer</th>
+      <td>blank for now until we can associate contributors</td>
+    </tr>
+    <tr>
+      <th>In Copyright?</th>
+      <td><%= f.select :in_copyright, [['', nil], ['Yes', true], ['No', false]] %></td>
+    </tr>
+    <tr>
+      <th>Copyright End Date</th>
+      <td><%= f.text_field :copyright_end_date, {class: 'edtf', placeholder: 'YYYY/MM/DD (EDTF)'} %></td>
+    </tr>
+    <% if @recording.avalon_item == 'B-ATM' %>
+      <tr>
+        <th>Receipt Of Will Before 90 Days Of Death?</th>
+        <td><%= f.select :receipt_of_will_before_90_days_of_death, [['', nil], ['Yes', true], ['No', false]] %></td>
+      </tr>
+    <% end %>
+    <tr>
+      <th>Authority Source</th>
+      <td><%= f.text_field :authority_source %></td>
+    </tr>
+    <tr>
+      <th>Authority Source URL</th>
+      <td><%= f.text_field :authority_source_url, class: 'urlValidator' %></td>
+    </tr>
+    <tr>
+      <th>Notes</th>
+      <td>Repeatable notes once we can create them</td>
+    </tr>
+    <tr>
+      <th>Access Determination</th>
+      <td>
+        <%= f.select :access_determination, options_for_select(AccessDeterminationHelper::ACCESS_DECISIONS, @recording.access_determination) %>
+      </td>
+    </tr>
+    <tr class="submit_row">
+      <td></td>
+      <td><%= f.submit %></td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+<% end %>

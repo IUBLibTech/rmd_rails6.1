@@ -1,0 +1,65 @@
+<h4>Publication Year Search</h4>
+<p>Enter a Start Year to search from that year to present. Enter an End Year to specify a range.</p>
+<%= form_tag(date_search_post_path, {method: :post, id: 'date_search_form'}) do %>
+  <div class="">
+    <label for="start_year" class="rvt-display-inline">Start Year</label>
+    <%= text_field_tag :start_year, params[:start_year], {id: "start_year", class: "rvt-input-group__input rvt_display_inline rvt-width-xs year", type: "text", placeholder: 'YYYY'} %>
+  </div>
+  <div class="">
+    <label for="end_year" class="rvt-display-inline">End Year</label>
+    <%= text_field_tag :end_year, params[:end_year], {id: "end_year", class: "rvt-input-group__input rvt_display_inline rvt-width-xs year", type: "text", placeholder: 'YYYY'} %>
+  </div>
+  <div>
+    <button class="rvt-button">Search</button>
+  </div>
+<% end %>
+<% if @avalon_items || @works %>
+  <h4>Results for <%= params[:start_year] %> - <%= params[:end_year].blank? ? 'present' : params[:end_year] %></h4>
+
+  <div class="rvt-grid rvt-container">
+    <div class="rvt-grid__item">
+      <h5>Avalon Items</h5>
+      <table>
+        <tbody>
+        <% @avalon_items.each do |ai| %>
+          <tr>
+            <td><%= link_to "#{ai.title}", avalon_item_path(ai), {target: '_blank'} %></td>
+          </tr>
+        <% end %>
+        </tbody>
+      </table>
+    </div>
+    <div class="rvt-grid__item">
+      <h5>Works</h5>
+      <table>
+        <tbody>
+        <% @works.each do |w| %>
+        <tr>
+          <td><%= link_to "#{w.title}", work_path(w), {target: '_blank'} %></td>
+        </tr>
+        <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+<% end %>
+
+<script type="text/javascript" charset="utf-8">
+  $(document).ready(function(event) {
+  	hookYearValidation();
+    $('#date_search_form').submit(function() {
+    	let s = $('#start_year').text();
+    	let e = $('#end_year').text();
+    	if (s.length === 0 && e.length === 0) {
+    		event.preventDefault();
+    		swal({
+          title: "Error",
+          text: "You must specify at least a start or and end date to search for records"
+        });
+      } else {
+
+      }
+    });
+  });
+</script>

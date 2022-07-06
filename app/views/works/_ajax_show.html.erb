@@ -1,0 +1,61 @@
+<div class="rvt-grid">
+  <div class="rvt-grid__item-12">
+    <h4 class="red_700"><%= @work.title %></h4>
+  </div>
+  <div class="rvt-grid__item-4-md-up">
+    <label for="alternative_titles">Alternative Titles</label>
+    <%= @work.alternative_titles %>
+  </div>
+  <div class="rvt-grid__item-4-md-up">
+    <label for="publication_year">Published</label>
+    <%= @work.publication_date_edtf %>
+  </div>
+  <div class="rvt-grid__item-4-md-up">
+    <label for="authority_source">Authority Source</label>
+    <%= @work.authority_source %>
+  </div>
+  <div class="rvt-grid__item-4-md-up">
+    <label for="authority_source_url">Authority Source URL</label>
+    <%= link_to "#{@work.authority_source_url.truncate(25)}", @work.authority_source_url, target: "_blank" unless @work.authority_source_url.blank?%>
+  </div>
+  <div class="rvt-grid__item-4-md-up">
+    <label for="traditional">Traditional?</label>
+    <%= if @work.traditional.nil?
+          ''
+        else
+          @work.traditional? ? 'Yes' : 'No'
+        end %>
+  </div>
+  <div class="rvt-grid__item-4-md-up">
+    <label for="in_copyright">In Copyright?</label>
+    <%= @work.contemporary_work_in_copyright.blank? ? '' : @work.contemporary_work_in_copyright? ? 'Yes' : 'No' %>
+  </div>
+  <div class="rvt-grid__item-4-md-up">
+    <label for="restored_cp">Restored Copyright?</label>
+    <%= @work.contemporary_work_in_copyright.blank? ? '' : @work.contemporary_work_in_copyright? ? 'Yes' : 'No' %>
+  </div>
+  <div class="rvt-grid__item-4-md-up">
+    <label for="renewed_cp">Renewed Copyright?</label>
+    <%= @work.copyright_renewed.blank? ? '' : @work.copyright_renewed? ? 'Yes' : 'No' %>
+  </div>
+  <div class="rvt-grid__item-4-md-up">
+    <label for="cp_end_date">Enters Public Domain</label>
+    <%= @work.copyright_end_date_edtf %>
+  </div>
+  <div class="rvt-grid__item-4-md-up">
+    <label for="access_determination">Access Determination</label>
+    <%= @work.access_determination %>
+  </div>
+  <div class="rvt-grid__item-12">
+    <label for="notes">Notes</label>
+    <%= @work.notes %>
+  </div>
+</div>
+<h4>Work Contributors</h4>
+<div class="ajax_work_show_contributors">
+  <% @work.people.each do |p| %>
+  <div class="contributor">
+    <%= link_to "#{p.full_name}", "#", class: 'red_700', remote: true %> <%= "(#{p.birth_death_text})" %> <%= @work.roles(p).join(", ") %>
+  </div>
+  <% end %>
+</div>

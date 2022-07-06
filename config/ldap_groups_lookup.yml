@@ -1,0 +1,9 @@
+:enabled: true
+:host: 'ads.iu.edu'
+:auth:
+  :method: :simple
+  :username: cn=<%= Rails.application.credentials[:ldap_username] %>,ou=Accounts,dc=ads,dc=iu,dc=edu
+  :password: <%= Rails.application.credentials[:ldap_password] %>
+:tree: 'dc=ads,dc=iu,dc=edu'
+:account_ou: ou=Accounts
+:group_ou: ou=BL

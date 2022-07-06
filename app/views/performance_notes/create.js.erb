@@ -1,0 +1,10 @@
+swal({
+    title: "Performance Note",
+    html: "<p>A new note was created for: <i><%= @performance.title.blank? ? "<i>No Title Specified</i>".html_safe : @performance.title %></i>"
+}).then(
+    function(result) {
+        if (result) {
+            reloadPage();
+        }
+    }
+);

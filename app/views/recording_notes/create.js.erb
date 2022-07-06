@@ -1,0 +1,10 @@
+swal({
+    title: "Recording Note",
+    html: "<p>A new note was created for: <i><%= @recording.title %></i>"
+}).then(
+    function(result) {
+        if (result) {
+          reloadPage();
+        }
+    }
+);
