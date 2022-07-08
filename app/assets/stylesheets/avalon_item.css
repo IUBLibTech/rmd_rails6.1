@@ -211,7 +211,7 @@ input:checked + .slider:before {
 #toggle_text {
     position: relative;
     display: inline-block;
-    width: 2-0px;
+    width: 270px;
     height: 34px;
     font-size: 1.2em;
     float: left;
