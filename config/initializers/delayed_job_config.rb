@@ -1,3 +1,5 @@
+require AfrHelper, AtomFeedReaderTask, AvalonItemsHelper, JsonReaderHelper, JsonReaderTask
+
 Delayed::Worker.destroy_failed_jobs = false
 Delayed::Worker.sleep_delay = 15
 Delayed::Worker.max_attempts = 2
