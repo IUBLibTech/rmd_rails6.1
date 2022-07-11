@@ -1,10 +1,9 @@
 class AtomFeedReaderTask
-  include Delayed::RecurringJob
   include AfrHelper
+  include Delayed::RecurringJob
 
-  timezone 'US/Eastern'
   run_every 1.hour
-  run_at Time.now
+  run_at '11:00am'
   queue 'feed-reader'
 
   def perform
