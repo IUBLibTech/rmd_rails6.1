@@ -18,4 +18,9 @@ namespace :recurring do
     # schedules the JSON reader background process to run
     JsonReaderTask.schedule!
   end
+
+  desc 'Tests whether or not I can requeue new jobs within the job'
+  task test: :environment do
+
+  end
 end

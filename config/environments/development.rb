@@ -77,4 +77,8 @@ Rails.application.configure do
   # delayed job is the adapter used
   config.active_job.queue_adapter = :delayed_job
 
+  Rails.application.configure do
+    config.hosts << "rmd-test.dlib.indiana.edu"
+  end
+
 end

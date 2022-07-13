@@ -12,5 +12,4 @@ class AtomFeedReaderTask
     read_atom_feed
   end
 
-
 end
