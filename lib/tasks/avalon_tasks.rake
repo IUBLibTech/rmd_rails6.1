@@ -5,6 +5,8 @@ namespace :recurring do
     AtomFeedReaderTask::LOGGER.info "Attempting to schedule AtomFeedReader"
     begin
       AtomFeedReaderTask.schedule!
+      AtomFeedReaderTask::LOGGER.info "AtomFeedReaderTask should be scheduled"
+      AtomFeedReaderTask::LOGGER.info("DelayedJobs saved to the database: #{Delayed::Job.all.size}")
     rescue Exception => e
       AtomFeedReaderTask::LOGGER.error e.message
       AtomFeedReaderTask::LOGGER.error e.backtrace.join('\n')
