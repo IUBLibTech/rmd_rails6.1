@@ -34,3 +34,4 @@
 
 .iul_contacts.yml
 .iul_service.yml
+/config/credentials/test.key

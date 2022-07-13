@@ -3,10 +3,11 @@ class AtomFeedReaderTask
   include Delayed::RecurringJob
 
   run_every 1.hour
-  run_at '11:00am'
+  run_at Time.now
   queue 'feed-reader'
 
   def perform
+    LOGGER.info("AtomFeedReaderTask#perform - checking for new records")
     # see AfrHelper for this
     read_atom_feed
   end

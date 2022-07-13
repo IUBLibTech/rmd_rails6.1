@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_01_12_150257) do
+ActiveRecord::Schema.define(version: 2022_07_11_200330) do
 
   create_table "atom_feed_reads", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.text "title", null: false

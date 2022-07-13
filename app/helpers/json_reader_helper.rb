@@ -4,17 +4,17 @@ module JsonReaderHelper
   require 'uri'
   include AvalonItemsHelper
 
-  LOGGER ||= Logger.new("#{Rails.root}/log/json_reader_delayed_job")
+  LOGGER ||= Logger.new("#{Rails.root}/log/json_reader_helper.log")
   READ_TIMEOUT_SECONDS = 180
 
   def read_json
-    LOGGER.info "Checking for new JSON records"
+    LOGGER.info "JsonReaderHelper#read_json - checking for unread JSON"
     unread = AtomFeedRead.where(successfully_read: false, json_failed: false)
-    LOGGER.info "#{unread.size} new JSON records to read"
+    LOGGER.info "\t#{unread.size} new JSON records to read"
     unread.each_with_index do |afr, i|
       AtomFeedRead.transaction do
         begin
-          LOGGER.info "Reading #{i + 1} of #{unread.size} JSON records"
+          LOGGER.info "\tReading #{i + 1} of #{unread.size} JSON records - #{afr.avalon_id}"
           load_single(afr)
         rescue => error
           if error.is_a? Net::ReadTimeout
@@ -22,9 +22,11 @@ module JsonReaderHelper
             # identify any problematic records (the error message) but ALSO allow for subsequent re-attempts at
             # reading the record into RMD
             afr.update(successfully_read: false, json_failed: false, json_error_message: "The HTTP get request timed out after #{READ_TIMEOUT_SECONDS} seconds")
+            LOGGER.error afr.json_error_message
           else
             msg = "Raised an Exception: #{error.message}\n#{error.backtrace.join("\n")}"
             afr.update(successfully_read: false, json_failed: true, json_error_message: msg)
+            LOGGER.error(msg)
           end
         end
       end
@@ -32,11 +34,11 @@ module JsonReaderHelper
   end
 
   def load_single(afr)
-    LOGGER.info "\n\n\n\n\nReading JSON for #{afr.avalon_id}\n\n\n\n\n\n"
     json_text = read_avalon_json(afr.json_url)
     @atom_feed_read = afr
     save_json(json_text)
     afr.update(successfully_read: true, json_failed: false, json_error_message: '')
+    LOGGER.info("\tSuccessfully read JSON for #{afr.avalon_id}")
   end
 
   private
@@ -82,6 +84,7 @@ module JsonReaderHelper
   def save_json(json_text)
     json = JSON.parse json_text
     if json["errors"]
+      LOGGER.info("\tErrors encountered while reading the JSON for #{@atom_feed_read.avalon_id}")
       @atom_feed_read.update(successfully_read: false, json_failed: true, json_error_message: json["errors"])
     else
       write_avalon_item json, json_text

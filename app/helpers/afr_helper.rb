@@ -3,9 +3,9 @@ module AfrHelper
   require 'net/http'
   require 'uri'
 
-  #@@logger ||= Logger.new("#{Rails.root}/log/atom_feed_delayed_job.log")
-  LOGGER = Logger.new("#{Rails.root}/log/delayed_job.log")
+  LOGGER = Logger.new("#{Rails.root}/log/afr_helper.log")
   POD_GROUP_KEY_SOLR_Q = '/GR[0-9]{8}/'
+  # this must remain 100 - mco solr service ignores anything else and always serves 100 items per page
   ITEMS_PER_PAGE = 100
 
   # responsible for reading from the atom feed to identify new records that need to be created in RMD
@@ -27,17 +27,16 @@ module AfrHelper
     puts "Checking the Atom Feed for new content"
     AtomFeedRead.transaction do
       while more_pages && !timestamp_reached
-        puts "Reading page: #{page}"
         uri = gen_atom_feed_uri('desc', ITEMS_PER_PAGE, page)
         response = read_uri(uri)
         xml = parse_xml(response)
         total_records = xml.xpath('//totalResults')&.first.content.to_f # convert to a float so ceiling will work in division
         start_index = xml.xpath('//startIndex')&.first.content.to_i
-        puts xml.to_xhtml if total_records.nil? || start_index.nil?
-        LOGGER.info "\n\n\nProcessing page #{page} of #{(total_records / ITEMS_PER_PAGE).ceil}\n\n\n"
+        #puts xml.to_xhtml if total_records.nil? || start_index.nil?
+        puts "\n\n\nAfrHelper#read_atom_feed - reading page #{page} of #{(total_records / ITEMS_PER_PAGE).ceil}\n\n\n"
         if start_index < total_records
           xml.xpath('//entry').each do |e|
-            puts "\tProcessing record #{read_records} of #{total_records}"
+            puts "\tProcessing record #{read_records} of #{total_records.to_i}"
             title = e.xpath('title').first.content
             avalon_last_updated = DateTime.parse e.xpath('updated').first.content
             json_url = e.xpath('link/@href').first.value
@@ -50,14 +49,21 @@ module AfrHelper
               puts "Existing atom feed reads reached. Stopping the process."
               break
             else
-              # check if this is an existing record that has been altered in MCO since the last read
-              if AtomFeedRead.where(avalon_id: avalon_id).exists?
-                AvalonItem.where(avalon_id: avalon_id).update_all(modified_in_mco: true)
-              else
-                AtomFeedRead.new(
-                  title: title, avalon_last_updated: avalon_last_updated, json_url: json_url,
-                  avalon_item_url: avalon_item_url, avalon_id: avalon_id, entry_xml: e.to_s
-                ).save!
+              begin
+                # check if this is an existing record that has been altered in MCO since the last read
+                if AtomFeedRead.where(avalon_id: avalon_id).exists?
+                  puts("\tExisting record found for #{avalon_id} - updating")
+                  AvalonItem.where(avalon_id: avalon_id).update_all(modified_in_mco: true)
+                else
+                  puts("No existing record found for #{avalon_id} - creating")
+                  AtomFeedRead.new(
+                    title: title, avalon_last_updated: avalon_last_updated, json_url: json_url,
+                    avalon_item_url: avalon_item_url, avalon_id: avalon_id, entry_xml: e.to_s
+                  ).save
+                end
+              rescue Exception => e
+                LOGGER.error e.message
+                LOGGER.error e.backtrace.join("\n")
               end
             end
           end
