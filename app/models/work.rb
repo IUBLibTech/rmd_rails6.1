@@ -57,7 +57,7 @@ class Work < ApplicationRecord
       roles << "Principle Creator" if c.principle_creator?
       roles << "Contributor" if c.contributor?
     end
-    roles.distinct
+    roles.uniq
   end
 
 
