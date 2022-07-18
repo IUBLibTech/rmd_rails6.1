@@ -118,4 +118,11 @@ Rails.application.configure do
   # config.active_record.database_selector = { delay: 2.seconds }
   # config.active_record.database_resolver = ActiveRecord::Middleware::DatabaseSelector::Resolver
   # config.active_record.database_resolver_context = ActiveRecord::Middleware::DatabaseSelector::Resolver::Session
+
+  # setup delayed job to handled background processess
+  config.active_job.queue_adapter = :delayed_job
+
+  config.hosts << "rmd-test.dlib.indiana.edu"
+  config.hosts << "squirrel.dlib.indiana.edu"
+  config.hosts << "mco-staging.dlib.indiana.edu"
 end

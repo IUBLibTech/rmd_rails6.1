@@ -60,8 +60,8 @@ Rails.application.configure do
 
   # delayed job is the queue adapter
   config.active_job.queue_adapter = :delayed_job
+
   config.hosts << "rmd-test.dlib.indiana.edu"
   config.hosts << "squirrel.dlib.indiana.edu"
   config.hosts << "mco-staging.dlib.indiana.edu"
-
 end

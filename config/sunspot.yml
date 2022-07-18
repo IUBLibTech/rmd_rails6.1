@@ -1,23 +1,42 @@
+local:
+  solr:
+    hostname: <%= Rails.application.credentials[:solr_hostname] %>
+    port: <%= Rails.application.credentials[:solr_port] %>
+    log_level: WARNING
+    path: <%= Rails.application.credentials[:solr_path] %>
+
 production:
   solr:
-    hostname: localhost
-    port: 8983
+    hostname: <%= Rails.application.credentials[:solr_hostname] %>
+    port: <%= Rails.application.credentials[:solr_port] %>
     log_level: WARNING
-    path: /solr/production
-    # read_timeout: 2
-    # open_timeout: 0.5
+    path: <%= Rails.application.credentials[:solr_path] %>
+
+production_dev:
+  solr:
+    hostname: <%= Rails.application.credentials[:solr_hostname] %>
+    port: <%= Rails.application.credentials[:solr_port] %>
+    log_level: WARNING
+    path: <%= Rails.application.credentials[:solr_path] %>
 
 development:
   solr:
-    hostname: localhost
-    port: 8983
-    log_level: INFO
-    path: /solr/test
+    hostname: <%= Rails.application.credentials[:solr_hostname] %>
+    port: <%= Rails.application.credentials[:solr_port] %>
+    log_level: WARNING
+    path: <%= Rails.application.credentials[:solr_path] %>
+
 
 test:
   solr:
-    hostname: localhost
-    port: 8983
+    hostname: <%= Rails.application.credentials[:solr_hostname] %>
+    port: <%= Rails.application.credentials[:solr_port] %>
     log_level: WARNING
-    path: /solr/test
-    
+    path: <%= Rails.application.credentials[:solr_path] %>
+
+test_dev:
+  solr:
+    hostname: <%= Rails.application.credentials[:solr_hostname] %>
+    port: <%= Rails.application.credentials[:solr_port] %>
+    log_level: WARNING
+    path: <%= Rails.application.credentials[:solr_path] %>
