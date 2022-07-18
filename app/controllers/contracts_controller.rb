@@ -49,9 +49,15 @@ class ContractsController < ApplicationController
 
   def destroy
     if @contract.destroy
-      render text: "success"
+      respond_to do |format|
+        format.html
+        format.js { render text: "success" }
+      end
     else
-      render text: "failed", status: 501
+      respond_to do |format|
+        format.html
+        format.js { render text: "failed", status: 501 }
+      end
     end
   end
 
@@ -61,7 +67,7 @@ class ContractsController < ApplicationController
   end
   def contract_params
     params.require(:contract).permit(
-      :avalon_item_id, :date_edtf_text, :contract_type, :notes, :perpetual
+      :avalon_item_id, :date_edtf_text, :contract_type, :notes, :perpetual, :id
     )
   end
 

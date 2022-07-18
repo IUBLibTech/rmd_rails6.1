@@ -1,9 +1,9 @@
 local:
   solr:
-    hostname: <%= Rails.application.credentials[:solr_hostname] %>
-    port: <%= Rails.application.credentials[:solr_port] %>
+    hostname: localhost
+    port: 8983
     log_level: WARNING
-    path: <%= Rails.application.credentials[:solr_path] %>
+    path: /solr/test
 
 production:
   solr:

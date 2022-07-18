@@ -53,12 +53,12 @@ class Recording < ApplicationRecord
     # creation date
     date = Date.edtf(creation_date_text.gsub('/', '-'))
     self.creation_date = date
-    puts "Set creation_date to #{date}, calling self.creation_date: #{self.creation_date}"
+    #puts "Set creation_date to #{date}, calling self.creation_date: #{self.creation_date}"
 
     # date of first pub
     date = Date.edtf(date_of_first_publication_text.gsub('/', '-'))
     self.date_of_first_publication = date
-    puts "Set date_of_first_publication to #{date}, calling self.date_of_first_publication: #{self.date_of_first_publication}"
+    #puts "Set date_of_first_publication to #{date}, calling self.date_of_first_publication: #{self.date_of_first_publication}"
   end
 
   private

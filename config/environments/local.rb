@@ -17,7 +17,7 @@ Rails.application.configure do
   # Enable/disable caching. By default caching is disabled.
   # Run rails dev:cache to toggle caching.
   if Rails.root.join('tmp', 'caching-dev.txt').exist?
-    config.action_controller.perform_caching = true
+    config.action_controller.perform_caching = false
     config.action_controller.enable_fragment_cache_logging = true
 
     config.cache_store = :memory_store
@@ -77,9 +77,12 @@ Rails.application.configure do
   # delayed job is the adapter used
   config.active_job.queue_adapter = :delayed_job
 
-  config.hosts << "localhost"
+  # local env is equivalent to DEV
+  config.web_console.development_only = false
+
   config.hosts << "rmd-test.dlib.indiana.edu"
   config.hosts << "squirrel.dlib.indiana.edu"
   config.hosts << "mco-staging.dlib.indiana.edu"
+  config.hosts << "localhost"
 
 end
