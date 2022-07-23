@@ -5,6 +5,13 @@ local:
     log_level: WARNING
     path: /solr/test
 
+local_p:
+  solr:
+    hostname: localhost
+    port: 8983
+    log_level: WARNING
+    path: /solr/test
+
 production:
   solr:
     hostname: <%= Rails.application.credentials[:solr_hostname] %>
