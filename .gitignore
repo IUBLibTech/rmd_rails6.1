@@ -43,3 +43,5 @@
 /config/credentials/production.key
 
 /config/credentials/production_dev.key
+
+/config/credentials/local_p.key
