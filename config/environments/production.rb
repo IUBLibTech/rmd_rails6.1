@@ -122,7 +122,7 @@ Rails.application.configure do
   # setup delayed job to handled background processess
   config.active_job.queue_adapter = :delayed_job
 
-  config.hosts << "rmd-test.dlib.indiana.edu"
+  config.hosts << "rmd.dlib.indiana.edu"
   config.hosts << "squirrel.dlib.indiana.edu"
   config.hosts << "mco-staging.dlib.indiana.edu"
 end
