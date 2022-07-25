@@ -33,8 +33,9 @@
 /config/master.key
 
 .iul_contacts.yaml
+.iul_contacts.yml
 .iul_service.yaml
-
+.iul_service.yml
 /bin/iul_start
 /bin/iul_stop
 
