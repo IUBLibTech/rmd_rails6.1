@@ -2,6 +2,7 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
+<<<<<<< HEAD
 group :develoment, :test, :test_dev, :production, :production_dev do
   ruby '3.0.2'
 end
@@ -9,6 +10,15 @@ end
 group :local, :local_p do
   ruby '3.1.2'
 end
+=======
+group :local, :local_p do
+  ruby '3.1.2'
+end
+
+group :development, :test, :test_dev, :production, :production_dev do
+  ruby '3.0.2'
+end
+>>>>>>> e512e5fe9787c89fbc47e679d88effcff9de229c
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails', branch: 'main'
 gem 'rails', '~> 6.1.6'
