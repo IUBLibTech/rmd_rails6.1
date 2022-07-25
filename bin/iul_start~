@@ -1,8 +1,8 @@
 #!/bin/bash
-PORT=8141
-APP_NAME="Rights Management Database (Prod)"
-PID_FILE=/srv/services/rmd-prod-8141/tmp/pids/server.pid
-ENV=production
+PORT=8146
+APP_NAME="Rights Management Database (DEV)"
+PID_FILE=/srv/services/rmd-devel-8146/tmp/pids/server.pid
+ENV=development
 
 echo "Starting $APP_NAME on port $PORT in RAILS_ENV=$ENV"
 
@@ -14,7 +14,7 @@ fi
 
 if RAILS_ENV=$ENV rails s -b 0.0.0.0 -p $PORT -d; then
     echo "Started $APP_NAME on port $PORT running in RAILS_ENV=$ENV"
-    if RAILS_ENV=$ENV /srv/services/rmd-prod-8141/bin/delayed_job start; then
+    if RAILS_ENV=$ENV /srv/services/rmd-devel-8146/bin/delayed_job start; then
 	echo "Started delayed_jobs process"
     else
 	echo "WARNING: Failed to start delayed_jobs process!!!"
@@ -30,4 +30,3 @@ if RAILS_ENV=$ENV rails s -b 0.0.0.0 -p $PORT -d; then
 	echo "WARNING: failed to queue JsonReaderTask!!!"
     fi
 fi
-
