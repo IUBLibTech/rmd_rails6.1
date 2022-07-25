@@ -1,0 +1,16 @@
+#!/bin/bash
+PORT=8141
+APP_NAME="Rights Management Database (Prod)"
+PID_FILE=/srv/services/rmd-prod-8141/tmp/pids/server.pid
+
+if [ -e $PID_FILE ]; then
+    echo "Stopping $APP_NAME"
+    kill $(cat $PID_FILE)
+    sleep 3
+    if [ -e $PID_FILE ]; then
+    echo "Failed soft shutdown of $APP_NAME"
+    echo "Killing process $(cat $PID_FILE)"
+    kill -9 $(cat $PID_FILE)
+    rm $PID_FILE
+    fi
+fi
