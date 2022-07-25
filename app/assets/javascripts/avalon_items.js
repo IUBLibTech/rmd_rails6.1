@@ -804,12 +804,7 @@ function hookRemoveContractButtons() {
 				$.ajax({
 					url: '/contracts/' + contractId,
 					method: 'DELETE',
-					success: function (result) {
-              $('div.contract[data-contract-id='+contractId+']').remove();
-              // decrement the javascript number of contracts
-              legal_agreements--;
-              legal_agreement_count--;
-					},
+					success: deleteContract(result, contractId),
 					error: function (xhr, status, error) {
 						swal.fire({
 							icon: 'warning',
@@ -821,6 +816,12 @@ function hookRemoveContractButtons() {
 			}
 		});
 	})
+}
+function deleteContract(result, contractId) {
+    $('div.contract[data-contract-id='+contractId+']').remove();
+    // decrement the javascript number of contracts
+    legal_agreements--;
+    legal_agreement_count--;
 }
 function hookAvalonNoteButton() {
     $('#avalon_item_note_button').click(function() {

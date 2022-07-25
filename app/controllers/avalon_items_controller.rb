@@ -18,8 +18,21 @@ class AvalonItemsController < ApplicationController
       success = read_json(@avalon_item)
       if success
         @json = JSON.parse(@avalon_item.json)
-        # currently not used
         @mdpi_barcodes = parse_bc(@json["fields"]["other_identifier"])
+
+        # update the AvalonItem title if the JSON metadata has changed
+        cur_title = @avalon_item.title
+        if !@json["title"].blank? && cur_title != @json["title"]
+          @avalon_item.update(title: @json["title"])
+          # only replace recording titles if they have NOT been edited by the user, ecah recording title will start with
+          # the avalon item title if untouched
+          @avalon_item.recordings.each do |r|
+            if r.title.starts_with? cur_title
+              r.update(title: "#{@json[:title]} #{r.mdpi_barcode}")
+            end
+          end
+        end
+
         @atom_feed_read = AtomFeedRead.where("avalon_id like '%#{@avalon_item.avalon_id}'").first
       else
         flash[:warning] = json_flash_error_msg

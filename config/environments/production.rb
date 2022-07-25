@@ -59,7 +59,8 @@ Rails.application.configure do
   # config.cache_store = :mem_cache_store
 
   # Use a real queuing backend for Active Job (and separate queues per environment).
-  # config.active_job.queue_adapter     = :resque
+  config.active_job.queue_adapter     = :delayed_job
+
   # config.active_job.queue_name_prefix = "foobar_production"
 
   config.action_mailer.perform_caching = false
@@ -117,4 +118,11 @@ Rails.application.configure do
   # config.active_record.database_selector = { delay: 2.seconds }
   # config.active_record.database_resolver = ActiveRecord::Middleware::DatabaseSelector::Resolver
   # config.active_record.database_resolver_context = ActiveRecord::Middleware::DatabaseSelector::Resolver::Session
+
+  # setup delayed job to handled background processess
+  config.active_job.queue_adapter = :delayed_job
+
+  config.hosts << "rmd.dlib.indiana.edu"
+  config.hosts << "squirrel.dlib.indiana.edu"
+  config.hosts << "mco-staging.dlib.indiana.edu"
 end

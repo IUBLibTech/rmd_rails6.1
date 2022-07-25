@@ -32,5 +32,20 @@
 # Ignore master key for decrypting credentials and more.
 /config/master.key
 
-.iul_contacts.yml
-.iul_service.yml
+.iul_contacts.yaml
+.iul_service.yaml
+
+/bin/iul_start
+/bin/iul_stop
+
+/config/credentials/test.key
+
+/config/credentials/local.key
+
+/config/credentials/test_dev.key
+
+/config/credentials/production.key
+
+/config/credentials/production_dev.key
+
+/config/credentials/local_p.key
