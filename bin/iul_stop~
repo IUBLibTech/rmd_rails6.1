@@ -1,0 +1,27 @@
+#!/bin/bash
+PORT=8146
+APP_NAME="Rights Management Database (DEV)"
+PID_FILE=/srv/services/rmd-devel-8146/tmp/pids/server.pid
+APP_PATH=/srv/services/rmd-devel-8146/
+PID_FILE=/srv/services/rmd-devel-8146/tmp/pids/server.pid
+ENV=development
+
+if [ -e $PID_FILE ]; then
+    echo "Stopping $APP_NAME"
+    kill $(cat $PID_FILE)
+    sleep 3
+
+    if [ -e $PID_FILE ]; then
+    echo "Failed soft shutdown of $APP_NAME"
+    echo "Killing process $(cat $PID_FILE)"
+    kill -9 $(cat $PID_FILE)
+    rm $PID_FILE
+    fi
+
+    if RAILS_ENV=$ENV /srv/services/rmd-devel-8146/bin/delayed_job stop; then
+	echo "Stopped delayed_jobs process"
+    else
+	echo "WARNING: failed to stop delayed_jobs process!!!"
+    fi
+
+fi

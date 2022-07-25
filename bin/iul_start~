@@ -1,0 +1,32 @@
+#!/bin/bash
+PORT=8146
+APP_NAME="Rights Management Database (DEV)"
+PID_FILE=/srv/services/rmd-devel-8146/tmp/pids/server.pid
+ENV=development
+
+echo "Starting $APP_NAME on port $PORT in RAILS_ENV=$ENV"
+
+if [ -e $PID_FILE ]; then
+    echo "$PID_FILE found! - $APP_NAME appears to already be running."
+    echo "Exiting without starting $APP_NAME"
+    exit 1
+fi
+
+if RAILS_ENV=$ENV rails s -b 0.0.0.0 -p $PORT -d; then
+    echo "Started $APP_NAME on port $PORT running in RAILS_ENV=$ENV"
+    if RAILS_ENV=$ENV /srv/services/rmd-devel-8146/bin/delayed_job start; then
+	echo "Started delayed_jobs process"
+    else
+	echo "WARNING: Failed to start delayed_jobs process!!!"
+    fi
+    if RAILS_ENV=$ENV rails recurring:read_atom_feed; then
+	echo "Queued up AtomFeedReadTask for background processing"
+    else
+	echo "WARNING: failed to queue AtomFeedReadTask!!!"
+    fi
+    if RAILS_ENV=$ENV rails recurring:parse_json; then
+	echo "Queued up JsonReaderTask for background processing"
+    else
+	echo "WARNING: failed to queue JsonReaderTask!!!"
+    fi
+fi
