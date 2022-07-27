@@ -376,7 +376,7 @@ class AvalonItemsController < ApplicationController
             e.update!(interviewer: true)
           end
           add_interviewee_ids = track_interviewee_ids - existing_interviewees.pluck(:id)
-          add_interviewee_ids.each do |i|bugs
+          add_interviewee_ids.each do |i|
 
             e = existing_tcp.where(track_id: i).first
             if e.nil?
