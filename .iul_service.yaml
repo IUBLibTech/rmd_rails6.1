@@ -3,8 +3,8 @@ dependencies:
   hard: {}
   soft: {}
 nagios:
-  check: false
-  notify: false
+  check: true
+  notify: true
 proxy: 
   host: rmd.dlib.indiana.edu
   path: /
