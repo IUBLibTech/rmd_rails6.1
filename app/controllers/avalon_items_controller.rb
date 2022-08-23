@@ -71,10 +71,10 @@ class AvalonItemsController < ApplicationController
         can_save = false
         failure_message = "Something went wrong..."
         if params[:access] == AccessDeterminationHelper::RESTRICTED_ACCESS
-          can_save = params[:restricted] && params[:restricted].size > 0
+          can_save = params[:restricted] && params[:restricted].keys.size > 0
           failure_message = "Access Determination was not saved. At least one Reason is required for Restricted Access" unless can_save
         elsif params[:access] == AccessDeterminationHelper::WORLD_WIDE_ACCESS
-          can_save = params[:worldwide] && params[:worldwide].size > 0
+          can_save = params[:worldwide] && params[:worldwide].keys.size > 0
           failure_message = "Access Determination was not saved. At least one Reason is required for Worldwide Access" unless can_save
         else
           can_save = true
