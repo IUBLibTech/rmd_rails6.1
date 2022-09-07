@@ -257,7 +257,9 @@ class AvalonItemsController < ApplicationController
     render partial: 'nav/cl_avalon_items_table'
   end
   def ajax_cl_access_determined
-    @avalon_items = AvalonItem.joins(:past_access_decisions).where(past_access_decisions: {copyright_librarian: true}).distinct
+    #@avalon_items = AvalonItem.joins(:past_access_decisions).where(past_access_decisions: {copyright_librarian: true}).distinct
+    @avalon_items = AvalonItem.where(review_state: AvalonItem::REVIEW_STATE_ACCESS_DETERMINED)
+    @pagy = @avalon_items
     render partial: 'nav/cl_avalon_items_table'
   end
   def ajax_cl_waiting_on_cm
