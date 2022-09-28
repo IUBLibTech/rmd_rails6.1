@@ -12,10 +12,11 @@ class AvalonItemsController < ApplicationController
   end
 
   def show
-    @avalon_item = AvalonItem.includes(:recordings).find(params[:id])
-    # Read data from MCO - if this fails it probably means Avalon Identifiers have changed in MCO and this is a BAD thing in production
     begin
+      # Read data from MCO - if this fails it probably means Avalon Identifiers have changed in MCO and this is a BAD thing in production
+      @avalon_item = AvalonItem.includes(:recordings).find(params[:id])
       success = read_json(@avalon_item)
+
       if success
         @json = JSON.parse(@avalon_item.json)
         @mdpi_barcodes = parse_bc(@json["fields"]["other_identifier"])
@@ -32,15 +33,19 @@ class AvalonItemsController < ApplicationController
             end
           end
         end
-
         @atom_feed_read = AtomFeedRead.where("avalon_id like '%#{@avalon_item.avalon_id}'").first
       else
         flash[:warning] = json_flash_error_msg
       end
-    rescue
+      redirect_to root_path unless User.belongs_to_unit?(@avalon_item.pod_unit) || User.current_user_copyright_librarian?
+    rescue ActiveRecord::RecordNotFound => e
+      flash[:warning] = "RMD could not find the requested Avalon Item. This typically happens when a recording has recently "+
+        "been pushed from Dark Avalon into MCO but has not yet been ingested by RMD. Please allow up to an hour after "+
+        "pushing for the record to appear in RMD. If this problem persists, please contact Andrew Albrecht."
+      redirect_to root_path
+    rescue Exception => e
       flash[:warning] = json_flash_error_msg
     end
-    redirect_to root_path unless User.belongs_to_unit?(@avalon_item.pod_unit) || User.current_user_copyright_librarian?
   end
 
   def edit

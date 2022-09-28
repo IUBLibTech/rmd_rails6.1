@@ -62,6 +62,74 @@ function validatePerson(event) {
         showOverlay();
     }
 }
+function hookPeopleAutocompleteB() {
+    $('.autocomplete').autocomplete({
+        minLength: 2,
+        source: function(request, response) {
+            let el = $('#autocomplete_summary');
+            if (el.is(":visible")) {
+                el.toggle();
+            }
+            let url = "../people/ajax/autocomplete";
+            $.ajax({
+                url: url,
+                dataType: "json",
+                data: {
+                    term: request.term,
+                },
+                success: function(data, x, y) {
+                    if (data.length > 0) {
+                        response(data)
+                    } else {
+                        debugger;
+                    }
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    swal({
+                        title: 'Ajax Error',
+                        text: 'An error occurred while auto-completing the Last Name field. If this problem persists, please contact Sherri Michaels or Andrew Albrecht.'
+                    });
+                }
+            });
+        },
+        change: function(event, ui) {
+            console.log("CHANGE!")
+        },
+        close: function(event, ui) {
+            console.log("CLOSE")
+        },
+        open: function() {
+            console.log("OPEN");
+            clearPersonForm();
+        },
+        focus: function (event, person) {
+            $('#ac_full_name').text(person.item.label);
+            $('#ac_dob').text(person.item.date_of_birth_edtf);
+            $('#ac_dod').text(person.item.date_of_death_edtf);
+            $('#ac_pob').text(person.item.place_of_birth);
+            $('#ac_aka').text(person.item.aka);
+            $('#ac_auth').text(person.item.authority_source);
+            $('#ac_auth_url').text(person.item.authority_source_url);
+            $('#ac_notes').text(person.item.notes);
+
+            let el = $('#autocomplete_summary');
+            if (el.is(":hidden")) {
+                el.toggle();
+            }
+            return false;
+        },
+        select: function (event, person) {
+            let el = $('#autocomplete_summary');
+            if (el.is(":visible")) {
+                el.toggle();
+            }
+            setPerson(person.item.id, false);
+        },
+        response: function(event, ui) {
+            console.log("RESPONSE");
+        }
+    });
+}
 
 function hookPeopleAutocomplete() {
     // autocomplete for the person last name field
@@ -79,8 +147,12 @@ function hookPeopleAutocomplete() {
                 data: {
                     term: request.term,
                 },
-                success: function(data) {
-                    response(data)
+                success: function(data, x, y) {
+                    if (data.length > 0) {
+                        response(data)
+                    } else {
+                        debugger;
+                    }
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
                     swal({
@@ -89,6 +161,9 @@ function hookPeopleAutocomplete() {
                     });
                 }
             });
+        },
+        close: function(event, ui) {
+
         },
         open: function() {
             clearPersonForm();

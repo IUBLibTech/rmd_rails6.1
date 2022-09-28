@@ -2,7 +2,7 @@ class JsonReaderTask
   include Delayed::RecurringJob
   include JsonReaderHelper
 
-  run_every 1.hour
+  run_every 10.minutes
   run_at Time.now
   queue 'json-reader'
 
