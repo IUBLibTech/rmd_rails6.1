@@ -51,6 +51,7 @@
     <%= @work.notes %>
   </div>
 </div>
+<div class="rvt-grid__item-12">
 <h4>Work Contributors</h4>
 <div class="ajax_work_show_contributors">
   <% @work.people.each do |p| %>
@@ -58,4 +59,5 @@
     <%= link_to "#{p.full_name}", "#", class: 'red_700', remote: true %> <%= "(#{p.birth_death_text})" %> <%= @work.roles(p).join(", ") %>
   </div>
   <% end %>
+</div>
 </div>

@@ -26,7 +26,7 @@
         <td>
           <%= link_to 'Show', person %> <br>
           <%= link_to "Edit", edit_person_path(person) %>
-          <% if person.avalon_items.size > 0 %>
+          <% if person.avalon_items.size == 0 and person.works.size == 0%>
             <br>
             <%= link_to "Delete", person, method: :delete %>
           <% end %>
@@ -56,10 +56,11 @@
       <td><%= link_to "#{person.authority_source_url}", person.authority_source_url, target: '_blank' unless person.authority_source_url.blank? %></td>
       <td></td>
       <td>
-        <%= link_to 'Show', person %>
+        <%= link_to 'Show', person %><br>
         <%= link_to "Edit", edit_person_path(person) %>
-        <% if person.avalon_items.size > 0 %>
-          <%= link_to 'Destroy', person, method: :delete %>
+        <% if person.avalon_items.size == 0 and person.works.size == 0%>
+          <br>
+          <%= link_to "Delete", person, method: :delete %>
         <% end %>
       </td>
     </tr>
