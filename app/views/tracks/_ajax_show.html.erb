@@ -46,7 +46,7 @@
               <div class="rvt-grid__item-4-md-up rvt-m-right-xxs rvt-p-all-xs tooltip person">
                 <%= link_to p.full_name, ajax_edit_person_path(p.id), class: 'red_700', remote: true %>
                 <span class="tooltiptext <%= i % 3 == 0 ? 'left_one' : i % 3 == 1 ? 'middle_one' : 'right_one' %>">
-                    <%= render partial: 'people/ajax_show' %>
+                    <%= render partial: 'people/ajax_show', locals: {recording: nil, track: track} %>
                   </span>
               </div>
             <% end %>

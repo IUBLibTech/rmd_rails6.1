@@ -90,9 +90,12 @@ module AfrHelper
         avalon_item.update(json: json_text)
         true
       else
+        logger.warn "MCO JSON request returned #{something} for #{uri}"
         false
       end
-    rescue
+    rescue Exception => e
+      logger.warn e.message
+      logger.warn e.backtrace.join("\n")
       false
     end
   end

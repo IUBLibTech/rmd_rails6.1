@@ -34,10 +34,17 @@
   </div>
   <div class="rvt-grid__item-4-md-up">
     <label for="authority_source_url">Authority Source URL</label>
-    <%= link_to "#{@person.authority_source_url.truncate(25)}", @person.authority_source_url, target: "_blank" unless @person.authority_source_url.blank?%>
+    <%= link_to "#{@person.authority_source_url.truncate(20)}", @person.authority_source_url, target: "_blank" unless @person.authority_source_url.blank?%>
   </div>
   <div class="rvt-grid__item-12">
     <label for="notes">Notes</label>
     <%= @person.notes %>
+  </div>
+  <div class="rvt-grid__item-12">
+  <% if track %>
+    <b><i><%= @person.track_contributor_role_text(track.id) %></i></b>
+  <% elsif recording %>
+    <b><i><%= @person.recording_contributor_role_text(recording.id) %></i></b>
+  <% end %>
   </div>
 </div>

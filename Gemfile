@@ -2,13 +2,8 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-group :local, :local_p do
-  ruby '3.1.2'
-end
+#ruby '3.0.2'
 
-group :development, :test, :test_dev, :production, :production_dev do
-  ruby '3.0.2'
-end
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails', branch: 'main'
 gem 'rails', '~> 6.1.6'
@@ -85,15 +80,7 @@ gem 'jquery-ui-rails'
 # this gem hasn't been updated since 2018... it bundles sweet alert 2, but an older version 9.x. I think... when checking
 # the sweet alert documentation make sure to look at older versions
 gem 'sweetalert2'
-
 gem "nested_form"
-
-
-
-
-
-
-
 
 
 
