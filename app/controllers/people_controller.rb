@@ -18,10 +18,12 @@ class PeopleController < ApplicationController
   # GET /people/new
   def new
     @person = Person.new(entity: false)
+    @ref_id = get_avalon_id_from_referrer
   end
 
   def new_entity
     @person = Person.new(entity: true)
+    @ref_id = get_avalon_id_from_referrer
     render 'people/new'
   end
 
@@ -52,11 +54,11 @@ class PeopleController < ApplicationController
     @person.entity = params["entity"] == "true"
     respond_to do |format|
       if @person.save
-        if params[:avalon_item_id]
+        unless params[:avalon_item_id].blank?
           @avalon_item = AvalonItem.find(params[:avalon_item_id])
           AvalonItemPerson.new(person_id: @person.id, avalon_item_id: params[:avalon_item_id].to_i).save
         end
-        format.html { redirect_to people_path }
+        format.html { redirect_to (@avalon_item ? @avalon_item : @person) }
         format.js {}
         format.json { render :show, status: :created, location: @person }
       else
@@ -122,4 +124,14 @@ class PeopleController < ApplicationController
           :authority_source, :aka, :notes, :authority_source_url, :entity, :company_name, :entity_nationality
       )
     end
+
+  def get_avalon_id_from_referrer
+    ref = request.referrer
+    url = URI.parse(ref)
+    if url.request_uri.starts_with? "/avalon_items"
+      url.request_uri.split("/").last
+    else
+      nil
+    end
+  end
 end

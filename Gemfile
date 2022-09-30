@@ -80,7 +80,6 @@ gem 'jquery-ui-rails'
 # this gem hasn't been updated since 2018... it bundles sweet alert 2, but an older version 9.x. I think... when checking
 # the sweet alert documentation make sure to look at older versions
 gem 'sweetalert2'
-
 gem "nested_form"
 
 

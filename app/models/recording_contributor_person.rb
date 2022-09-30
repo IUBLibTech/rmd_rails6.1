@@ -8,4 +8,11 @@ class RecordingContributorPerson < ApplicationRecord
   # belongs_to :role
   # belongs_to :contract
   # belongs_to :policy
+
+  def roles_text
+    roles = []
+    roles << "Recording Depositor" if self.recording_depositor
+    roles << "Recording Producer" if self.recording_producer
+    roles.join(", ")
+  end
 end
