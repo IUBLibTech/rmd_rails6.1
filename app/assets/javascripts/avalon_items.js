@@ -95,7 +95,9 @@ function hookPeopleAutocomplete() {
                             showCancelButton: true,
                             confirmButtonText: "Create New Person?"
                         }).then((result) => {
-                            if (result.isConfirmed) {
+                            // no idea how, but on production servers swal is different and sending an object with value = true
+                            // instead of result.isConfirmed = true... this hack workaround
+                            if (result.isConfirmed || result.value) {
                                 try {
                                     window.location.href = "../../people/new"
                                 } catch (e) {
@@ -177,7 +179,7 @@ function hookPeopleAutocomplete() {
                             showCancelButton: true,
                             confirmButtonText: "Create New Entity?"
                         }).then((result) => {
-                            if (result.isConfirmed) {
+                            if (result.isConfirmed || result.value) {
                                 window.location.href = "../../people/new/entity?"
                             }
                         });
@@ -426,7 +428,7 @@ function hookWorkAutocomplete() {
                             showCancelButton: true,
                             confirmButtonText: "Create New Work?"
                         }).then((result) => {
-                            if (result.isConfirmed) {
+                            if (result.isConfirmed || result.value) {
                                 try {
                                     window.location.href = "../../works/new"
                                 } catch (e) {
