@@ -79,7 +79,6 @@ module AfrHelper
   def read_atom_feed_for(avalon_id)
 
   end
-
   # responsible for reading the JSON record for an item in MCO
   def read_json(avalon_item)
     begin
@@ -99,22 +98,18 @@ module AfrHelper
       false
     end
   end
-
   # responsible for creating the RMD Avalon Item as a result of read_json
   def create_avalon_item(json_read_metadata)
 
   end
-
   # responsible for generating the URI to read multiple records from the atom feed
   def gen_atom_feed_uri(order, rows, page, identifier = POD_GROUP_KEY_SOLR_Q)
     URI.parse(Rails.application.credentials[:avalon_url].gsub('<identifier>', identifier).gsub('<order>', order).gsub('<row_count>', rows.to_s).gsub('<page_count>', page.to_s))
   end
-
   # responsible for generating the URI to read a SINGLE Avalon Items atom feed record
   def gen_atom_feed_uri_for(avalon_id)
     URI.parse(Rails.application.credentials[:avalon_url].gsub('other_identifier_sim:<identifier>&sort=timestamp+<order>&rows=<row_count>&page=<page_count>', "id:#{avalon_id}"))
   end
-
   # makes a HTTPS request at the specified URI and returns the response
   def read_uri(uri)
     puts "Making MCO service request: #{uri.to_s}"
@@ -127,6 +122,81 @@ module AfrHelper
 
   def parse_xml(response)
     @xml =  @xml = Nokogiri::XML(response.body).remove_namespaces!
+  end
+
+  def fix_atom_feed
+    page = 1
+    more_pages = true
+    missing = 0
+    while more_pages
+      uri = gen_atom_feed_uri('desc', ITEMS_PER_PAGE, page)
+      response = read_uri(uri)
+      xml = parse_xml(response)
+      total_records = xml.xpath('//totalResults')&.first.content.to_f # convert to a float so ceiling will work in division
+      start_index = xml.xpath('//startIndex')&.first.content.to_i
+      if start_index < total_records
+        xml.xpath('//entry').each do |e|
+          title = e.xpath('title').first.content
+          avalon_last_updated = DateTime.parse e.xpath('updated').first.content
+          json_url = e.xpath('link/@href').first.value
+          avalon_item_url = e.xpath('id').first.content
+          avalon_id = avalon_item_url.chars[avalon_item_url.rindex('/') + 1..avalon_item_url.length].join("")
+          begin
+            # check if this is an existing record that has been altered in MCO since the last read
+            if AtomFeedRead.where(avalon_id: avalon_id).exists?
+              # do nothing, the record has already been ingested
+              # puts("\tExisting record found for #{avalon_id} - skipping")
+            else
+              puts("Missed record found!!! #{avalon_id} - creating AtomFeedRead")
+              AtomFeedRead.new(
+                title: title, avalon_last_updated: avalon_last_updated, json_url: json_url,
+                avalon_item_url: avalon_item_url, avalon_id: avalon_id, entry_xml: e.to_s
+              ).save
+              missing += 1
+              puts "Found #{missing} #{'record'.pluralize(missing)} so far."
+            end
+          rescue Exception => e
+            LOGGER.error e.message
+            LOGGER.error e.backtrace.join("\n")
+          end
+          more_pages = (start_index + ITEMS_PER_PAGE) < total_records
+        end
+        page += 1
+      end
+    end
+  end
+
+  def test_atom_sort_order
+    page = 1
+    more_pages = true
+    last_timestamp = nil
+    read_records = 0
+    while more_pages
+      uri = gen_atom_feed_uri('desc', ITEMS_PER_PAGE, page)
+      response = read_uri(uri)
+      xml = parse_xml(response)
+      total_records = xml.xpath('//totalResults')&.first.content.to_f # convert to a float so ceiling will work in division
+      start_index = xml.xpath('//startIndex')&.first.content.to_i
+      if start_index < total_records
+        puts "\tProcessing record #{read_records} of #{total_records.to_i}"
+        xml.xpath('//entry').each do |e|
+          ts = DateTime.parse e.xpath('updated').first.content
+          if last_timestamp.nil?
+            last_timestamp = ts if last_timestamp.nil?
+          else
+            puts "#{ts} older than #{last_timestamp} = #{ts <= last_timestamp}"
+            if ts <= last_timestamp
+              last_timestamp = ts
+            else
+              raise "Atom Feed out of order!!!"
+            end
+          end
+          read_records = read_records + 1
+          more_pages = (start_index + ITEMS_PER_PAGE) < total_records
+        end
+        page += 1
+      end
+    end
   end
 
 end
