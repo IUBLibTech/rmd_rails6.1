@@ -11,6 +11,7 @@ module AvalonItemsHelper
 
   def pod_metadata_unit(mdpi_barcode)
     # need to dup the string otherwise you're modifying the value stored in the credentials OBJECT!
+    debugger
     u = Rails.application.credentials[:pod_full_metadata_url].dup.gsub!(':mdpi_barcode', mdpi_barcode)
     uri = URI.parse(u)
     http = Net::HTTP.new(uri.host, uri.port)

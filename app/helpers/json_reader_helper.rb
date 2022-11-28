@@ -98,6 +98,7 @@ module JsonReaderHelper
     publication_date = json["publication_date"]
     summary = json["summary"]
     barcodes = json["fields"]["other_identifier"].select{|i| i.match(/4[0-9]{13}/) }
+    debugger
     unit = pod_metadata_unit(barcodes.first)
     avalon_item = AvalonItem.new(avalon_id: json["id"], title: title, collection: collection, json: json_text, pod_unit: unit, review_state: AvalonItem::REVIEW_STATE_DEFAULT)
     decision = PastAccessDecision.new(avalon_item: avalon_item, decision: AccessDeterminationHelper::DEFAULT_ACCESS, changed_by: 'automated ingest')
