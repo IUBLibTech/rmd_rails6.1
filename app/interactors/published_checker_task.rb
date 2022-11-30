@@ -1,4 +1,4 @@
-class PublishedChecker
+class PublishedCheckerTask
   include Delayed::RecurringJob
   include AtomFeedReaderHelper
 
