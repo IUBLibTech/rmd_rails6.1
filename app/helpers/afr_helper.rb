@@ -50,9 +50,11 @@ module AfrHelper
               break
             else
               begin
-                # check if this is an existing record that has been altered in MCO since the last read
+                # check if this is an existing record that has been altered in MCO since the last read. The alteration
+                # may be the result of being published in MCO
                 if AtomFeedRead.where(avalon_id: avalon_id).exists?
                   puts("\tExisting record found for #{avalon_id} - updating")
+                  AtomFeedRead.where(avalon_id: avalon_id).update_all(rescan: true)
                   AvalonItem.where(avalon_id: avalon_id).update_all(modified_in_mco: true)
                 else
                   puts("No existing record found for #{avalon_id} - creating")
@@ -74,12 +76,9 @@ module AfrHelper
     end
   end
 
-  # responsible for reading the atom feed for an existing RMD avalon item to determine if its MCO counterpart has been updated
-  # since its last read
-  def read_atom_feed_for(avalon_id)
-
-  end
-  # responsible for reading the JSON record for an item in MCO
+  # FIXME: this should be in JsonReaderHelper???
+  # reads the current JSON for the specified AvalonItem and saves it in AvalonItem.json - returns true if the read was
+  # successful, otherwise false
   def read_json(avalon_item)
     begin
       uri = URI.parse avalon_item.atom_feed_read.json_url
@@ -90,14 +89,19 @@ module AfrHelper
         true
       else
         logger.warn "MCO JSON request returned #{something} for #{uri}"
+        avalon_item.atom_feed_read.update(json_failed: true, json_error_message: "MCO JSON request returned #{something} for #{uri}")
         false
       end
     rescue Exception => e
-      logger.warn e.message
-      logger.warn e.backtrace.join("\n")
+      msg = ""
+      msg << e.message
+      msg << e.backtrace.join("\n")
+      logger.warn msg
+      avalon_item.atom_feed_read.update(json_failed: true, json_error_message: msg)
       false
     end
   end
+
   # responsible for creating the RMD Avalon Item as a result of read_json
   def create_avalon_item(json_read_metadata)
 
