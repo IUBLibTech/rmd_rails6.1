@@ -21,7 +21,7 @@ namespace :recurring do
 
   desc 'Runs background process to check whether RMD items with access determination but not yet published in MCO, have been pulished in MCO'
   task check_published: :environment do
-    PublishedChecker.schedule!
+    PublishedCheckerTask.schedule!
   end
 
 
