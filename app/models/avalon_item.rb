@@ -4,7 +4,7 @@ class AvalonItem < ApplicationRecord
   has_many :performances, through: :recordings
   has_many :tracks, through: :performances
   has_many :works, through: :tracks
-  has_many :past_access_decisions
+  has_many :past_access_decisions, inverse_of: :avalon_item
   has_many :avalon_item_notes
   has_many :review_comments
   has_many :contracts
