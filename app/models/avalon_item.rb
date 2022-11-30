@@ -4,12 +4,12 @@ class AvalonItem < ApplicationRecord
   has_many :performances, through: :recordings
   has_many :tracks, through: :performances
   has_many :works, through: :tracks
-  has_many :past_access_decisions, inverse_of: :avalon_item
+  has_many :past_access_decisions
   has_many :avalon_item_notes
   has_many :review_comments
   has_many :contracts
   has_one :atom_feed_read, foreign_key: :avalon_id, primary_key: :avalon_id
-  has_one :current_access_determination, class_name: 'PastAccessDecision', foreign_key: :avalon_item_id, autosave: true
+  belongs_to :current_access_determination, class_name: 'PastAccessDecision', foreign_key: 'current_access_determination_id', autosave: true
 
   accepts_nested_attributes_for :performances
 
