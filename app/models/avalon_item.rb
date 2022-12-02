@@ -57,7 +57,10 @@ class AvalonItem < ApplicationRecord
   }
   # FIXME: need to updated this after there is a way to determine and flag an AvalonItem as having been published in MCO - this scope should omit those results
   scope :cm_access_determined, -> {
-    AvalonItem.where(pod_unit: UnitsHelper.human_readable_units_search(User.current_username), review_state: REVIEW_STATE_ACCESS_DETERMINED)
+    AvalonItem.where(pod_unit: UnitsHelper.human_readable_units_search(User.current_username), review_state: REVIEW_STATE_ACCESS_DETERMINED, published_in_mco: false)
+  }
+  scope :cm_published, -> {
+    AvalonItem.where(pod_unit: UnitsHelper.human_readable_units_search(User.current_username), published_in_mco: true)
   }
 
 

@@ -52,3 +52,5 @@
 /config/credentials/local_p.key
 
 /config/credentials/loacl.key
+
+/config/credentials/production:dev.key

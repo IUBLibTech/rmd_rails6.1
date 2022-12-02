@@ -85,17 +85,19 @@ module AfrHelper
       something = read_uri(uri)
       if something.kind_of? Net::HTTPSuccess
         json_text = something.body
-        avalon_item.update(json: json_text)
-        true
+        avalon_item.json = json_text
+        avalon_item.save!
+        return true
       else
         logger.warn "MCO JSON request returned #{something} for #{uri}"
         avalon_item.atom_feed_read.update(json_failed: true, json_error_message: "MCO JSON request returned #{something} for #{uri}")
-        false
+        return false
       end
     rescue Exception => e
       msg = ""
       msg << e.message
       msg << e.backtrace.join("\n")
+      puts msg
       logger.warn msg
       avalon_item.atom_feed_read.update(json_failed: true, json_error_message: msg)
       false
