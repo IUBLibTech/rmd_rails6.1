@@ -67,6 +67,7 @@ Rails.application.routes.draw do
   get '/avalon_items/cm/cm_waiting_on_cl', to: 'avalon_items#cm_waiting_on_cl', as: 'avalon_items_cm_waiting_on_cl'
   get '/avalon_items/cm/cm_waiting_on_self', to: 'avalon_items#cm_waiting_on_self', as: 'avalon_items_cm_waiting_on_self'
   get '/avalon_items/cm/cm_access_determined', to: 'avalon_items#cm_access_determined', as: 'avalon_items_cm_access_determined'
+  get '/avalon_items/cm/cm_published', to: 'avalon_items#cm_published', as: 'avalon_items_cm_published'
 
   # new person
   get '/avalon_items/:id/ajax_people_adder', to: 'avalon_items#ajax_people_adder', as: 'ajax_people_adder_get'

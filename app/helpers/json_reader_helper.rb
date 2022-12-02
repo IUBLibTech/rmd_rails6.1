@@ -9,7 +9,10 @@ module JsonReaderHelper
 
   def read_json
     LOGGER.info "JsonReaderHelper#read_json - checking for unread JSON"
-    unread = AtomFeedRead.where(successfully_read: false, json_failed: false)
+    # grab records that have not been successfully read AND have not failed due to a JSON read failure. Additionally,
+    # if the atom feed read is flagged for a rescan, this may indicate a publication status change in MCO so parse these
+    # as well
+    unread = AtomFeedRead.where("(successfully_read = false AND json_failed = false) OR rescan = true")
     LOGGER.info "\t#{unread.size} new JSON records to read"
     unread.each_with_index do |afr, i|
       AtomFeedRead.transaction do
@@ -37,7 +40,8 @@ module JsonReaderHelper
     json_text = read_avalon_json(afr.json_url)
     @atom_feed_read = afr
     save_json(json_text)
-    afr.update(successfully_read: true, json_failed: false, json_error_message: '')
+    # unflag anything that was a rescan by default
+    afr.update(successfully_read: true, json_failed: false, json_error_message: '', rescan: false)
     LOGGER.info("\tSuccessfully read JSON for #{afr.avalon_id}")
   end
 
@@ -98,24 +102,33 @@ module JsonReaderHelper
     publication_date = json["publication_date"]
     summary = json["summary"]
     barcodes = json["fields"]["other_identifier"].select{|i| i.match(/4[0-9]{13}/) }
-    debugger
     unit = pod_metadata_unit(barcodes.first)
-    avalon_item = AvalonItem.new(avalon_id: json["id"], title: title, collection: collection, json: json_text, pod_unit: unit, review_state: AvalonItem::REVIEW_STATE_DEFAULT)
-    decision = PastAccessDecision.new(avalon_item: avalon_item, decision: AccessDeterminationHelper::DEFAULT_ACCESS, changed_by: 'automated ingest')
-    decision.save!
-    avalon_item.current_access_determination = decision
-    avalon_item.save!
-    barcodes.each do |bc|
-      recording = Recording.new(
-        mdpi_barcode: bc.to_i, title: title, description: summary, access_determination: Recording::DEFAULT_ACCESS,
-        published: publication_date, fedora_item_id: json["id"], atom_feed_read_id: @atom_feed_read.id, unit: unit, avalon_item_id: avalon_item.id,
-        copyright_end_date_text: '', date_of_first_publication_text: '', creation_date_text: ''
-      )
-      recording.save!
-      perf = Performance.new(title: "Default Performance")
-      perf.save!
-      RecordingPerformance.new(performance_id: perf.id, recording_id: recording.id).save!
-      Track.new(track_name: "Track 1", performance_id: perf.id).save!
+    # look for existing first
+    avalon_item = AvalonItem.where(avalon_id: json["id"])
+    if avalon_item.nil?
+      # new AvalonItem
+      avalon_item = AvalonItem.new(avalon_id: json["id"], title: title, collection: collection, json: json_text, pod_unit: unit, review_state: AvalonItem::REVIEW_STATE_DEFAULT)
+      decision = PastAccessDecision.new(avalon_item: avalon_item, decision: AccessDeterminationHelper::DEFAULT_ACCESS, changed_by: 'automated ingest')
+      decision.save!
+      avalon_item.current_access_determination = decision
+      barcodes.each do |bc|
+        recording = Recording.new(
+          mdpi_barcode: bc.to_i, title: title, description: summary, access_determination: Recording::DEFAULT_ACCESS,
+          published: publication_date, fedora_item_id: json["id"], atom_feed_read_id: @atom_feed_read.id, unit: unit, avalon_item_id: avalon_item.id,
+          copyright_end_date_text: '', date_of_first_publication_text: '', creation_date_text: ''
+        )
+        recording.save!
+        perf = Performance.new(title: "Default Performance")
+        perf.save!
+        RecordingPerformance.new(performance_id: perf.id, recording_id: recording.id).save!
+        Track.new(track_name: "Track 1", performance_id: perf.id).save!
+      end
+    else
+      # existing avalon item whose AtomFeedRead is newer than the last read - check for title chance or
+      # published status changed - ignore everything else
+      avalon_item.title = title
+      avalon_item.published_in_mco = json["published"]
     end
+    avalon_item.save!
   end
 end

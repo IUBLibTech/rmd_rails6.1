@@ -10,9 +10,9 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_01_12_150257) do
+ActiveRecord::Schema.define(version: 2022_11_29_164205) do
 
-  create_table "atom_feed_reads", id: :integer, charset: "utf8mb3", collation: "utf8_unicode_ci", force: :cascade do |t|
+  create_table "atom_feed_reads", id: :integer, charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.text "title", null: false
     t.datetime "avalon_last_updated", null: false
     t.string "json_url", null: false
@@ -24,10 +24,11 @@ ActiveRecord::Schema.define(version: 2022_01_12_150257) do
     t.boolean "json_failed", default: false
     t.text "json_error_message"
     t.text "entry_xml"
+    t.boolean "rescan"
     t.index ["avalon_id"], name: "index_atom_feed_reads_on_avalon_id", unique: true
   end
 
-  create_table "avalon_item_notes", id: :integer, charset: "utf8mb3", collation: "utf8_unicode_ci", force: :cascade do |t|
+  create_table "avalon_item_notes", id: :integer, charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.bigint "avalon_item_id", null: false
     t.text "text"
     t.string "creator", null: false
@@ -35,21 +36,21 @@ ActiveRecord::Schema.define(version: 2022_01_12_150257) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "avalon_item_people", id: :integer, charset: "utf8mb3", collation: "utf8_unicode_ci", force: :cascade do |t|
+  create_table "avalon_item_people", id: :integer, charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.bigint "person_id"
     t.bigint "avalon_item_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "avalon_item_works", id: :integer, charset: "utf8mb3", collation: "utf8_unicode_ci", force: :cascade do |t|
+  create_table "avalon_item_works", id: :integer, charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.bigint "avalon_item_id"
     t.bigint "work_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "avalon_items", id: :integer, charset: "utf8mb3", collation: "utf8_unicode_ci", force: :cascade do |t|
+  create_table "avalon_items", id: :integer, charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.text "title", null: false
     t.string "avalon_id", null: false
     t.text "json", size: :medium, null: false
@@ -70,10 +71,11 @@ ActiveRecord::Schema.define(version: 2022_01_12_150257) do
     t.boolean "reason_license"
     t.boolean "reason_iu_owned_produced"
     t.boolean "structure_modified"
+    t.boolean "published_in_mco"
     t.index ["avalon_id"], name: "index_avalon_items_on_avalon_id", unique: true
   end
 
-  create_table "contracts", id: :integer, charset: "utf8mb3", collation: "utf8_unicode_ci", force: :cascade do |t|
+  create_table "contracts", id: :integer, charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.string "date_edtf_text"
     t.date "end_date"
     t.string "contract_type"
@@ -82,7 +84,7 @@ ActiveRecord::Schema.define(version: 2022_01_12_150257) do
     t.integer "avalon_item_id"
   end
 
-  create_table "delayed_jobs", id: :integer, charset: "utf8mb3", collation: "utf8_unicode_ci", force: :cascade do |t|
+  create_table "delayed_jobs", id: :integer, charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.integer "priority", default: 0, null: false
     t.integer "attempts", default: 0, null: false
     t.text "handler", null: false
@@ -97,20 +99,20 @@ ActiveRecord::Schema.define(version: 2022_01_12_150257) do
     t.index ["priority", "run_at"], name: "delayed_jobs_priority"
   end
 
-  create_table "iu_affiliations", id: :integer, charset: "utf8mb3", collation: "utf8_unicode_ci", force: :cascade do |t|
+  create_table "iu_affiliations", id: :integer, charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.text "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "nationalities", id: :integer, charset: "utf8mb3", collation: "utf8_unicode_ci", force: :cascade do |t|
+  create_table "nationalities", id: :integer, charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.string "nationality"
     t.text "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "past_access_decisions", id: :integer, charset: "utf8mb3", collation: "utf8_unicode_ci", force: :cascade do |t|
+  create_table "past_access_decisions", id: :integer, charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.bigint "avalon_item_id"
     t.string "decision"
     t.string "changed_by"
@@ -119,7 +121,7 @@ ActiveRecord::Schema.define(version: 2022_01_12_150257) do
     t.boolean "copyright_librarian", default: false
   end
 
-  create_table "people", id: :integer, charset: "utf8mb3", collation: "utf8_unicode_ci", force: :cascade do |t|
+  create_table "people", id: :integer, charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.string "date_of_birth_edtf"
     t.string "date_of_death_edtf"
     t.string "place_of_birth"
@@ -139,7 +141,7 @@ ActiveRecord::Schema.define(version: 2022_01_12_150257) do
     t.text "entity_nationality"
   end
 
-  create_table "performance_contributor_people", id: :integer, charset: "utf8mb3", collation: "utf8_unicode_ci", force: :cascade do |t|
+  create_table "performance_contributor_people", id: :integer, charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.bigint "performance_id"
     t.bigint "person_id"
     t.bigint "role_id"
@@ -148,7 +150,7 @@ ActiveRecord::Schema.define(version: 2022_01_12_150257) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "performance_notes", id: :integer, charset: "utf8mb3", collation: "utf8_unicode_ci", force: :cascade do |t|
+  create_table "performance_notes", id: :integer, charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.bigint "performance_id", null: false
     t.text "text"
     t.string "creator", null: false
@@ -156,7 +158,7 @@ ActiveRecord::Schema.define(version: 2022_01_12_150257) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "performances", id: :integer, charset: "utf8mb3", collation: "utf8_unicode_ci", force: :cascade do |t|
+  create_table "performances", id: :integer, charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.bigint "work_id"
     t.string "location"
     t.date "performance_date"
@@ -170,7 +172,7 @@ ActiveRecord::Schema.define(version: 2022_01_12_150257) do
     t.string "in_copyright"
   end
 
-  create_table "person_iu_affiliations", id: :integer, charset: "utf8mb3", collation: "utf8_unicode_ci", force: :cascade do |t|
+  create_table "person_iu_affiliations", id: :integer, charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.bigint "person_id"
     t.integer "iu_affiliation_id"
     t.integer "begin_date"
@@ -179,7 +181,7 @@ ActiveRecord::Schema.define(version: 2022_01_12_150257) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "person_nationalities", id: :integer, charset: "utf8mb3", collation: "utf8_unicode_ci", force: :cascade do |t|
+  create_table "person_nationalities", id: :integer, charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.bigint "person_id"
     t.bigint "nationality_id"
     t.date "begin_date"
@@ -188,35 +190,35 @@ ActiveRecord::Schema.define(version: 2022_01_12_150257) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "pod_objects", id: :integer, charset: "utf8mb3", collation: "utf8_unicode_ci", force: :cascade do |t|
+  create_table "pod_objects", id: :integer, charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "pod_physical_objects", id: :integer, charset: "utf8mb3", collation: "utf8_unicode_ci", force: :cascade do |t|
+  create_table "pod_physical_objects", id: :integer, charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "pod_pulls", id: :integer, charset: "utf8mb3", collation: "utf8_unicode_ci", force: :cascade do |t|
+  create_table "pod_pulls", id: :integer, charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.datetime "pull_timestamp", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "pod_workflow_statuses", id: :integer, charset: "utf8mb3", collation: "utf8_unicode_ci", force: :cascade do |t|
+  create_table "pod_workflow_statuses", id: :integer, charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "policies", id: :integer, charset: "utf8mb3", collation: "utf8_unicode_ci", force: :cascade do |t|
+  create_table "policies", id: :integer, charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.integer "begin_date"
     t.date "end_date"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "recording_contributor_people", id: :integer, charset: "utf8mb3", collation: "utf8_unicode_ci", force: :cascade do |t|
+  create_table "recording_contributor_people", id: :integer, charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.bigint "contract_id"
     t.bigint "recording_id"
     t.bigint "role_id"
@@ -230,7 +232,7 @@ ActiveRecord::Schema.define(version: 2022_01_12_150257) do
     t.boolean "recording_producer"
   end
 
-  create_table "recording_notes", id: :integer, charset: "utf8mb3", collation: "utf8_unicode_ci", force: :cascade do |t|
+  create_table "recording_notes", id: :integer, charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.bigint "recording_id", null: false
     t.text "text"
     t.string "creator", null: false
@@ -238,21 +240,21 @@ ActiveRecord::Schema.define(version: 2022_01_12_150257) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "recording_performances", id: :integer, charset: "utf8mb3", collation: "utf8_unicode_ci", force: :cascade do |t|
+  create_table "recording_performances", id: :integer, charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.bigint "recording_id"
     t.bigint "performance_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "recording_take_down_notices", id: :integer, charset: "utf8mb3", collation: "utf8_unicode_ci", force: :cascade do |t|
+  create_table "recording_take_down_notices", id: :integer, charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.bigint "recording_id"
     t.bigint "take_down_notice_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "recordings", id: :integer, charset: "utf8mb3", collation: "utf8_unicode_ci", force: :cascade do |t|
+  create_table "recordings", id: :integer, charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.text "title"
     t.text "description"
     t.date "creation_date"
@@ -286,7 +288,7 @@ ActiveRecord::Schema.define(version: 2022_01_12_150257) do
     t.index ["avalon_item_id"], name: "index_recordings_on_avalon_item_id"
   end
 
-  create_table "review_comments", id: :integer, charset: "utf8mb3", collation: "utf8_unicode_ci", force: :cascade do |t|
+  create_table "review_comments", id: :integer, charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.integer "avalon_item_id"
     t.string "creator", null: false
     t.boolean "copyright_librarian"
@@ -295,17 +297,17 @@ ActiveRecord::Schema.define(version: 2022_01_12_150257) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "roles", id: :integer, charset: "utf8mb3", collation: "utf8_unicode_ci", force: :cascade do |t|
+  create_table "roles", id: :integer, charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "take_down_notices", id: :integer, charset: "utf8mb3", collation: "utf8_unicode_ci", force: :cascade do |t|
+  create_table "take_down_notices", id: :integer, charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "track_contributor_people", id: :integer, charset: "utf8mb3", collation: "utf8_unicode_ci", force: :cascade do |t|
+  create_table "track_contributor_people", id: :integer, charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.bigint "track_id"
     t.bigint "person_id"
     t.string "role"
@@ -319,14 +321,14 @@ ActiveRecord::Schema.define(version: 2022_01_12_150257) do
     t.boolean "interviewee"
   end
 
-  create_table "track_works", id: :integer, charset: "utf8mb3", collation: "utf8_unicode_ci", force: :cascade do |t|
+  create_table "track_works", id: :integer, charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.bigint "track_id"
     t.bigint "work_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "tracks", id: :integer, charset: "utf8mb3", collation: "utf8_unicode_ci", force: :cascade do |t|
+  create_table "tracks", id: :integer, charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.bigint "performance_id", null: false
     t.string "track_name", null: false
     t.integer "recording_start_time"
@@ -339,7 +341,7 @@ ActiveRecord::Schema.define(version: 2022_01_12_150257) do
     t.string "copyright_end_date_text"
   end
 
-  create_table "users", id: :integer, charset: "utf8mb3", collation: "utf8_unicode_ci", force: :cascade do |t|
+  create_table "users", id: :integer, charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "username"
@@ -442,7 +444,7 @@ ActiveRecord::Schema.define(version: 2022_01_12_150257) do
     t.index ["username"], name: "index_users_on_username", unique: true
   end
 
-  create_table "work_contributor_people", id: :integer, charset: "utf8mb3", collation: "utf8_unicode_ci", force: :cascade do |t|
+  create_table "work_contributor_people", id: :integer, charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.bigint "work_id"
     t.bigint "person_id"
     t.bigint "role_id"
@@ -452,7 +454,7 @@ ActiveRecord::Schema.define(version: 2022_01_12_150257) do
     t.boolean "contributor"
   end
 
-  create_table "works", id: :integer, charset: "utf8mb3", collation: "utf8_unicode_ci", force: :cascade do |t|
+  create_table "works", id: :integer, charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.string "title"
     t.string "traditional"
     t.string "contemporary_work_in_copyright"

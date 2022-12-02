@@ -138,9 +138,13 @@ class AvalonItemsController < ApplicationController
             @msg = "Only a collection manager can request review of an item. (You are currently flagged as a Copyright Librarian)"
           elsif cl
             comment = ReviewComment.new(avalon_item_id: @avalon_item.id, creator: creator, copyright_librarian: cl, comment: params[:comment])
-            @avalon_item.update!(review_state: AvalonItem::REVIEW_STATE_WAITING_ON_CM)
-            @msg = "The collection manager will be notified of your comment."
             comment.save!
+            # if the current review state is access determined this is response from the CL to CM or vice versa AFTER setting the access determination
+            # DO NOT CHANGE the review state in this case
+            unless @avalon_item.review_state == AvalonItem::REVIEW_STATE_ACCESS_DETERMINED
+              @avalon_item.update!(review_state: AvalonItem::REVIEW_STATE_WAITING_ON_CM)
+            end
+            @msg = "The collection manager will be notified of your comment."
           else
             comment = ReviewComment.new(avalon_item_id: @avalon_item.id, creator: creator, copyright_librarian: cl, comment: params[:comment])
             rs = @avalon_item.review_state
@@ -187,10 +191,18 @@ class AvalonItemsController < ApplicationController
         ReviewComment.transaction do
           comment.save!
           if cl
-            @avalon_item.update!(review_state: AvalonItem::REVIEW_STATE_WAITING_ON_CM)
+            # if the current review state is access determined this indicates that the CM is responding to CL AFTER an access decision
+            # DO NOT change review state in this case
+            unless @avalon_item.review_state == AvalonItem::REVIEW_STATE_ACCESS_DETERMINED
+              @avalon_item.update!(review_state: AvalonItem::REVIEW_STATE_WAITING_ON_CM)
+            end
             @msg = "The collection manager will be notified of your review/comment."
           else
-            @avalon_item.update!(review_state: AvalonItem::REVIEW_STATE_WAITING_ON_CL)
+            # if the current review state is access determined, this indicates that the CL is responding to the CL AFTER
+            # an access determination. DO NOT change the review state in this case
+            unless @avalon_item.review_state == AvalonItem::REVIEW_STATE_ACCESS_DETERMINED
+              @avalon_item.update!(review_state: AvalonItem::REVIEW_STATE_WAITING_ON_CL)
+            end
             @msg = "The copyright librarian will be notified of your request/comment."
           end
         end
@@ -222,6 +234,10 @@ class AvalonItemsController < ApplicationController
   def cm_access_determined
     # FIXME: when RMD is capable of determining when an Avalon Item is published in MCO, this action should omit those items from the result set
     @pagy, @avalon_items = pagy(AvalonItem.cm_access_determined)
+    render 'nav/start'
+  end
+  def cm_published
+    @pagy, @avalon_items = pagy(AvalonItem.cm_published)
     render 'nav/start'
   end
 
