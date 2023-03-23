@@ -97,7 +97,7 @@ module JsonReaderHelper
     barcodes = json["fields"]["other_identifier"].select{|i| i.match(/4[0-9]{13}/) }
     unit = pod_metadata_unit(barcodes.first)
     # look for existing first
-    avalon_item = AvalonItem.where(avalon_id: json["id"])
+    avalon_item = AvalonItem.where(avalon_id: json["id"]).first
     if avalon_item.nil?
       # new AvalonItem
       avalon_item = AvalonItem.new(avalon_id: json["id"], title: title, collection: collection, json: json_text, pod_unit: unit, review_state: AvalonItem::REVIEW_STATE_DEFAULT)
