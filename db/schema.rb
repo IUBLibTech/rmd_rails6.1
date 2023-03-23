@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_11_29_164205) do
+ActiveRecord::Schema.define(version: 2023_03_22_161504) do
 
   create_table "atom_feed_reads", id: :integer, charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.text "title", null: false
@@ -25,6 +25,9 @@ ActiveRecord::Schema.define(version: 2022_11_29_164205) do
     t.text "json_error_message"
     t.text "entry_xml"
     t.boolean "rescan"
+    t.datetime "atom_feed_new_timestamp"
+    t.datetime "atom_feed_update_timestamp"
+    t.datetime "json_last_parse_timestamp"
     t.index ["avalon_id"], name: "index_atom_feed_reads_on_avalon_id", unique: true
   end
 

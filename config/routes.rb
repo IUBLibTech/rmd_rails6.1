@@ -21,8 +21,9 @@ Rails.application.routes.draw do
   get '/atom_tester/search', to: 'atom_feed_reader#search', as: 'atom_feed_search'
 
   get '/atom_tester', to: 'atom_feed_reader#index', as: 'atom_feed_tester'
-  get '/atom_tester/prepopulate', to: 'atom_feed_reader#prepopulate', as: 'atom_feed_prepopulate'
-  get '/atom_tester/read_current', to: 'atom_feed_reader#read_current', as: 'atom_feed_read_current'
+  # no longer used
+  # get '/atom_tester/prepopulate', to: 'atom_feed_reader#prepopulate', as: 'atom_feed_prepopulate'
+  # get '/atom_tester/read_current', to: 'atom_feed_reader#read_current', as: 'atom_feed_read_current'
   get '/atom_tester/json/:id', to: 'atom_feed_reader#read_json', as: 'atom_feed_read_json'
   get '/atom_tester/load_avalon_record/:id', to: 'atom_feed_reader#load_avalon_record', as: 'load_avalon_record'
 

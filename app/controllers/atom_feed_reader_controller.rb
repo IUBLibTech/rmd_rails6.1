@@ -1,24 +1,11 @@
 class AtomFeedReaderController < ApplicationController
   include AvalonItemsHelper
+  include AfrHelper
+
   before_action :set_atom_feed_read, only: [:read_json, :load_avalon_record]
 
   def index
       @atom_feed_reads = AtomFeedRead.where(successfully_read: false).order('avalon_last_updated ASC').limit(100)
-  end
-
-  # action for pre loading the first (oldest) recordings in MCO
-  def prepopulate
-    # AtomFeedReaderHelper.prepopulate
-    # @atom_feed_reads = AtomFeedRead.where(successfully_read: false).order('avalon_last_updated ASC')
-    # render 'atom_feed_reader/index'
-    AtomFeedReaderTask.new.perform
-  end
-
-  # action for triggering a check to see if there are new recordings since the last read in
-  def read_current
-    # AtomFeedReaderHelper.read_current
-    # @atom_feed_reads = AtomFeedRead.where(successfully_read: false).order('avalon_last_updated ASC')
-    # render 'atom_feed_reader/index'
   end
 
   def search
