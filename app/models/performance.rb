@@ -31,7 +31,9 @@ class Performance < ApplicationRecord
 
   private
   def update_avalon_items
-    avalon_items.update_all(structure_modified: true)
+    avalon_items.each do |a|
+      a.update(structure_modified: true)
+    end
   end
 
 end

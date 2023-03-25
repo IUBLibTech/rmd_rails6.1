@@ -17,7 +17,7 @@ module JsonReaderHelper
     unread.each_with_index do |afr, i|
       AtomFeedRead.transaction do
         begin
-          LOGGER.info "\tReading #{i + 1} of #{unread.size} JSON records - #{afr.avalon_id}"
+          LOGGER.info "\tReading #{i + 1} of #{unread.size} JSON records: #{afr.avalon_id}"
           load_single(afr)
         rescue => error
           if error.is_a? Net::ReadTimeout
@@ -41,20 +41,13 @@ module JsonReaderHelper
     @atom_feed_read = afr
     save_json(json_text)
     # unflag anything that was a rescan by default
-    afr.update(successfully_read: true, json_failed: false, json_error_message: '', rescan: false)
+    afr.update(successfully_read: true, json_failed: false, json_error_message: '', rescan: false, json_last_parse_timestamp: DateTime.now)
     LOGGER.info("\tSuccessfully read JSON for #{afr.avalon_id}")
   end
 
   private
   # reads the JSON record for a specific Avalon Item
   def read_avalon_json(url)
-    # original code
-    # uri = URI.parse(url)
-    # http = Net::HTTP.new(uri.host, uri.port)
-    # http.use_ssl = true
-    # request = Net::HTTP::Get.new(uri)
-    # request['Avalon-Api-Key'] = Rails.application.credentials[:avalon_token]
-    # http.request(request).body
 
     # trying to set the read timeout
     uri = URI.parse(url)
@@ -104,7 +97,7 @@ module JsonReaderHelper
     barcodes = json["fields"]["other_identifier"].select{|i| i.match(/4[0-9]{13}/) }
     unit = pod_metadata_unit(barcodes.first)
     # look for existing first
-    avalon_item = AvalonItem.where(avalon_id: json["id"])
+    avalon_item = AvalonItem.where(avalon_id: json["id"]).first
     if avalon_item.nil?
       # new AvalonItem
       avalon_item = AvalonItem.new(avalon_id: json["id"], title: title, collection: collection, json: json_text, pod_unit: unit, review_state: AvalonItem::REVIEW_STATE_DEFAULT)

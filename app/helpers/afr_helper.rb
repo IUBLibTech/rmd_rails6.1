@@ -24,7 +24,7 @@ module AfrHelper
     timestamp_reached = false
     more_pages = true
     read_records = 0
-    puts "Checking the Atom Feed for new content"
+    LOGGER.info "Checking the Atom Feed for new content"
     AtomFeedRead.transaction do
       while more_pages && !timestamp_reached
         uri = gen_atom_feed_uri('desc', ITEMS_PER_PAGE, page)
@@ -33,10 +33,10 @@ module AfrHelper
         total_records = xml.xpath('//totalResults')&.first.content.to_f # convert to a float so ceiling will work in division
         start_index = xml.xpath('//startIndex')&.first.content.to_i
         #puts xml.to_xhtml if total_records.nil? || start_index.nil?
-        puts "\n\n\nAfrHelper#read_atom_feed - reading page #{page} of #{(total_records / ITEMS_PER_PAGE).ceil}\n\n\n"
+        LOGGER.info "AfrHelper#read_atom_feed - reading page #{page} of #{(total_records / ITEMS_PER_PAGE).ceil}"
         if start_index < total_records
           xml.xpath('//entry').each do |e|
-            puts "\tProcessing record #{read_records} of #{total_records.to_i}"
+            LOGGER.info "Processing record #{read_records} of #{total_records.to_i}"
             title = e.xpath('title').first.content
             avalon_last_updated = DateTime.parse e.xpath('updated').first.content
             json_url = e.xpath('link/@href').first.value
@@ -53,14 +53,14 @@ module AfrHelper
                 # check if this is an existing record that has been altered in MCO since the last read. The alteration
                 # may be the result of being published in MCO
                 if AtomFeedRead.where(avalon_id: avalon_id).exists?
-                  puts("\tExisting record found for #{avalon_id} - updating")
-                  AtomFeedRead.where(avalon_id: avalon_id).update_all(rescan: true)
-                  AvalonItem.where(avalon_id: avalon_id).update_all(modified_in_mco: true)
+                  LOGGER.info ("Existing record found in atom feed: #{avalon_id} - updating")
+                  AtomFeedRead.where(avalon_id: avalon_id).first.update(rescan: true, atom_feed_update_timestamp: DateTime.now)
+                  AvalonItem.where(avalon_id: avalon_id).first.update(modified_in_mco: true)
                 else
-                  puts("No existing record found for #{avalon_id} - creating")
+                  puts("New record found in atom feed: #{avalon_id} - creating")
                   AtomFeedRead.new(
                     title: title, avalon_last_updated: avalon_last_updated, json_url: json_url,
-                    avalon_item_url: avalon_item_url, avalon_id: avalon_id, entry_xml: e.to_s
+                    avalon_item_url: avalon_item_url, avalon_id: avalon_id, entry_xml: e.to_s, atom_feed_new_timestamp: DateTime.now
                   ).save
                 end
               rescue Exception => e
@@ -153,10 +153,10 @@ module AfrHelper
               # do nothing, the record has already been ingested
               # puts("\tExisting record found for #{avalon_id} - skipping")
             else
-              puts("Missed record found!!! #{avalon_id} - creating AtomFeedRead")
+              puts("NEW record found!!! #{avalon_id} - creating AtomFeedRead")
               AtomFeedRead.new(
                 title: title, avalon_last_updated: avalon_last_updated, json_url: json_url,
-                avalon_item_url: avalon_item_url, avalon_id: avalon_id, entry_xml: e.to_s
+                avalon_item_url: avalon_item_url, avalon_id: avalon_id, entry_xml: e.to_s, atom_feed_new_timestamp: DateTime.now
               ).save
               missing += 1
               puts "Found #{missing} #{'record'.pluralize(missing)} so far."
@@ -170,6 +170,11 @@ module AfrHelper
         page += 1
       end
     end
+  end
+
+  # generates a "default" atom feed read uri: desc order, 100 items per page, and starting with page 1
+  def gafu
+    gen_atom_feed_uri('desc', ITEMS_PER_PAGE, 1)
   end
 
   def test_atom_sort_order
