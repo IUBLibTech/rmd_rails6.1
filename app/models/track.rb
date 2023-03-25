@@ -58,6 +58,8 @@ class Track < ApplicationRecord
 
   private
   def update_avalon_items
-    performance.avalon_items.update_all(structure_modified: true)
+    performance.avalon_items.each do |a|
+      a.update(structure_modified: true)
+    end
   end
 end

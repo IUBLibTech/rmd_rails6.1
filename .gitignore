@@ -40,15 +40,12 @@
 /bin/iul_stop
 
 /config/credentials/test.key
-
 /config/credentials/local.key
-
 /config/credentials/test_dev.key
-
 /config/credentials/production.key
-
 /config/credentials/production_dev.key
-
 /config/credentials/local_p.key
-
 /config/credentials/loacl.key
+/config/credentials/production:dev.key
+
+.ruby-version

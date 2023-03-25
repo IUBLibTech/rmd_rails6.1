@@ -21,6 +21,12 @@ class AvalonItem < ApplicationRecord
   REVIEW_STATE_WAITING_ON_CL = 3
   REVIEW_STATE_ACCESS_DETERMINED = 4
 
+  scope :unpublished, -> {
+    where("published_in_mco is null OR published_in_mco = false").joins(:current_access_determination).where(current_access_determination: {decision: [
+      AccessDeterminationHelper::RESTRICTED_ACCESS, AccessDeterminationHelper::IU_ACCESS, AccessDeterminationHelper::WORLD_WIDE_ACCESS
+    ]})
+  }
+
   scope :cl_all, -> {
     where(review_state: [REVIEW_STATE_REVIEW_REQUESTED, REVIEW_STATE_WAITING_ON_CM, REVIEW_STATE_WAITING_ON_CL])
   }
@@ -51,7 +57,10 @@ class AvalonItem < ApplicationRecord
   }
   # FIXME: need to updated this after there is a way to determine and flag an AvalonItem as having been published in MCO - this scope should omit those results
   scope :cm_access_determined, -> {
-    AvalonItem.where(pod_unit: UnitsHelper.human_readable_units_search(User.current_username), review_state: REVIEW_STATE_ACCESS_DETERMINED)
+    AvalonItem.where(pod_unit: UnitsHelper.human_readable_units_search(User.current_username), review_state: REVIEW_STATE_ACCESS_DETERMINED, published_in_mco: false)
+  }
+  scope :cm_published, -> {
+    AvalonItem.where(pod_unit: UnitsHelper.human_readable_units_search(User.current_username), published_in_mco: true)
   }
 
 

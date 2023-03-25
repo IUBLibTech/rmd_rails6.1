@@ -24,7 +24,7 @@ module AfrHelper
     timestamp_reached = false
     more_pages = true
     read_records = 0
-    puts "Checking the Atom Feed for new content"
+    LOGGER.info "Checking the Atom Feed for new content"
     AtomFeedRead.transaction do
       while more_pages && !timestamp_reached
         uri = gen_atom_feed_uri('desc', ITEMS_PER_PAGE, page)
@@ -33,10 +33,10 @@ module AfrHelper
         total_records = xml.xpath('//totalResults')&.first.content.to_f # convert to a float so ceiling will work in division
         start_index = xml.xpath('//startIndex')&.first.content.to_i
         #puts xml.to_xhtml if total_records.nil? || start_index.nil?
-        puts "\n\n\nAfrHelper#read_atom_feed - reading page #{page} of #{(total_records / ITEMS_PER_PAGE).ceil}\n\n\n"
+        LOGGER.info "AfrHelper#read_atom_feed - reading page #{page} of #{(total_records / ITEMS_PER_PAGE).ceil}"
         if start_index < total_records
           xml.xpath('//entry').each do |e|
-            puts "\tProcessing record #{read_records} of #{total_records.to_i}"
+            LOGGER.info "Processing record #{read_records} of #{total_records.to_i}"
             title = e.xpath('title').first.content
             avalon_last_updated = DateTime.parse e.xpath('updated').first.content
             json_url = e.xpath('link/@href').first.value
@@ -50,15 +50,17 @@ module AfrHelper
               break
             else
               begin
-                # check if this is an existing record that has been altered in MCO since the last read
+                # check if this is an existing record that has been altered in MCO since the last read. The alteration
+                # may be the result of being published in MCO
                 if AtomFeedRead.where(avalon_id: avalon_id).exists?
-                  puts("\tExisting record found for #{avalon_id} - updating")
-                  AvalonItem.where(avalon_id: avalon_id).update_all(modified_in_mco: true)
+                  LOGGER.info ("Existing record found in atom feed: #{avalon_id} - updating")
+                  AtomFeedRead.where(avalon_id: avalon_id).first.update(rescan: true, atom_feed_update_timestamp: DateTime.now)
+                  AvalonItem.where(avalon_id: avalon_id).first.update(modified_in_mco: true)
                 else
-                  puts("No existing record found for #{avalon_id} - creating")
+                  puts("New record found in atom feed: #{avalon_id} - creating")
                   AtomFeedRead.new(
                     title: title, avalon_last_updated: avalon_last_updated, json_url: json_url,
-                    avalon_item_url: avalon_item_url, avalon_id: avalon_id, entry_xml: e.to_s
+                    avalon_item_url: avalon_item_url, avalon_id: avalon_id, entry_xml: e.to_s, atom_feed_new_timestamp: DateTime.now
                   ).save
                 end
               rescue Exception => e
@@ -74,28 +76,30 @@ module AfrHelper
     end
   end
 
-  # responsible for reading the atom feed for an existing RMD avalon item to determine if its MCO counterpart has been updated
-  # since its last read
-  def read_atom_feed_for(avalon_id)
-
-  end
-
-  # responsible for reading the JSON record for an item in MCO
+  # FIXME: this should be in JsonReaderHelper???
+  # reads the current JSON for the specified AvalonItem and saves it in AvalonItem.json - returns true if the read was
+  # successful, otherwise false
   def read_json(avalon_item)
     begin
       uri = URI.parse avalon_item.atom_feed_read.json_url
       something = read_uri(uri)
       if something.kind_of? Net::HTTPSuccess
         json_text = something.body
-        avalon_item.update(json: json_text)
-        true
+        avalon_item.json = json_text
+        avalon_item.save!
+        return true
       else
         logger.warn "MCO JSON request returned #{something} for #{uri}"
-        false
+        avalon_item.atom_feed_read.update(json_failed: true, json_error_message: "MCO JSON request returned #{something} for #{uri}")
+        return false
       end
     rescue Exception => e
-      logger.warn e.message
-      logger.warn e.backtrace.join("\n")
+      msg = ""
+      msg << e.message
+      msg << e.backtrace.join("\n")
+      puts msg
+      logger.warn msg
+      avalon_item.atom_feed_read.update(json_failed: true, json_error_message: msg)
       false
     end
   end
@@ -104,17 +108,14 @@ module AfrHelper
   def create_avalon_item(json_read_metadata)
 
   end
-
   # responsible for generating the URI to read multiple records from the atom feed
   def gen_atom_feed_uri(order, rows, page, identifier = POD_GROUP_KEY_SOLR_Q)
     URI.parse(Rails.application.credentials[:avalon_url].gsub('<identifier>', identifier).gsub('<order>', order).gsub('<row_count>', rows.to_s).gsub('<page_count>', page.to_s))
   end
-
   # responsible for generating the URI to read a SINGLE Avalon Items atom feed record
   def gen_atom_feed_uri_for(avalon_id)
     URI.parse(Rails.application.credentials[:avalon_url].gsub('other_identifier_sim:<identifier>&sort=timestamp+<order>&rows=<row_count>&page=<page_count>', "id:#{avalon_id}"))
   end
-
   # makes a HTTPS request at the specified URI and returns the response
   def read_uri(uri)
     puts "Making MCO service request: #{uri.to_s}"
@@ -127,6 +128,86 @@ module AfrHelper
 
   def parse_xml(response)
     @xml =  @xml = Nokogiri::XML(response.body).remove_namespaces!
+  end
+
+  def fix_atom_feed
+    page = 1
+    more_pages = true
+    missing = 0
+    while more_pages
+      uri = gen_atom_feed_uri('desc', ITEMS_PER_PAGE, page)
+      response = read_uri(uri)
+      xml = parse_xml(response)
+      total_records = xml.xpath('//totalResults')&.first.content.to_f # convert to a float so ceiling will work in division
+      start_index = xml.xpath('//startIndex')&.first.content.to_i
+      if start_index < total_records
+        xml.xpath('//entry').each do |e|
+          title = e.xpath('title').first.content
+          avalon_last_updated = DateTime.parse e.xpath('updated').first.content
+          json_url = e.xpath('link/@href').first.value
+          avalon_item_url = e.xpath('id').first.content
+          avalon_id = avalon_item_url.chars[avalon_item_url.rindex('/') + 1..avalon_item_url.length].join("")
+          begin
+            # check if this is an existing record that has been altered in MCO since the last read
+            if AtomFeedRead.where(avalon_id: avalon_id).exists?
+              # do nothing, the record has already been ingested
+              # puts("\tExisting record found for #{avalon_id} - skipping")
+            else
+              puts("NEW record found!!! #{avalon_id} - creating AtomFeedRead")
+              AtomFeedRead.new(
+                title: title, avalon_last_updated: avalon_last_updated, json_url: json_url,
+                avalon_item_url: avalon_item_url, avalon_id: avalon_id, entry_xml: e.to_s, atom_feed_new_timestamp: DateTime.now
+              ).save
+              missing += 1
+              puts "Found #{missing} #{'record'.pluralize(missing)} so far."
+            end
+          rescue Exception => e
+            LOGGER.error e.message
+            LOGGER.error e.backtrace.join("\n")
+          end
+          more_pages = (start_index + ITEMS_PER_PAGE) < total_records
+        end
+        page += 1
+      end
+    end
+  end
+
+  # generates a "default" atom feed read uri: desc order, 100 items per page, and starting with page 1
+  def gafu
+    gen_atom_feed_uri('desc', ITEMS_PER_PAGE, 1)
+  end
+
+  def test_atom_sort_order
+    page = 1
+    more_pages = true
+    last_timestamp = nil
+    read_records = 0
+    while more_pages
+      uri = gen_atom_feed_uri('desc', ITEMS_PER_PAGE, page)
+      response = read_uri(uri)
+      xml = parse_xml(response)
+      total_records = xml.xpath('//totalResults')&.first.content.to_f # convert to a float so ceiling will work in division
+      start_index = xml.xpath('//startIndex')&.first.content.to_i
+      if start_index < total_records
+        puts "\tProcessing record #{read_records} of #{total_records.to_i}"
+        xml.xpath('//entry').each do |e|
+          ts = DateTime.parse e.xpath('updated').first.content
+          if last_timestamp.nil?
+            last_timestamp = ts if last_timestamp.nil?
+          else
+            puts "#{ts} older than #{last_timestamp} = #{ts <= last_timestamp}"
+            if ts <= last_timestamp
+              last_timestamp = ts
+            else
+              raise "Atom Feed out of order!!!"
+            end
+          end
+          read_records = read_records + 1
+          more_pages = (start_index + ITEMS_PER_PAGE) < total_records
+        end
+        page += 1
+      end
+    end
   end
 
 end
