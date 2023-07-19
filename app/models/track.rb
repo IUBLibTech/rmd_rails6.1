@@ -1,6 +1,7 @@
 class Track < ApplicationRecord
   belongs_to :performance
-  has_many :track_works
+  # only destroy the join table entries in track_works table, not the works themselves
+  has_many :track_works, dependent: :destroy
   has_many :works, through: :track_works
   has_many :track_contributor_people
   has_many :contributors, -> { where "interviewer = true OR interviewee = true OR conductor = true OR performer = true" }, class_name: "TrackContributorPerson"
@@ -8,7 +9,7 @@ class Track < ApplicationRecord
 
   before_save :edtf_dates
   after_save :update_avalon_items
-
+  after_destroy :killed
 
   # recording_start_time is input as hh:mm:ss but stored as seconds
   def recording_start_time=(time)
@@ -61,5 +62,9 @@ class Track < ApplicationRecord
     performance.avalon_items.each do |a|
       a.update(structure_modified: true)
     end
+  end
+
+  def killed
+    puts "#{self.class}:#{self.id} destroyed!"
   end
 end

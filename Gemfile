@@ -82,7 +82,8 @@ gem 'jquery-ui-rails'
 gem 'sweetalert2'
 gem "nested_form"
 
-
+# spreadsheet parsing
+gem 'roo', "~> 2.10.0"
 
 group :development, :local, :test, :local_p do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
@@ -98,9 +99,6 @@ group :development, :local, :local_p do
   gem 'listen', '~> 3.3'
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
-  gem 'net-smtp', require: false
-  gem 'net-imap', require: false
-  gem 'net-pop', require: false
 end
 
 group :test do

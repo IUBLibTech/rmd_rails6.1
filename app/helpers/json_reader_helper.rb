@@ -45,6 +45,16 @@ module JsonReaderHelper
     LOGGER.info("\tSuccessfully read JSON for #{afr.avalon_id}")
   end
 
+  def get_barcodes_from_json(json)
+    barcodes = []
+    json["fields"]["other_identifier_type"].each_with_index do |id, index|
+      if id == "mdpi barcode"
+        barcodes << json["fields"]["other_identifier"][index]
+      end
+    end
+    barcodes
+  end
+
   private
   # reads the JSON record for a specific Avalon Item
   def read_avalon_json(url)
@@ -94,7 +104,7 @@ module JsonReaderHelper
     collection = json["collection"]
     publication_date = json["publication_date"]
     summary = json["summary"]
-    barcodes = json["fields"]["other_identifier"].select{|i| i.match(/4[0-9]{13}/) }
+    barcodes = get_barcodes_from_json(json)
     unit = pod_metadata_unit(barcodes.first)
     # look for existing first
     avalon_item = AvalonItem.where(avalon_id: json["id"]).first

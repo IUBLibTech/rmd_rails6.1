@@ -1,5 +1,6 @@
 class AvalonItem < ApplicationRecord
   include AccessDeterminationHelper
+  include JsonReaderHelper
   has_many :recordings
   has_many :performances, through: :recordings
   has_many :tracks, through: :performances
@@ -296,6 +297,14 @@ class AvalonItem < ApplicationRecord
       end
     end
     "<span class='#{css}'>#{text}</span>".html_safe
+  end
+
+  def barcodes
+    recordings.collect{|r| r.mdpi_barcode.to_s }
+  end
+  def json_barcodes
+    j = JSON.parse(self.json)
+    get_barcodes_from_json(j)
   end
 
   # def index_solr
