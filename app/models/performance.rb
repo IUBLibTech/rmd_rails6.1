@@ -1,8 +1,10 @@
 class Performance < ApplicationRecord
-  has_many :recording_performances
+  # do not delete the recordings, only the join table entries in recording_performances
+  has_many :recording_performances, dependent: :destroy
   has_many :recordings, through: :recording_performances
-  has_many :tracks, dependent: :delete_all
-  has_many :performance_notes
+
+  has_many :tracks, dependent: :destroy
+  has_many :performance_notes, dependent: :destroy
   # no longer contributions at this level, only at recording and track level
   # has_many :performance_contributor_people
   # has_many :contributors, -> { where "interviewer = true OR interviewee = true OR performer = true OR conductor = true" }, class_name: "PerformanceContributorPerson"
@@ -34,6 +36,9 @@ class Performance < ApplicationRecord
     avalon_items.each do |a|
       a.update(structure_modified: true)
     end
+  end
+  def killed
+    puts "#{self.class}:#{self.id} destroyed!"
   end
 
 end
