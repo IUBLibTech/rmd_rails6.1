@@ -82,9 +82,7 @@
     <orderEntry type="library" scope="PROVIDED" name="msgpack (v1.5.4, rbenv: 3.1.2) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="mysql2 (v0.5.4, rbenv: 3.1.2) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="nested_form (v0.3.2, rbenv: 3.1.2) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="net-imap (v0.2.3, rbenv: 3.1.2) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="net-ldap (v0.17.1, rbenv: 3.1.2) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="net-pop (v0.1.1, rbenv: 3.1.2) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="net-protocol (v0.1.3, rbenv: 3.1.2) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="net-scp (v3.0.0, rbenv: 3.1.2) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="net-smtp (v0.3.1, rbenv: 3.1.2) [gem]" level="application" />
@@ -111,6 +109,7 @@
     <orderEntry type="library" scope="PROVIDED" name="rb-inotify (v0.10.1, rbenv: 3.1.2) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="regexp_parser (v2.5.0, rbenv: 3.1.2) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="rexml (v3.2.5, rbenv: 3.1.2) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="roo (v2.10.0, rbenv: 3.1.2) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="rsolr (v2.5.0, rbenv: 3.1.2) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="rubyzip (v2.3.2, rbenv: 3.1.2) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="sass-rails (v6.0.0, rbenv: 3.1.2) [gem]" level="application" />
@@ -120,7 +119,6 @@
     <orderEntry type="library" scope="PROVIDED" name="spring (v4.0.0, rbenv: 3.1.2) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="sprockets (v4.1.1, rbenv: 3.1.2) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="sprockets-rails (v3.4.2, rbenv: 3.1.2) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="strscan (v3.0.4, rbenv: 3.1.2) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="sunspot (v2.6.0, rbenv: 3.1.2) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="sunspot_rails (v2.6.0, rbenv: 3.1.2) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="sunspot_solr (v2.6.0, rbenv: 3.1.2) [gem]" level="application" />
@@ -416,6 +414,14 @@
             </subtasks>
           </RakeTaskImpl>
           <RakeTaskImpl description="Prints out your Rack middleware stack" fullCommand="middleware" id="middleware" />
+          <RakeTaskImpl id="recurring">
+            <subtasks>
+              <RakeTaskImpl description="Runs background process to check whether RMD items with access determination but not yet published in MCO, have been pulished in MCO" fullCommand="recurring:check_published" id="check_published" />
+              <RakeTaskImpl description="Runs the background process that parses JSON records in MCO" fullCommand="recurring:parse_json" id="parse_json" />
+              <RakeTaskImpl description="Runs the background process that reads the Avalon atom feed" fullCommand="recurring:read_atom_feed" id="read_atom_feed" />
+              <RakeTaskImpl description="Tests whether or not I can requeue new jobs within the job" fullCommand="recurring:test" id="test" />
+            </subtasks>
+          </RakeTaskImpl>
           <RakeTaskImpl description="Restart app by touching tmp/restart.txt" fullCommand="restart" id="restart" />
           <RakeTaskImpl description="Generate a cryptographically secure secret key (this is typically used to generate a secret for cookie sessions)" fullCommand="secret" id="secret" />
           <RakeTaskImpl description="Report code statistics (KLOCs, etc) from the application or engine" fullCommand="stats" id="stats" />

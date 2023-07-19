@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_03_22_161504) do
+ActiveRecord::Schema.define(version: 2023_05_05_153445) do
 
   create_table "atom_feed_reads", id: :integer, charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.text "title", null: false
@@ -100,6 +100,26 @@ ActiveRecord::Schema.define(version: 2023_03_22_161504) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.index ["priority", "run_at"], name: "delayed_jobs_priority"
+  end
+
+  create_table "imported_access_determinations", charset: "utf8mb3", force: :cascade do |t|
+    t.string "spreadsheet_name"
+    t.string "mco_purl"
+    t.string "catalog_key"
+    t.string "call_number"
+    t.boolean "public_domain"
+    t.date "enters_public_domain"
+    t.boolean "iu_owns_copyright"
+    t.boolean "licensed_for_worldwide_access"
+    t.date "license_expiration_date"
+    t.string "who_performed_research"
+    t.string "who_made_open"
+    t.date "date_made_open"
+    t.text "comments"
+    t.bigint "avalon_item_id"
+    t.boolean "access_determination_assigned"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "iu_affiliations", id: :integer, charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
