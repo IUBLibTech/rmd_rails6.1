@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_05_05_153445) do
+ActiveRecord::Schema.define(version: 2024_04_26_143354) do
 
   create_table "atom_feed_reads", id: :integer, charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.text "title", null: false
@@ -102,7 +102,7 @@ ActiveRecord::Schema.define(version: 2023_05_05_153445) do
     t.index ["priority", "run_at"], name: "delayed_jobs_priority"
   end
 
-  create_table "imported_access_determinations", charset: "utf8mb3", force: :cascade do |t|
+  create_table "imported_access_determinations", charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.string "spreadsheet_name"
     t.string "mco_purl"
     t.string "catalog_key"
@@ -464,6 +464,7 @@ ActiveRecord::Schema.define(version: 2023_05_05_153445) do
     t.boolean "sb_phys"
     t.boolean "sb_ulib"
     t.boolean "se_archives"
+    t.boolean "b_ibha"
     t.index ["username"], name: "index_users_on_username", unique: true
   end
 
