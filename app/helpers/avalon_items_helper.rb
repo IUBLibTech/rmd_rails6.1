@@ -18,7 +18,6 @@ module AvalonItemsHelper
     request = Net::HTTP::Get.new(uri.request_uri)
     request.basic_auth(Rails.application.credentials[:pod_bauth_username], Rails.application.credentials[:pod_bauth_password])
     result = http.request(request).body
-    puts "#{result}"
     raise "Unit not found" if result.match(/<unit>([-\w]+)<\/unit>/)[1].nil?
     result.match(/<unit>([-\w]+)<\/unit>/)[1]
   end
