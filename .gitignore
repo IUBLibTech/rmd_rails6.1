@@ -49,3 +49,4 @@
 /config/credentials/production:dev.key
 
 .ruby-version
+/config/credentials/development.key
