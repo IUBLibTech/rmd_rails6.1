@@ -43,7 +43,7 @@ gem 'edtf-humanize', '>= 1.0.0'
 # policy manager for controlling user access based on controller/action
 gem 'pundit', '>= 0.2.1'
 # handle ADS group lookup through LDAP
-gem 'ldap_groups_lookup'
+gem 'ldap_groups_lookup', '~> 0.11.0'
 # handles pagination
 gem 'pagy'
 
