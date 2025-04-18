@@ -140,15 +140,7 @@ GEM
     msgpack (1.5.4)
     mysql2 (0.5.4)
     nested_form (0.3.2)
-    net-imap (0.2.3)
-      digest
-      net-protocol
-      strscan
     net-ldap (0.17.1)
-    net-pop (0.1.1)
-      digest
-      net-protocol
-      timeout
     net-protocol (0.1.3)
       timeout
     net-scp (3.0.0)
@@ -211,6 +203,9 @@ GEM
       ffi (~> 1.0)
     regexp_parser (2.5.0)
     rexml (3.2.5)
+    roo (2.10.0)
+      nokogiri (~> 1)
+      rubyzip (>= 1.3.0, < 3.0.0)
     rsolr (2.5.0)
       builder (>= 2.1.2)
       faraday (>= 0.9, < 3, != 2.0.0)
@@ -239,7 +234,6 @@ GEM
       actionpack (>= 5.2)
       activesupport (>= 5.2)
       sprockets (>= 3.0.0)
-    strscan (3.0.4)
     sunspot (2.6.0)
       pr_geohash (~> 1.0)
       rsolr (>= 1.1.1, < 3)
@@ -295,8 +289,6 @@ DEPENDENCIES
   listen (~> 3.3)
   mysql2
   nested_form
-  net-imap
-  net-pop
   net-scp
   net-smtp
   net-ssh
@@ -306,6 +298,7 @@ DEPENDENCIES
   pundit (>= 0.2.1)
   rack-mini-profiler (~> 2.0)
   rails (~> 6.1.6)
+  roo (~> 2.10.0)
   sass-rails (>= 6)
   selenium-webdriver (>= 4.0.0.rc1)
   spring
@@ -318,9 +311,6 @@ DEPENDENCIES
   tzinfo-data
   web-console (>= 4.1.0)
   webdrivers
-
-RUBY VERSION
-   ruby 3.1.2p20
 
 BUNDLED WITH
    2.3.15

@@ -1,3 +1,7 @@
+<% if flash[:warning] || flash.now[:warning] %>
+  <p class="warning"><%= flash[:warning].html_safe %></p>
+<% end %>
+
 <div class="rvt_container">
   <% if User.copyright_librarian?(User.current_username) %>
     <%= render partial: 'nav/cl_start' %>

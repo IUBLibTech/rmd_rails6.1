@@ -12,10 +12,11 @@ class AvalonItemsController < ApplicationController
   end
 
   def show
-    @avalon_item = AvalonItem.includes(:recordings).find(params[:id])
-    # Read data from MCO - if this fails it probably means Avalon Identifiers have changed in MCO and this is a BAD thing in production
     begin
+      # Read data from MCO - if this fails it probably means Avalon Identifiers have changed in MCO and this is a BAD thing in production
+      @avalon_item = AvalonItem.includes(:recordings).find(params[:id])
       success = read_json(@avalon_item)
+
       if success
         @json = JSON.parse(@avalon_item.json)
         @mdpi_barcodes = parse_bc(@json["fields"]["other_identifier"])
@@ -32,15 +33,19 @@ class AvalonItemsController < ApplicationController
             end
           end
         end
-
         @atom_feed_read = AtomFeedRead.where("avalon_id like '%#{@avalon_item.avalon_id}'").first
       else
         flash[:warning] = json_flash_error_msg
       end
-    rescue
+      redirect_to root_path unless User.belongs_to_unit?(@avalon_item.pod_unit) || User.current_user_copyright_librarian?
+    rescue ActiveRecord::RecordNotFound => e
+      flash[:warning] = "RMD could not find the requested Avalon Item. This typically happens when a recording has recently "+
+        "been pushed from Dark Avalon into MCO but has not yet been ingested by RMD. Please allow up to an hour after "+
+        "pushing for the record to appear in RMD. If this problem persists, please contact Andrew Albrecht."
+      redirect_to root_path
+    rescue Exception => e
       flash[:warning] = json_flash_error_msg
     end
-    redirect_to root_path unless User.belongs_to_unit?(@avalon_item.pod_unit) || User.current_user_copyright_librarian?
   end
 
   def edit
@@ -71,10 +76,10 @@ class AvalonItemsController < ApplicationController
         can_save = false
         failure_message = "Something went wrong..."
         if params[:access] == AccessDeterminationHelper::RESTRICTED_ACCESS
-          can_save = params[:restricted] && params[:restricted].size > 0
+          can_save = params[:restricted] && params[:restricted].keys.size > 0
           failure_message = "Access Determination was not saved. At least one Reason is required for Restricted Access" unless can_save
         elsif params[:access] == AccessDeterminationHelper::WORLD_WIDE_ACCESS
-          can_save = params[:worldwide] && params[:worldwide].size > 0
+          can_save = params[:worldwide] && params[:worldwide].keys.size > 0
           failure_message = "Access Determination was not saved. At least one Reason is required for Worldwide Access" unless can_save
         else
           can_save = true
@@ -133,9 +138,13 @@ class AvalonItemsController < ApplicationController
             @msg = "Only a collection manager can request review of an item. (You are currently flagged as a Copyright Librarian)"
           elsif cl
             comment = ReviewComment.new(avalon_item_id: @avalon_item.id, creator: creator, copyright_librarian: cl, comment: params[:comment])
-            @avalon_item.update!(review_state: AvalonItem::REVIEW_STATE_WAITING_ON_CM)
-            @msg = "The collection manager will be notified of your comment."
             comment.save!
+            # if the current review state is access determined this is response from the CL to CM or vice versa AFTER setting the access determination
+            # DO NOT CHANGE the review state in this case
+            unless @avalon_item.review_state == AvalonItem::REVIEW_STATE_ACCESS_DETERMINED
+              @avalon_item.update!(review_state: AvalonItem::REVIEW_STATE_WAITING_ON_CM)
+            end
+            @msg = "The collection manager will be notified of your comment."
           else
             comment = ReviewComment.new(avalon_item_id: @avalon_item.id, creator: creator, copyright_librarian: cl, comment: params[:comment])
             rs = @avalon_item.review_state
@@ -182,10 +191,18 @@ class AvalonItemsController < ApplicationController
         ReviewComment.transaction do
           comment.save!
           if cl
-            @avalon_item.update!(review_state: AvalonItem::REVIEW_STATE_WAITING_ON_CM)
+            # if the current review state is access determined this indicates that the CM is responding to CL AFTER an access decision
+            # DO NOT change review state in this case
+            unless @avalon_item.review_state == AvalonItem::REVIEW_STATE_ACCESS_DETERMINED
+              @avalon_item.update!(review_state: AvalonItem::REVIEW_STATE_WAITING_ON_CM)
+            end
             @msg = "The collection manager will be notified of your review/comment."
           else
-            @avalon_item.update!(review_state: AvalonItem::REVIEW_STATE_WAITING_ON_CL)
+            # if the current review state is access determined, this indicates that the CL is responding to the CL AFTER
+            # an access determination. DO NOT change the review state in this case
+            unless @avalon_item.review_state == AvalonItem::REVIEW_STATE_ACCESS_DETERMINED
+              @avalon_item.update!(review_state: AvalonItem::REVIEW_STATE_WAITING_ON_CL)
+            end
             @msg = "The copyright librarian will be notified of your request/comment."
           end
         end
@@ -217,6 +234,10 @@ class AvalonItemsController < ApplicationController
   def cm_access_determined
     # FIXME: when RMD is capable of determining when an Avalon Item is published in MCO, this action should omit those items from the result set
     @pagy, @avalon_items = pagy(AvalonItem.cm_access_determined)
+    render 'nav/start'
+  end
+  def cm_published
+    @pagy, @avalon_items = pagy(AvalonItem.cm_published)
     render 'nav/start'
   end
 
@@ -257,7 +278,9 @@ class AvalonItemsController < ApplicationController
     render partial: 'nav/cl_avalon_items_table'
   end
   def ajax_cl_access_determined
-    @avalon_items = AvalonItem.joins(:past_access_decisions).where(past_access_decisions: {copyright_librarian: true}).distinct
+    #@avalon_items = AvalonItem.joins(:past_access_decisions).where(past_access_decisions: {copyright_librarian: true}).distinct
+    @avalon_items = AvalonItem.where(review_state: AvalonItem::REVIEW_STATE_ACCESS_DETERMINED)
+    @pagy = @avalon_items
     render partial: 'nav/cl_avalon_items_table'
   end
   def ajax_cl_waiting_on_cm

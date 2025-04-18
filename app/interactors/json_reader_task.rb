@@ -2,7 +2,9 @@ class JsonReaderTask
   include Delayed::RecurringJob
   include JsonReaderHelper
 
-  run_every 1.hour
+  LOGGER = Logger.new("#{Rails.root}/log/json_reader_task.log")
+
+  run_every 10.minutes
   run_at Time.now
   queue 'json-reader'
 

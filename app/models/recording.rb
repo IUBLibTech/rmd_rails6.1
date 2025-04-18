@@ -1,8 +1,9 @@
 class Recording < ApplicationRecord
   include AccessDeterminationHelper
 
-  has_many :recording_performances
-  has_many :performances, through: :recording_performances
+  has_many :recording_performances, dependent: :destroy
+  has_many :recording_notes, dependent: :destroy
+  has_many :performances, through: :recording_performances, dependent: :destroy
 
   # this one is wonky because recording_contributor_people holds the role booleans (producer and depositor). A Person only
   # contributes if a role is set. But the RecordingContributorPerson can exist with any roles being set to true so we have
@@ -11,8 +12,8 @@ class Recording < ApplicationRecord
   has_many :contributors, -> { where "recording_producer = true OR recording_depositor = true" }, class_name: "RecordingContributorPerson"
   has_many :people, through: :contributors
 
+  after_destroy :killed
 
-  has_many :recording_notes
 
   belongs_to :atom_feed_read
   belongs_to :avalon_item
@@ -66,4 +67,7 @@ class Recording < ApplicationRecord
     avalon_item.update(structure_modified: true)
   end
 
+  def killed
+    puts "#{self.class}:#{self.id} destroyed!"
+  end
 end

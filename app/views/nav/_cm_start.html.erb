@@ -16,6 +16,9 @@
   <%= link_to avalon_items_cm_access_determined_path do %>
     <span id="cm_determined_badge" class="filter-badge rvt-badge <%= action_name == 'cm_access_determined' ? 'rvt-badge--success' : 'rvt-badge--success-secondary' %> pointer" >Access Determined</span>
   <% end %>
+  <%= link_to avalon_items_cm_published_path do %>
+    <span id="cm_determined_badge" class="filter-badge rvt-badge <%= action_name == 'cm_published' ? 'filter-badge rvt-badge rvt-badge--info pointer' : "filter-badge rvt-badge rvt-badge--info-secondary pointer" %> pointer" >Published in MCO</span>
+  <% end %>
 </div>
 <div id="results_table_div">
   <%= render partial: 'nav/cm_avalon_items_table' %>

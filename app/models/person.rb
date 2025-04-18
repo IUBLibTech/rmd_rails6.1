@@ -103,6 +103,13 @@ class Person < ApplicationRecord
     track_contributor_people.where(track_id: t_id, contributor: true).size > 0
   end
 
+  def track_contributor_role_text(track_id)
+    self.track_contributor_people.where(track_id: track_id).first.roles_text
+  end
+  def recording_contributor_role_text(recording_id)
+    self.recording_contributor_people.where(recording_id: recording_id).first.roles_text
+  end
+
   def as_json(options)
     super(methods: [:label, :value])
   end

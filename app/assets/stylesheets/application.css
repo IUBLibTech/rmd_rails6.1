@@ -675,7 +675,7 @@ a:link, a:focus, a:visited, a:active {
     content: "";
     position: absolute;
     top: 25px;
-    left: 305px;
+    left: 340px;
     margin-left: -5px;
     /* border-width: 10px; */
     border: 1px solid;
