@@ -38,6 +38,7 @@
 .iul_service.yml
 /bin/iul_start
 /bin/iul_stop
+.idea/*
 
 /config/credentials/test.key
 /config/credentials/local.key
