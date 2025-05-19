@@ -1,0 +1,32 @@
+#!/bin/bash
+PORT=8141
+APP_NAME="Rights Management Database"
+PID_FILE=/srv/services/rmd-prod-8141/tmp/pids/server.pid
+ENV=production_dev
+
+echo "Starting $APP_NAME on port $PORT in RAILS_ENV=$ENV"
+
+if [ -e $PID_FILE ]; then
+    printf "\n\n\nWARNING!!!!\n\n\n"
+    echo "A process ID file was found for the Rails Server - $PID_FILE"
+    echo "This indicates that the service is already running OR that it shut down/crashed unexpectedly."
+    echo "Please verify whether the service is running."
+    echo "If the service is NOT running, delete the process ID file then start the service again"
+    printf "\n\n*********************************************************\n"
+    echo "Exiting WITHOUT starting $APP_NAME"
+    echo "*********************************************************"
+    exit 1
+fi
+
+if RAILS_ENV=$ENV rails s -b 0.0.0.0 -p $PORT -d; then
+    echo "Started $APP_NAME on port $PORT running in RAILS_ENV=$ENV"
+    printf "\n\n\nWARNING!!!\n\n\n"
+    echo "$APP_NAME was started with an iul_start file which disables the MCO Atom feed scanner. No new records will be ingested/updated from MCO!!!"
+    echo "If this was unintentional "
+    printf "\t1) stop the service using the iul_service command\n"
+    printf "\t2) delete the iul_start file\n"
+    printf "\t3) COPY the contents of iul_start.bak into a new iul_start file. DO NOT DELETE iul_start.bak or iul_start.no_mco_service\n"
+    printf "\t4)Use chmod if necessary to ensure permissions and executable status are correctly set on the new iul_start file.\n"
+    printf "\t5) start the service with the iul_service command.\n"
+    
+fi
