@@ -63,9 +63,13 @@ function validatePerson(event) {
     }
 }
 
+function foo(data) {
+
+}
+
 function hookPeopleAutocomplete() {
     // autocomplete for the person last name field
-    $('.autocomplete').autocomplete({
+    let x = $('.autocomplete').autocomplete({
         minLength: 2,
         source: function(request, response) {
             let el = $('#autocomplete_summary');
@@ -79,8 +83,29 @@ function hookPeopleAutocomplete() {
                 data: {
                     term: request.term,
                 },
-                success: function(data) {
+                success: function(data, x, y) {
                     response(data)
+                    if (data.length < 1) {
+                        let msg = "<p>No Matching People were found for your searched term: <b>"+request.term +"</b>."+
+                            "</p> <p>Would you like to create a new Person?</p>";
+                        Swal.fire({
+                            title: 'No Search Results Found',
+                            html: msg,
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonText: "Create New Person?"
+                        }).then((result) => {
+                            // no idea how, but on production servers swal is different and sending an object with value = true
+                            // instead of result.isConfirmed = true... this hack workaround
+                            if (result.isConfirmed || result.value) {
+                                try {
+                                    window.location.href = "../../people/new"
+                                } catch (e) {
+                                    console.log(e)
+                                }
+                            }
+                        });
+                    }
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
                     swal({
@@ -123,9 +148,10 @@ function hookPeopleAutocomplete() {
             el.toggle();
         }
     }).focusin(function(event) {
-        $(this).autocomplete("search");
+        clearPersonForm();
         return false;
     })
+
     // autocomplete for the Company Name field
     $('.autocomplete_company').autocomplete({
         minLength: 2,
@@ -143,6 +169,21 @@ function hookPeopleAutocomplete() {
                 },
                 success: function(data) {
                     response(data)
+                    if (data.length < 1) {
+                        let msg = "<p>No Matching Entites were found for your searched term: <b>"+request.term +"</b>."+
+                            "</p> <p>Would you like to create a new Entity?</p>";
+                        Swal.fire({
+                            title: 'No Search Results Found',
+                            html: msg,
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonText: "Create New Entity?"
+                        }).then((result) => {
+                            if (result.isConfirmed || result.value) {
+                                window.location.href = "../../people/new/entity?"
+                            }
+                        });
+                    }
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
                     swal({
@@ -377,6 +418,25 @@ function hookWorkAutocomplete() {
                 },
                 success: function(data) {
                     response(data)
+                    if (data.length < 1) {
+                        let msg = "<p>No Matching Works were found for your searched term: <b>"+request.term +"</b>."+
+                            "</p> <p>Would you like to create a new Work?</p>";
+                        Swal.fire({
+                            title: 'No Search Results Found',
+                            html: msg,
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonText: "Create New Work?"
+                        }).then((result) => {
+                            if (result.isConfirmed || result.value) {
+                                try {
+                                    window.location.href = "../../works/new"
+                                } catch (e) {
+                                    console.log(e)
+                                }
+                            }
+                        });
+                    }
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
                     swal({

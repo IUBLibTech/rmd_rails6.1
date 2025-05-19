@@ -2,7 +2,7 @@ class AtomFeedReaderTask
   include AfrHelper
   include Delayed::RecurringJob
 
-  run_every 1.hour
+  run_every 10.minutes
   run_at Time.now
   queue 'feed-reader'
 

@@ -95,4 +95,26 @@ class User < ApplicationRecord
     where
   end
 
+  def self.ldap_test
+    ldap = Net::LDAP.new(
+      host: 'ads.iu.edu',
+      port: 636,
+      encryption: {
+        method: :simple_tls,
+        tls_options: OpenSSL::SSL::SSLContext::DEFAULT_PARAMS,
+      },
+      auth: {
+        method: :simple,
+        username: "#{Rails.application.credentials[:ldap_username]}",
+        password: "#{Rails.application.credentials[:ldap_password]}"
+      }
+    )
+    begin
+      ldap.bind
+    rescue Exception => e
+      puts e.message
+      puts e.backtrace.join("\n")
+    end
+  end
+
 end

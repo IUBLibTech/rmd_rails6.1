@@ -61,6 +61,13 @@ module ApplicationHelper
     end
   end
 
+  def self.hide_sql
+    ActiveRecord::Base.logger.level = 1
+  end
+  def self.show_sql
+    ActiveRecord::Base.logger.level = 0
+  end
+
   private
   def ApplicationHelper.generate_barcode(valid = true, seed = 0, prefix = 0)
     if prefix.zero?

@@ -19,6 +19,12 @@ namespace :recurring do
     JsonReaderTask.schedule!
   end
 
+  desc 'Runs background process to check whether RMD items with access determination but not yet published in MCO, have been pulished in MCO'
+  task check_published: :environment do
+    PublishedCheckerTask.schedule!
+  end
+
+
   desc 'Tests whether or not I can requeue new jobs within the job'
   task test: :environment do
 

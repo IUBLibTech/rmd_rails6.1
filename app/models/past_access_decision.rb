@@ -1,5 +1,5 @@
 class PastAccessDecision < ApplicationRecord
-  belongs_to :avalon_item
+  belongs_to :avalon_item, inverse_of: :past_access_decisions
   after_create :set_current_access
 
   private

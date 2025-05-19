@@ -1,13 +1,13 @@
 #!/bin/bash
 PORT=8141
-APP_NAME="Rights Management Database (Prod)"
+APP_NAME="Rights Management Database"
 PID_FILE=/srv/services/rmd-prod-8141/tmp/pids/server.pid
 ENV=production_dev
 
 echo "Starting $APP_NAME on port $PORT in RAILS_ENV=$ENV"
 
 if [ -e $PID_FILE ]; then
-    echo "$PID_FILE found! - $APP_NAME appears to already be running."
+    echo "A process ID file was found - $PID_FILE - $APP_NAME appears to already be running."
     echo "Exiting without starting $APP_NAME"
     exit 1
 fi
@@ -30,4 +30,3 @@ if RAILS_ENV=$ENV rails s -b 0.0.0.0 -p $PORT -d; then
 	echo "WARNING: failed to queue JsonReaderTask!!!"
     fi
 fi
-

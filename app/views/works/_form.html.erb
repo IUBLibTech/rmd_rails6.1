@@ -1,4 +1,5 @@
 <%= form_for(@work, remote: (@ajax ? true : false)) do |f| %>
+		<%= hidden_field_tag :avalon_item_id, @ref_id %>
   <% if @ajax %>
     <%= hidden_field_tag 'avalon_item_id', params[:avalon_item_id].to_i %>
   <% end %>

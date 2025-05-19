@@ -1,5 +1,6 @@
 :enabled: true
 :host: 'ads.iu.edu'
+:port: 636
 :auth:
   :method: :simple
   :username: cn=<%= Rails.application.credentials[:ldap_username] %>,ou=Accounts,dc=ads,dc=iu,dc=edu

@@ -5,7 +5,7 @@ class UserController < ApplicationController
   end
 
   def index
-    @users = User.all
+    @users = User.where(username: 'jaalbrec')
   end
 
   def ajax_set_user_unit

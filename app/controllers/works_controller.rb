@@ -16,6 +16,13 @@ class WorksController < ApplicationController
   # GET /works/new
   def new
     @work = Work.new
+    ref = request.referrer
+    url = URI.parse(ref)
+    if url.request_uri.starts_with? "/avalon_items"
+      @ref_id = url.request_uri.split("/").last
+    else
+      @ref_id = nil
+    end
   end
 
   # GET /works/1/edit
@@ -29,7 +36,10 @@ class WorksController < ApplicationController
     process_work_contributors
     respond_to do |format|
       if @work.save
-        format.html { redirect_to @work, notice: 'Work was successfully created.' }
+        unless params[:avalon_item_id].blank?
+          @avalon_item = AvalonItem.find(params[:avalon_item_id])
+        end
+        format.html { redirect_to (@avalon_item ? @avalon_item : @work), notice: 'Work was successfully created.' }
         format.json { render text: "success"}
       else
         format.html { render :new }

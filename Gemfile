@@ -2,7 +2,8 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby '3.0.2'
+#ruby '3.0.2'
+
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails', branch: 'main'
 gem 'rails', '~> 6.1.6'
@@ -42,7 +43,7 @@ gem 'edtf-humanize', '>= 1.0.0'
 # policy manager for controlling user access based on controller/action
 gem 'pundit', '>= 0.2.1'
 # handle ADS group lookup through LDAP
-gem 'ldap_groups_lookup'
+gem 'ldap_groups_lookup', '~> 0.11.0'
 # handles pagination
 gem 'pagy'
 
@@ -79,17 +80,10 @@ gem 'jquery-ui-rails'
 # this gem hasn't been updated since 2018... it bundles sweet alert 2, but an older version 9.x. I think... when checking
 # the sweet alert documentation make sure to look at older versions
 gem 'sweetalert2'
-
 gem "nested_form"
 
-
-
-
-
-
-
-
-
+# spreadsheet parsing
+gem 'roo', "~> 2.10.0"
 
 group :development, :local, :test, :local_p do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
@@ -105,9 +99,6 @@ group :development, :local, :local_p do
   gem 'listen', '~> 3.3'
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
-  gem 'net-smtp', require: false
-  gem 'net-imap', require: false
-  gem 'net-pop', require: false
 end
 
 group :test do
