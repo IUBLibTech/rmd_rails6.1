@@ -1,6 +1,6 @@
 class PublishedCheckerTask
   include Delayed::RecurringJob
-  LOGGER = Logger.new("#{Rails.root}/log/published_checker_task.log")
+  LOGGER = Logger.new("#{Rails.root}/log/published_checker_task.log", 10, 10.megabytes)
 
   # run_every 10.minutes
   # run_at Time.now

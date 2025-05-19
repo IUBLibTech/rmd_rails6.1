@@ -4,7 +4,7 @@ module JsonReaderHelper
   require 'uri'
   include AvalonItemsHelper
 
-  LOGGER ||= Logger.new("#{Rails.root}/log/json_reader_helper.log")
+  LOGGER ||= Logger.new("#{Rails.root}/log/json_reader_helper.log", 10, 10.megabytes)
   READ_TIMEOUT_SECONDS = 180
 
   def read_json(scan_all = false)

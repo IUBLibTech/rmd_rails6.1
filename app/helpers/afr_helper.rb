@@ -3,7 +3,7 @@ module AfrHelper
   require 'net/http'
   require 'uri'
 
-  LOGGER = Logger.new("#{Rails.root}/log/afr_helper.log")
+  LOGGER = Logger.new("#{Rails.root}/log/afr_helper.log", 10, 10.megabytes)
   POD_GROUP_KEY_SOLR_Q = '/GR[0-9]{8}/'
   # cap this at 1000 to prevent overloading MCO service
   ITEMS_PER_PAGE = 1000
