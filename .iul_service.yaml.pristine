@@ -1,0 +1,19 @@
+class: rails
+dependencies:
+  hard: {}
+  soft: {}
+nagios:
+  check: true
+  notify: true
+proxy: 
+  host: rmd.dlib.indiana.edu
+  path: /
+system:
+  autostart: true
+  environment: prod
+  group: service_rails_admins
+  name: rmd
+  path: /srv/services/rmd-prod-8141
+  port: 8141
+  runtime: default
+  user: app_rmd
