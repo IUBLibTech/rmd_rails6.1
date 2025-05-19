@@ -16,7 +16,7 @@ class SessionsController < ActionController::Base
   # end
 
   def logger
-    @@logger ||= Logger.new("#{Rails.root}/log/iu_login.log")
+    @@logger ||= Logger.new("#{Rails.root}/log/iu_login.log", 10, 10.megabytes)
   end
 
   def iu_login_staging
