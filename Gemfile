@@ -8,10 +8,18 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails', branch: 'main'
 gem 'rails', '~> 6.1.6'
 
-# Use Puma as the app server
-gem 'puma', '~> 5.0'
 # Use SCSS for stylesheets
 gem 'sass-rails', '>= 6'
+
+# latest dependabot updates
+# Use Puma as the app server
+gem "puma", ">= 5.6.9"
+gem "nokogiri", ">= 1.18.8"
+gem "rack", ">= 2.2.14"
+gem "rexml", ">= 3.3.9"
+gem "rails-html-sanitizer", ">= 1.4.4"
+gem "loofah", ">= 2.19.1"
+
 
 # Transpile app-like JavaScript. Read more: https://github.com/rails/webpacker
 #gem 'webpacker', '~> 5.0'
