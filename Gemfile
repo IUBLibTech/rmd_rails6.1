@@ -21,6 +21,8 @@ gem "rails-html-sanitizer", ">= 1.4.4"
 gem "loofah", ">= 2.19.1"
 
 
+gem 'concurrent-ruby', '1.3.4'
+
 # Transpile app-like JavaScript. Read more: https://github.com/rails/webpacker
 #gem 'webpacker', '~> 5.0'
 # using sprockets instead of webpacker
