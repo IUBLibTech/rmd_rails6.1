@@ -3,14 +3,14 @@ local:
     hostname: localhost
     port: 8983
     log_level: WARNING
-    path: /solr/test
+    path: /solr/rmd
 
 local_p:
   solr:
     hostname: localhost
     port: 8983
     log_level: WARNING
-    path: /solr/test
+    path: /solr/rmd
 
 production:
   solr:

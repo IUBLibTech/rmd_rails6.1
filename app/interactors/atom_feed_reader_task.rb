@@ -7,9 +7,9 @@ class AtomFeedReaderTask
   queue 'feed-reader'
 
   def perform
-    LOGGER.info("AtomFeedReaderTask#perform - checking for new records")
+    LOGGER.info("AtomFeedReaderTask#perform - checking for new/updated MCO content")
     # see AfrHelper for this
-    read_atom_feed
+    read_atom_feed2(false)
   end
 
 end
