@@ -20,6 +20,10 @@ gem "rexml", ">= 3.3.9"
 gem "rails-html-sanitizer", ">= 1.4.4"
 gem "loofah", ">= 2.19.1"
 
+gem 'concurrent-ruby', '1.3.4'
+
+# removed from 3.4.13, but Rails requires this.
+gem "mutex_m"
 
 gem 'concurrent-ruby', '1.3.4'
 
@@ -94,6 +98,7 @@ gem "nested_form"
 
 # spreadsheet parsing
 gem 'roo', "~> 2.10.0"
+gem "csv"
 
 group :development, :local, :test, :local_p do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
