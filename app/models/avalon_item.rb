@@ -66,20 +66,20 @@ class AvalonItem < ApplicationRecord
 
 
   # solr index stuff
-  # searchable do
-  #   text :title
-  #   text :current_access_determination do
-  #     if current_access_determination.nil?
-  #       AccessDeterminationHelper::DEFAULT_ACCESS
-  #     else
-  #       current_access_determination.decision
-  #     end
-  #   end
-  #   string :pod_unit
-  #   text :mdpi_barcodes do
-  #     recordings.map{ |r| r.mdpi_barcode}
-  #   end
-  # end
+  searchable do
+    text :title
+    text :current_access_determination do
+      if current_access_determination.nil?
+        AccessDeterminationHelper::DEFAULT_ACCESS
+      else
+        current_access_determination.decision
+      end
+    end
+    string :pod_unit
+    text :mdpi_barcodes do
+      recordings.map{ |r| r.mdpi_barcode}
+    end
+  end
 
   def self.solr_search(term)
     ai = AvalonItem.search do fulltext term end

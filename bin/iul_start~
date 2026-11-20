@@ -1,4 +1,5 @@
 #!/bin/bash
+export path=/home/app_rmd/.rbenv/shims:/home/app_rmd/.local/bin:/home/app_rmd/bin:/srv/shared/bin:/usr/share/Modules/bin:/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin:/home/app_rmd/.rbenv/bin:/srv/services/rmd-devel-8146/bin/:/home/app_rmd/node/node-v14.17.3-linux-x64/bin:$PATH
 PORT=8141
 APP_NAME="Rights Management Database"
 PID_FILE=/srv/services/rmd-prod-8141/tmp/pids/server.pid
